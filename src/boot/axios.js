@@ -1,0 +1,77 @@
+import axios from "axios";
+
+import { getToken, removeToken } from "src/utils/auth";
+import { Notify, Loading } from "quasar";
+
+export const request = axios.create({
+  baseURL: "https://v2.zxapi.anrunlu.net/",
+  timeout: 150000,
+});
+
+export const requestGraph = axios.create({
+  baseURL: "https://graph-cyber.darryllin.cn/",
+  timeout: 150000,
+});
+
+export const requestMechine = axios.create({
+  baseURL: "https://voice.darryllin.cn/",
+  timeout: 150000,
+});
+
+export default ({ app, router, store }) => {
+  // 每次后台响应都会先经过这个函数  响应拦截器
+  request.interceptors.response.use(
+    (res) => {
+      return res;
+    },
+    (err) => {
+      Loading.hide();
+      if (err.response.status === 401) {
+        Notify.create({
+          message: err.response.data.error,
+          type: "negative",
+          position: "bottom",
+        });
+        removeToken();
+        router.push("/login");
+      } else if (err.response.status === 500) {
+        Notify.create({
+          message: "服务器异常，请稍后再试",
+          color: "red",
+          icon: "error",
+          position: "bottom",
+        });
+      } else if (err.response.status === 404) {
+        Notify.create({
+          message: err.response.data.error,
+          type: "negative",
+          icon: "error",
+          position: "bottom",
+        });
+      } else {
+        Notify.create({
+          message: err.response.data.error,
+          type: "negative",
+          icon: "error",
+          position: "center",
+          timeout: 3000,
+        });
+      }
+
+      return Promise.reject(err);
+    }
+  );
+
+  // 每次请求都会先经过这个函数 请求拦截器
+  request.interceptors.request.use(
+    (config) => {
+      if (store.getters["user/token"]) {
+        config.headers.Authorization = "Bearer " + getToken() || "";
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+};

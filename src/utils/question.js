@@ -1,0 +1,217 @@
+/*
+
+表达式 type(3+4j) in (int, float, complex) 的值为_。？
+A、True
+B、False
+C、1
+D、0
+答案：A
+
+语音编码有哪些？
+A、波形编码
+B、参量编码
+C、音源编码
+D、混合编码
+答案：ABCD
+
+我国第一部编年史是《资治通鉴》。
+答案：对
+
+我国的四大发明是_,_,_,_。
+答案：造纸术|火药|指南针|印刷术
+
+*/
+
+// 将批量题目分成一个个题目字符串
+export function getEachSub(whole) {
+  // 替换所有的 <p> 和 </p> 标签
+  whole = whole.replace(/<p>/g, "");
+  whole = whole.replace(/<\/p>/g, "\n");
+  // 替换回车字符
+  whole = whole.replace(/&nbsp;/g, "\n");
+  // 替换所有的 <br> 标签
+  whole = whole.replace(/<br>/g, "\n");
+
+  let previewQuestions = [];
+
+  // 主要就是这句话
+  let eachSourceQues = whole.trim().split(/\n\s*\n\s*/g);
+
+  if (eachSourceQues.length) {
+    eachSourceQues.forEach((item) => {
+      // assembleSub就是把每个题目的字符串转换成题目对象，保存到previewSubjects数组里
+      previewQuestions.push(assembleSub(item.trim()));
+    });
+  }
+
+  return previewQuestions;
+}
+
+// 将一个个题目字符串拆解/组合成题目对象
+export function assembleSub(eachSub) {
+  let subObj = {
+    type: "", // 类型
+    content: "", // 题干
+    rightAns: "", // 正确答案
+    answer: [], // 题目选项
+    explain: "", // 解析
+    err: "", // 错误提示
+  };
+  let ansArr = eachSub.match(/\n\s*答案[:：]/g);
+
+  if (ansArr) {
+    if (ansArr.length > 1) {
+      // 匹配到多个答案
+      subObj.err = "每道题只能有一个答案";
+    } else {
+      // 添加题目 解析 和 知识点 等题目公共字段
+
+      // 解析
+      let anaReg = /\n\s*解析[:：]\s*.*/i;
+      let analysis = eachSub.match(anaReg);
+      if (analysis) {
+        subObj.explain = analysis[0].trim().replace(/^解析[:：]\s*/g, "");
+        // 添加完成后就从文本内容中去掉解析，便于进行后续的流程
+        eachSub = eachSub.replace(anaReg, "");
+      }
+
+      if (eachSub.search(/\n\s*[A-Z][、]/gi) > -1) {
+        // 单选和多选
+        let selReg = /\n\s*答案[:：]\s*[A-Z]+/i;
+
+        let selectAns = eachSub.match(selReg);
+
+        if (selectAns) {
+          // 答案
+          let ans = selectAns[0]
+            .trim()
+            .replace(/^答案[:：]\s*/g, "")
+            .toUpperCase();
+          subObj.rightAns = ans;
+
+          // 单选题与多选题
+          subObj.type = ans.length === 1 ? "单选" : "多选";
+
+          let sourceTimu = eachSub.replace(selReg, "");
+          console.log(sourceTimu);
+          // 拆分题干与选项
+          let sourceTimuArr = sourceTimu.split(/[A-Z][、]/gi);
+          if (sourceTimuArr.length == 1) {
+            subObj.err = "选项不能为空";
+          } else if (sourceTimuArr.length > 11) {
+            subObj.err = "选项数量不能大于10个";
+          }
+
+          let valArr = [];
+          sourceTimuArr.map((item, i) => {
+            sourceTimuArr[i] = item.trim().replace(/\s+/g, " ");
+
+            if (i === 0) {
+              // 题干
+              subObj.content = sourceTimuArr[i];
+            } else {
+              // 选项
+              let obj = {
+                content: sourceTimuArr[i],
+                mark: String.fromCharCode(65 + i - 1), // ascii转字母
+                isRight:
+                  subObj.rightAns.indexOf(String.fromCharCode(65 + i - 1)) > -1
+                    ? true
+                    : false,
+              };
+              subObj.answer.push(obj);
+              valArr.push(obj.mark);
+            }
+          });
+
+          // 单选题
+          if (subObj.rightAns.length === 1) {
+            if (!valArr.includes(subObj.rightAns)) {
+              subObj.err = "答案选项不正确";
+            }
+          } else {
+            // 多选题
+            for (let a of subObj.rightAns) {
+              if (!valArr.includes(a)) {
+                subObj.err = "答案选项不正确";
+                break;
+              }
+            }
+          }
+        } else {
+          subObj.err = "选择题答案不正确";
+        }
+      } else {
+        // 非单选多选题
+        let reg = /\n\s*答案[:：]\s*/g;
+        let regArr = eachSub.split(reg);
+
+        subObj.content = regArr[0];
+
+        if (regArr[0].includes("___")) {
+          // 填空题
+          subObj.type = "填空";
+          let len = regArr[0].match(/_{3,}/g).length;
+          let fillinAns = regArr[1].split(/\s*\|\s*/g);
+
+          if (len > 0 && len <= fillinAns.length) {
+            for (let i = 0; i < len; i++) {
+              if (fillinAns[i].includes("&&")) {
+                subObj.answer.push({
+                  mark: `${i + 1}`,
+                  content: fillinAns[i],
+                });
+              } else {
+                subObj.answer.push({
+                  mark: `${i + 1}`,
+                  content: fillinAns[i],
+                });
+              }
+            }
+          } else {
+            subObj.err = "填空题答案个数错误";
+          }
+        } else if (
+          // 判断题
+          regArr[1].trim() === "对" ||
+          regArr[1].trim() === "错" ||
+          regArr[1].trim() === "F" ||
+          regArr[1].trim() === "T" ||
+          regArr[1].trim() === "正确" ||
+          regArr[1].trim() === "错误"
+        ) {
+          subObj.type = "判断";
+
+          subObj.rightAns =
+            regArr[1].trim() === "对" ||
+            regArr[1].trim() === "正确" ||
+            regArr[1].trim() === "T"
+              ? "1"
+              : "0";
+          const obj1 = {
+            content: "正确",
+            mark: "T",
+            isRight: subObj.rightAns === "1" ? true : false,
+          };
+          const obj2 = {
+            content: "错误",
+            mark: "F",
+            isRight: subObj.rightAns === "1" ? false : true,
+          };
+          subObj.answer.push(obj1, obj2);
+        } else {
+          /**
+           * 解答题
+           */
+          subObj.type = "解答";
+          subObj.rightAns = regArr[1].trim();
+        }
+      }
+    }
+  } else {
+    // 未匹配到则为null
+    subObj.err = "题目缺少答案";
+  }
+
+  return subObj;
+}

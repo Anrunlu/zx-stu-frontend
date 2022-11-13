@@ -1,0 +1,47 @@
+{
+  "name": "zx-frontend",
+  "version": "0.0.1",
+  "description": "知新2",
+  "productName": "知新2",
+  "author": "安润鲁 <anrunlu@163.com>",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.vue ./",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^35.3.0",
+    "@ckeditor/ckeditor5-vue2": "^3.0.1",
+    "@quasar/extras": "^1.0.0",
+    "axios": "^0.21.1",
+    "ckeditor5-custom-build": "file:./ckeditor5",
+    "core-js": "^3.6.5",
+    "qiniu-js": "^3.4.1",
+    "quasar": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.13.14",
+    "@quasar/app": "^2.0.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "eslint-webpack-plugin": "^2.0.0",
+    "prettier": "^2.5.1"
+  },
+  "browserslist": [
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 10.18.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}
