@@ -10,8 +10,8 @@
 
 <script>
 import Editor from "ckeditor5-custom-build/build/ckeditor";
-import { MyClipboardAdapterPlugin } from "@/utils/ckeditor/MyClipboardPlugin";
-import { MyCustomUploadAdapterPlugin } from "@/utils/ckeditor/MyUploadPlugin";
+import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
+import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 
 export default {
   name: "app",

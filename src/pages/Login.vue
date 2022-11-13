@@ -81,19 +81,20 @@
                       clearable
                       bottom-slots
                       label="账号"
+                      v-model="userLoginDto.username"
                     >
                       <template v-slot:prepend>
                         <q-icon name="account_circle" />
                       </template>
                     </q-input>
                     <!-- 密码 -->
-                    <!-- 回车登录 -->
                     <q-input
                       class="logon-input"
                       bottom-slots
                       label="密码"
                       :type="isShowPwd ? 'password' : 'text'"
-                      hint=""
+                      v-model="userLoginDto.password"
+                      @keyup.enter.native="handleLogin"
                     >
                       <template v-slot:prepend>
                         <q-icon name="vpn_key" />
@@ -102,11 +103,17 @@
                         <q-icon
                           :name="isShowPwd ? 'visibility_off' : 'visibility'"
                           class="cursor-pointer"
+                          @click="isShowPwd = !isShowPwd"
                         />
                       </template>
                     </q-input>
                     <div class="row justify-between items-center">
-                      <q-checkbox left-label label="记住我" />
+                      <q-checkbox
+                        left-label
+                        label="记住我"
+                        v-model="isRemeberMe"
+                      />
+
                       <div class="col">
                         <a class="float-right">忘记密码</a>
                       </div>
@@ -117,6 +124,7 @@
                       color="primary"
                       icon-right="send"
                       label="登录系统"
+                      @click="handleLogin"
                     />
                   </q-card-section>
                 </q-card>
@@ -130,13 +138,50 @@
 </template>
 
 <script>
+import { Base64 } from "js-base64";
 export default {
   name: "Login",
   data() {
     return {
-      isShowPwd: false,
+      isShowPwd: true,
       feedBackDig: false,
+      isRemeberMe: false,
+      // 登录信息
+      userLoginDto: {
+        username: "19970746",
+        password: "13012614032Zzl@",
+      },
     };
+  },
+
+  methods: {
+    // 处理用户登录
+    async handleLogin() {
+      // 帐号密码传输加密
+      const userInfo = {
+        username: Base64.encode(this.userLoginDto.username),
+        password: Base64.encode(this.userLoginDto.password),
+      };
+
+      // // 执行用户登录动作
+      await this.$store.dispatch("user/userLogin", userInfo);
+
+      // 延时等待 store 里面存入信息，然后显示
+      setTimeout(() => {
+        const nickname = this.$store.getters["user/nickname"];
+
+        // 显示登录成功信息
+        this.$q.notify({
+          message: `欢迎回来 ${nickname}`,
+          color: "positive",
+          icon: "sentiment_satisfied_alt",
+          position: "bottom",
+          timeout: 1500,
+        });
+      }, 500);
+
+      this.$router.push(this.$route.query.redirect || "/").catch((e) => {});
+    },
   },
 };
 </script>

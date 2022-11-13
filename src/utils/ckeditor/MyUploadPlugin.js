@@ -1,4 +1,4 @@
-import qiniuUpload from "@/utils/qiniu";
+import qiniuUpload from "src/utils/qiniu";
 
 // 图片上传适配器，用于将图片上传到七牛云
 export class MyUploadAdapter {

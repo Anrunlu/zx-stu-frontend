@@ -1,4 +1,4 @@
-import { uploadWrapper } from "@/utils/qiniu";
+import { uploadWrapper } from "src/utils/qiniu";
 
 // 剪切板适配器
 export function MyClipboardAdapterPlugin(editor) {

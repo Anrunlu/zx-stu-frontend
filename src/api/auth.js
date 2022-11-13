@@ -1,4 +1,4 @@
-import { request } from "@/boot/axios";
+import { request } from "src/boot/axios";
 
 // 获取当前学院的学期列表
 export function getTermList() {

@@ -19,7 +19,19 @@ export const requestMechine = axios.create({
 });
 
 export default ({ app, router, store }) => {
-  // 每次后台响应都会先经过这个函数  响应拦截器
+  // 请求拦截器
+  request.interceptors.request.use(
+    (config) => {
+      if (store.getters["user/token"]) {
+        config.headers.Authorization = "Bearer " + getToken() || "";
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+  // 响应拦截器
   request.interceptors.response.use(
     (res) => {
       return res;
@@ -59,19 +71,6 @@ export default ({ app, router, store }) => {
       }
 
       return Promise.reject(err);
-    }
-  );
-
-  // 每次请求都会先经过这个函数 请求拦截器
-  request.interceptors.request.use(
-    (config) => {
-      if (store.getters["user/token"]) {
-        config.headers.Authorization = "Bearer " + getToken() || "";
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
     }
   );
 };

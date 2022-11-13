@@ -13,6 +13,14 @@ const routes = [
     component: () => import("layouts/TeacherLayout.vue"),
     children: [
       {
+        path: "dashboard",
+        component: () => import("pages/teacher/Dashboard.vue"),
+        meta: {
+          type: "teacher",
+          title: "Dashboard",
+        },
+      },
+      {
         path: "course",
         component: () => import("pages/teacher/Course.vue"),
         meta: {

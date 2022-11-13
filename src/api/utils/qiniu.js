@@ -1,4 +1,4 @@
-import { request } from "@/boot/axios";
+import { request } from "src/boot/axios";
 
 export function getUploadToken() {
   return request({

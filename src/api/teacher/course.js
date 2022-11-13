@@ -1,4 +1,4 @@
-import { request } from "@/boot/axios";
+import { request } from "src/boot/axios";
 
 // 获取课程列表
 export function getCourses() {
@@ -13,6 +13,14 @@ export function getTeaCourseInfo() {
   return request({
     url: "/tea/teachinfo/teaCourse",
     method: "GET",
+  });
+}
+
+// 获取教学班学生信息
+export function getTeaClsroomStuList(classroom_id) {
+  return request({
+    url: `/tea/teachinfo/combinedClassroomStudents/${classroom_id}`,
+    method: "get",
   });
 }
 
