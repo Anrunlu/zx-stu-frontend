@@ -166,7 +166,6 @@
 
 <script>
 import { getTeaClsroomStuList, getTeaCourseInfo } from "src/api/teacher/course";
-import { loadingFn } from "src/utils/loadingTools";
 export default {
   data() {
     return {
@@ -241,7 +240,7 @@ export default {
   methods: {
     // 获取教师课程信息
     async getTeaCourseInfo() {
-      const { data } = await loadingFn(getTeaCourseInfo)();
+      const { data } = await getTeaCourseInfo();
       const teaCourseList = [];
       data.data.reduce((pre, curr) => {
         const course = {
@@ -259,7 +258,7 @@ export default {
 
     // 获取教学班学生列表
     async getTeaClsroomStuList(classroomId) {
-      const { data } = await loadingFn(getTeaClsroomStuList)(classroomId);
+      const { data } = await getTeaClsroomStuList(classroomId);
       // 过滤数据
       const teaClsroomStuList = [];
       data.data.reduce((pre, curr) => {

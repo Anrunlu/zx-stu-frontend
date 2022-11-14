@@ -4,17 +4,12 @@ import { getToken, removeToken } from "src/utils/auth";
 import { Notify, Loading } from "quasar";
 
 export const request = axios.create({
-  baseURL: "https://v2.zxapi.anrunlu.net/",
+  baseURL: process.env.API_URL,
   timeout: 150000,
 });
 
 export const requestGraph = axios.create({
   baseURL: "https://graph-cyber.darryllin.cn/",
-  timeout: 150000,
-});
-
-export const requestMechine = axios.create({
-  baseURL: "https://voice.darryllin.cn/",
   timeout: 150000,
 });
 

@@ -1,10 +1,12 @@
 <template>
   <q-layout view="lHh LpR lFf">
+    <!-- 头部 -->
     <q-header
       reveal
       :class="$q.dark.isActive ? 'header_dark' : 'header_normal'"
     >
       <q-toolbar>
+        <!-- 隐藏左侧导航栏按钮 -->
         <q-btn
           @click="left = !left"
           flat
@@ -13,6 +15,7 @@
           icon="menu"
           class="q-mr-sm"
         />
+        <!-- 头部标题 -->
         <q-toolbar-title>知新教师端</q-toolbar-title>
         <q-btn
           class="q-mr-xs"
@@ -26,6 +29,7 @@
       </q-toolbar>
     </q-header>
 
+    <!-- 左侧导航栏 -->
     <q-drawer
       class="left-navigation text-white"
       show-if-above
@@ -40,17 +44,23 @@
       >
         <div style="height: calc(100% - 117px); padding: 10px">
           <q-toolbar>
-            <q-avatar>
-              <img :src="avatar" />
-            </q-avatar>
+            <!-- 头像 -->
+            <q-btn round>
+              <q-avatar>
+                <img :src="avatar" />
+              </q-avatar>
+            </q-btn>
             <div class="q-ml-md text-center">
+              <!-- 姓名 -->
               <q-toolbar-title> {{ nickname }} </q-toolbar-title>
+              <!-- 学/工号 -->
               <div
                 class="text-overline q-ma-none q-pa-none"
                 style="line-height: 1rem; color: #f2d541"
               >
                 {{ username }}
               </div>
+              <!-- 班级/教研室 -->
               <div
                 class="text-overline q-ma-none q-pa-none"
                 style="line-height: 1rem; color: #f29f05"
@@ -60,6 +70,7 @@
             </div>
           </q-toolbar>
           <hr />
+          <!-- 左侧导航栏可滚动区域 -->
           <q-scroll-area style="height: 100%">
             <q-list padding>
               <q-item
@@ -246,14 +257,13 @@
       </div>
     </q-drawer>
 
+    <!-- 主体 -->
     <q-page-container>
       <q-page class="row no-wrap">
         <div class="col">
           <div class="full-height">
             <q-scroll-area class="col q-pr-sm full-height" visible>
-              <!-- <keep-alive> -->
               <router-view />
-              <!-- </keep-alive> -->
             </q-scroll-area>
           </div>
         </div>
@@ -267,19 +277,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      isShowScan: false,
-      qrcode: true,
-      torchActive: false,
-      camera: "auto",
-      isApp: false,
-      announcementDetailDig: false,
       left: false,
-      appInfoDig: false,
-      appVersion: "1.2.8",
-      newAppFileUrl: "",
-      announcementList: [],
-      optannouncement: "",
-      updateContent: "",
     };
   },
 
@@ -299,12 +297,11 @@ export default {
       this.$q.notify({
         message: "退出成功",
         color: "positive",
-        icon: "fas fa-check",
+        icon: "check",
       });
       this.$router.push(`/login`);
     },
   },
-  async created() {},
 };
 </script>
 

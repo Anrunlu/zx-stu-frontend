@@ -16,7 +16,7 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 
-module.exports = function (/* ctx */) {
+module.exports = function (ctx) {
   return {
     // https://v1.quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -50,6 +50,11 @@ module.exports = function (/* ctx */) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
 
+      env: {
+        API_URL: ctx.dev
+          ? "http://anrunlu-test.com"
+          : "https://v2.zxapi.anrunlu.net",
+      },
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
