@@ -12,7 +12,7 @@
           flat
           round
           dense
-          icon="menu"
+          :icon="left ? 'chevron_left' : 'chevron_right'"
           class="q-mr-sm"
         />
         <!-- 头部标题 -->
@@ -35,7 +35,7 @@
       show-if-above
       v-model="left"
       side="left"
-      :width="230"
+      :width="210"
       elevated
     >
       <div
