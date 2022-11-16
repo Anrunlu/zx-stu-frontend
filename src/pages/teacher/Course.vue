@@ -3,7 +3,7 @@
     <!-- 课程卡片 -->
     <div class="row justify-center items-start">
       <q-card
-        class="q-ma-sm col-md-4 col-12"
+        class="q-ma-sm col-md-4 col-11"
         v-for="(teaCourse, index) in teaCourseList"
         :key="index"
       >
@@ -82,7 +82,7 @@
     </div>
 
     <!-- 添加课程按钮 -->
-    <q-page-sticky position="top-right" :offset="[25, 20]">
+    <q-page-sticky position="top-right" :offset="[25, -10]">
       <q-btn
         class="q-ma-xs bg-purple"
         round
@@ -227,6 +227,7 @@ export default {
           label: "操作",
         },
       ],
+      // 教学班学生列表分页设置
       teaClsroomStuListTablePagination: {
         sortBy: "username",
         descending: false,

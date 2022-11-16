@@ -24,7 +24,9 @@
           @click="$q.dark.toggle()"
           :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
         />
-        <q-btn flat round dense icon="notifications" class="q-mr-xs" />
+        <q-btn flat round dense icon="notifications" class="q-mr-xs">
+          <q-badge color="red" floating>4</q-badge>
+        </q-btn>
         <q-btn flat round dense icon="exit_to_app" @click="logout" />
       </q-toolbar>
     </q-header>
@@ -43,13 +45,11 @@
         :class="$q.dark.isActive ? 'drawer_dark' : 'drawer_normal'"
       >
         <div style="height: calc(100% - 117px); padding: 10px">
-          <q-toolbar>
+          <q-toolbar class="cursor-pointer" @click="handleClickUserInfoRegion">
             <!-- 头像 -->
-            <q-btn round>
-              <q-avatar>
-                <img :src="avatar" />
-              </q-avatar>
-            </q-btn>
+            <q-avatar>
+              <img :src="avatar" />
+            </q-avatar>
             <div class="q-ml-md text-center">
               <!-- 姓名 -->
               <q-toolbar-title> {{ nickname }} </q-toolbar-title>
@@ -262,7 +262,7 @@
       <q-page class="row no-wrap">
         <div class="col">
           <div class="full-height">
-            <q-scroll-area class="col q-pr-sm full-height" visible>
+            <q-scroll-area class="col q-pa-sm full-height" visible>
               <router-view />
             </q-scroll-area>
           </div>
@@ -300,6 +300,12 @@ export default {
         icon: "check",
       });
       this.$router.push(`/login`);
+    },
+
+    // 个人设置
+    handleClickUserInfoRegion() {
+      // TODO: 跳转到个人设置页面
+      // this.$router.push(`/profile`);
     },
   },
 };
