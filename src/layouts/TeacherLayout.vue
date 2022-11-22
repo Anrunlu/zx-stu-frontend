@@ -102,7 +102,7 @@
                 <q-item-section> 课程管理 </q-item-section>
               </q-item>
 
-              <q-item
+              <!-- <q-item
                 active-class="tab-active"
                 to=""
                 class="q-ma-sm navigation-item"
@@ -114,8 +114,8 @@
                 </q-item-section>
 
                 <q-item-section> 课程图谱 </q-item-section>
-              </q-item>
-              <q-item
+              </q-item> -->
+              <!-- <q-item
                 active-class="tab-active"
                 to="/teacher/editstudentgraph"
                 class="q-ma-sm navigation-item"
@@ -127,7 +127,7 @@
                 </q-item-section>
 
                 <q-item-section> 课程导图 </q-item-section>
-              </q-item>
+              </q-item> -->
 
               <q-item
                 active-class="tab-active"
@@ -184,7 +184,7 @@
 
                 <q-item-section> 课堂互动 </q-item-section>
               </q-item>
-              <q-item
+              <!-- <q-item
                 active-class="tab-active"
                 to="knowledge_portrait"
                 class="q-ma-sm navigation-item"
@@ -196,8 +196,8 @@
                 </q-item-section>
 
                 <q-item-section> 知识画像 </q-item-section>
-              </q-item>
-              <q-item
+              </q-item> -->
+              <!-- <q-item
                 active-class="tab-active"
                 to="testmanagement"
                 class="q-ma-sm navigation-item"
@@ -209,7 +209,7 @@
                 </q-item-section>
 
                 <q-item-section> 考试系统 </q-item-section>
-              </q-item>
+              </q-item> -->
               <q-item
                 active-class="tab-active"
                 to="grade"
@@ -269,10 +269,15 @@
         </div>
       </q-page>
     </q-page-container>
+
+    <!-- 实时通知组件 -->
+    <ImmediatelyAncmt />
   </q-layout>
 </template>
 
 <script>
+import { openAuthedSocket } from "src/utils/socketio";
+import ImmediatelyAncmt from "src/components/common/ImmediatelyAncmt";
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -280,6 +285,8 @@ export default {
       left: false,
     };
   },
+
+  components: { ImmediatelyAncmt },
 
   computed: {
     ...mapGetters("user", {
@@ -294,11 +301,15 @@ export default {
     // 退出登录
     async logout() {
       await this.$store.dispatch("user/userLogout");
+      // 退出登录后，关闭socket连接
+      this.$socket.close();
+      // 提示登录成功
       this.$q.notify({
         message: "退出成功",
         color: "positive",
         icon: "check",
       });
+      // 跳转到登录页面
       this.$router.push(`/login`);
     },
 
@@ -307,6 +318,18 @@ export default {
       // TODO: 跳转到个人设置页面
       // this.$router.push(`/profile`);
     },
+  },
+
+  sockets: {
+    // socket连接成功
+    connect() {
+      console.log("socket已连接");
+    },
+  },
+
+  created() {
+    // 建立socket连接
+    openAuthedSocket(this);
   },
 };
 </script>

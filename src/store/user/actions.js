@@ -92,6 +92,7 @@ export function userChangeTerm({ commit, dispatch }, termId) {
   });
 }
 
+// 用户登出
 export function userLogout({ commit }) {
   return new Promise((resolve) => {
     commit("resetState");

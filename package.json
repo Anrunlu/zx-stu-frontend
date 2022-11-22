@@ -18,7 +18,8 @@
     "core-js": "^3.6.5",
     "js-base64": "^3.7.2",
     "qiniu-js": "^3.4.1",
-    "quasar": "^1.0.0"
+    "quasar": "^1.0.0",
+    "vue-socket.io": "^3.0.10"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",

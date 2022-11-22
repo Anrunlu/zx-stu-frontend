@@ -26,7 +26,8 @@
                 flat
                 color="positive"
                 icon="add"
-                label="创建班级"
+                label="添加班级"
+                @click="handleAddClassroomClick(teaCourse)"
               ></q-btn>
               <q-btn
                 dense
@@ -35,6 +36,7 @@
                 icon="delete"
                 size="xs"
                 label="删除课程"
+                @click="handleRemoveTeaCourese(teaCourse)"
               ></q-btn>
             </div>
           </template>
@@ -47,7 +49,7 @@
                   size="sm"
                   color="primary"
                   icon="edit"
-                  @click.stop=""
+                  @click.stop="handleRenameTeaClassroom(props.row)"
                   ><q-tooltip> 重命名教学班 </q-tooltip></q-btn
                 >
                 <q-btn
@@ -65,7 +67,7 @@
                   size="md"
                   color="red"
                   icon="delete"
-                  @click.stop=""
+                  @click.stop="handleDeleteTeaClassroom(teaCourse, props.row)"
                   ><q-tooltip> 删除教学班</q-tooltip></q-btn
                 >
               </div>
@@ -89,6 +91,7 @@
         icon="add"
         size="32px"
         color="primary"
+        @click="handleAddTeaCourseBtnClick"
         ><q-tooltip
           content-class="bg-indigo"
           content-style="font-size: 16px"
@@ -97,6 +100,137 @@
         ></q-btn
       >
     </q-page-sticky>
+
+    <!-- 添加班级对话框 -->
+    <q-dialog v-model="showAddClassroomDig" persistent>
+      <q-card style="width: 700px; max-width: 80vw">
+        <q-card-section>
+          <div class="text-h5 q-ml-sm">
+            添加班级
+            <q-btn
+              round
+              flat
+              dense
+              icon="close"
+              class="float-right"
+              color="grey-8"
+              v-close-popup
+            ></q-btn>
+          </div>
+          <q-separator class="q-mt-md" />
+        </q-card-section>
+        <q-tabs
+          v-model="addClassroomTabMode"
+          class="bg-primary text-white shadow-2"
+          inline-label
+        >
+          <q-tab
+            name="throughOriginClassroom"
+            icon="fas fa-users"
+            label="选择行政班"
+          />
+          <q-tab
+            name="throughOfficialFile"
+            icon="fas fa-folder-open"
+            label="导入教学班"
+          />
+        </q-tabs>
+        <q-separator />
+        <q-tab-panels v-model="addClassroomTabMode" animated>
+          <!-- 通过自然班添加 -->
+          <q-tab-panel name="throughOriginClassroom">
+            <q-card-section align="right">
+              <q-input
+                outlined
+                dense
+                debounce="300"
+                v-model="combinedClassroom.name"
+                placeholder="班级名称"
+                ><template v-slot:prepend>
+                  <q-icon name="person" />
+                </template>
+              </q-input>
+              <q-select
+                use-input
+                @filter="filterFn"
+                @input="handleInputOriginClassroomNameChange"
+                multiple
+                class="q-mt-md"
+                outlined
+                clearable
+                v-model="combinedClassroom.classrooms"
+                :options="originClassroomList"
+                option-label="name"
+                option-value="id"
+                dense
+                label="请选择班级导入"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="class" size="md" class="q-ml-none" />
+                </template>
+              </q-select>
+              <q-card-section align="right" class="q-pa-none">
+                <q-btn
+                  class="q-mt-sm"
+                  flat
+                  label="确认"
+                  color="primary"
+                  @click="handleAddClassroom"
+                  v-close-popup
+                />
+              </q-card-section> </q-card-section
+          ></q-tab-panel>
+          <!-- 通过花名册添加 -->
+          <q-tab-panel name="throughOfficialFile">
+            <q-card-section align="right">
+              <q-input
+                outlined
+                dense
+                debounce="300"
+                v-model="combinedClassroom.name"
+                placeholder="班级名称"
+                ><template v-slot:prepend>
+                  <q-icon name="person" />
+                </template>
+              </q-input>
+              <q-file
+                dense
+                class="q-mt-md"
+                outlined
+                v-model="excelFile"
+                label="请上传课堂花名册 Excel 文件"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="cloud_upload" @click.stop />
+                </template>
+                <template v-slot:append>
+                  <q-icon
+                    name="close"
+                    @click.stop="excelFile = null"
+                    class="cursor-pointer"
+                  />
+                </template>
+              </q-file>
+              <q-card-section align="right" class="q-pa-none">
+                <q-btn
+                  class="q-mt-sm"
+                  flat
+                  style="margin-right: 13vw"
+                  label="下载模板"
+                  color="secondary"
+                />
+                <q-btn
+                  class="q-mt-sm"
+                  flat
+                  label="确认"
+                  color="primary"
+                  v-close-popup
+                />
+              </q-card-section> </q-card-section
+          ></q-tab-panel>
+        </q-tab-panels>
+      </q-card>
+    </q-dialog>
 
     <!-- 教学班学生列表对话框 -->
     <q-dialog
@@ -161,16 +295,83 @@
         </template>
       </q-table>
     </q-dialog>
+
+    <!-- 添加课程对话框 -->
+    <q-dialog v-model="showAddTeaCourseDig">
+      <q-card style="width: 600px; max-width: 80vw">
+        <q-card-section>
+          <div class="text-h6 q-ml-sm">
+            添加课程
+            <q-btn
+              round
+              flat
+              dense
+              icon="close"
+              class="float-right"
+              color="grey-8"
+              v-close-popup
+            ></q-btn>
+          </div>
+        </q-card-section>
+
+        <q-card-section>
+          <q-select
+            outlined
+            use-input
+            @filter="filterFn"
+            v-model="currSelectCourseForAddTeaCourse"
+            :options="filteredCourseList"
+            option-label="name"
+            option-value="_id"
+            label="请选择课程"
+          >
+            <template v-slot:prepend>
+              <q-icon name="class" />
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="确定"
+            color="primary"
+            @click="handleAddTeaCourse"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-import { getTeaClsroomStuList, getTeaCourseInfo } from "src/api/teacher/course";
+import {
+  apiRemoveTeaCourse,
+  apiGetTeaClsroomStuList,
+  apiGetTeaCourseInfo,
+  apiGetCourses,
+  apiCreateTeaCourse,
+  apiRenameTeaClsroom,
+  apiRemoveTeaClsroom,
+} from "src/api/teacher/course";
 export default {
   data() {
     return {
-      // 课程班级数据
+      // teaCourse 数据
       teaCourseList: [],
+      // 课程列表
+      courseList: [],
+      // 过滤后的课程列表
+      filteredCourseList: [],
+      // 添加课程时选中的课程
+      currSelectCourseForAddTeaCourse: null,
+
       // 当前点击的教学班名称
       currSelectedTeaClassroomName: "",
       // 课程班级列表表头列表
@@ -233,15 +434,35 @@ export default {
         descending: false,
         rowsPerPage: 10,
       },
+
+      // 添加教学班Tab模式
+      addClassroomTabMode: "throughOriginClassroom",
+
+      // 自然班列表
+      originClassroomList: [],
+      // 花名册文件
+      excelFile: null,
+      // 待添加的教学班
+      combinedClassroom: {
+        name: "",
+        classrooms: [],
+      },
+
+      // 添加教学班对话框
+      showAddClassroomDig: false,
       // 教学班学生列表对话框
       showTeaClsroomStuListDig: false,
+      // 添加teaCourse对话框
+      showAddTeaCourseDig: false,
     };
   },
 
   methods: {
+    /* ====== NOTICE: 以下为对接API完成异步请求相关方法 ====== */
+
     // 获取教师课程信息
     async getTeaCourseInfo() {
-      const { data } = await getTeaCourseInfo();
+      const { data } = await apiGetTeaCourseInfo();
       const teaCourseList = [];
       data.data.reduce((pre, curr) => {
         const course = {
@@ -259,7 +480,7 @@ export default {
 
     // 获取教学班学生列表
     async getTeaClsroomStuList(classroomId) {
-      const { data } = await getTeaClsroomStuList(classroomId);
+      const { data } = await apiGetTeaClsroomStuList(classroomId);
       // 过滤数据
       const teaClsroomStuList = [];
       data.data.reduce((pre, curr) => {
@@ -277,16 +498,222 @@ export default {
       this.teaClsroomStuList = teaClsroomStuList;
     },
 
-    // 处理点击教学班
+    // 获取课程列表
+    async getCourses() {
+      const { data } = await apiGetCourses();
+      this.courseList = data.data.courses;
+      this.filteredCourseList = data.data.courses;
+    },
+
+    // 添加teaCourse
+    async handleAddTeaCourse() {
+      // 判断是否选择了课程
+      if (!this.currSelectCourseForAddTeaCourse) {
+        this.$q.notify({
+          message: "请选择课程",
+          type: "warning",
+        });
+        return;
+      }
+
+      // 判断是否已经添加了该课程
+      const isExist = this.teaCourseList.some(
+        (item) => item.courseId === this.currSelectCourseForAddTeaCourse._id
+      );
+      if (isExist) {
+        this.$q.notify({
+          message: "添加失败，该课程已存在",
+          type: "negative",
+        });
+        return;
+      }
+
+      // 发送添加请求
+      const { data } = await apiCreateTeaCourse({
+        course_id: this.currSelectCourseForAddTeaCourse._id,
+      });
+
+      this.$q.notify({
+        message: `添加课程成功`,
+        type: "positive",
+        timeout: 300,
+      });
+
+      // 刷新页面
+      this.currSelectCourseForAddTeaCourse = null;
+      this.getTeaCourseInfo();
+    },
+
+    // 移除teaCourse
+    async handleRemoveTeaCourese(teaCourse) {
+      this.$q
+        .dialog({
+          title: "请确认",
+          message: `删除【${teaCourse.name}】，操作不可恢复！`,
+          ok: {
+            label: "删除",
+            push: true,
+            color: "negative",
+          },
+          cancel: {
+            label: "取消",
+            push: true,
+          },
+          persistent: true,
+        })
+        .onOk(async () => {
+          await apiRemoveTeaCourse(teaCourse.id);
+          // 提示删除成功
+          this.$q.notify({
+            message: "删除成功",
+            type: "positive",
+          });
+          // 刷新页面
+          this.getTeaCourseInfo();
+        })
+        .onCancel(() => {
+          this.$q.notify({
+            message: "操作取消",
+            type: "warning",
+            timeout: 300,
+          });
+        });
+    },
+
+    // 添加教学班
+    async handleAddClassroom() {},
+
+    // 重命名教学班
+    async handleRenameTeaClassroom(classroom) {
+      this.$q
+        .dialog({
+          title: "提示",
+          message: "请输入新的教学班名称",
+          prompt: {
+            model: "",
+            type: "text", // optional
+          },
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async (val) => {
+          const newName = val.trim();
+          if (newName === "") {
+            this.$q.notify({
+              message: `班级名不能为空`,
+              type: "warning",
+              timeout: 300,
+            });
+            return;
+          }
+          // 发送请求
+          const payload = {
+            classroom_id: classroom.id,
+            name: newName,
+          };
+          await apiRenameTeaClsroom(payload);
+          // 提示修改成功
+          this.$q.notify({
+            message: "修改成功",
+            type: "positive",
+          });
+          // 刷新页面
+          this.getTeaCourseInfo();
+        })
+        .onCancel(() => {})
+        .onDismiss(() => {});
+    },
+
+    // 删除教学班
+    async handleDeleteTeaClassroom(teaCourse, classroom) {
+      this.$q
+        .dialog({
+          title: "请确认",
+          message: `移除教学班【${classroom.name}】，操作不可恢复！`,
+          ok: {
+            label: "移除",
+            push: true,
+            color: "negative",
+          },
+          cancel: {
+            label: "取消",
+            push: true,
+          },
+          persistent: true,
+        })
+        .onOk(async () => {
+          const payload = {
+            teacourse_id: teaCourse.id,
+            classroom_id: classroom._id,
+          };
+          await apiRemoveTeaClsroom(payload);
+          this.$q.notify({
+            message: `移除成功`,
+            color: "positive",
+            icon: "done",
+            position: "bottom",
+            timeout: 300,
+          });
+          // 刷新页面
+          this.getTeaCourseInfo();
+        })
+        .onCancel(() => {
+          this.$q.notify({
+            message: "操作取消",
+            type: "warning",
+            timeout: 300,
+          });
+        });
+    },
+
+    /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
+
+    // 点击教学班
     handleTeaClassroomClick(evt, row) {
       this.getTeaClsroomStuList(row._id);
       this.showTeaClsroomStuListDig = true;
       this.currSelectedTeaClassroomName = row.name;
     },
+
+    // 点击添加teaCourse按钮
+    handleAddTeaCourseBtnClick() {
+      this.showAddTeaCourseDig = true;
+    },
+
+    // 点击添加教学班按钮
+    handleAddClassroomClick(teaCourse) {
+      console.log(teaCourse);
+      this.showAddClassroomDig = true;
+    },
+
+    // 监听添加教学班input组件值的变化
+    handleInputOriginClassroomNameChange(val) {
+      console.log(val);
+    },
+
+    /* ====== NOTICE: 以下为页面相关工具 ====== */
+
+    // 选择框选项过滤函数
+    filterFn(val, update) {
+      if (val === "") {
+        update(async () => {
+          this.filteredCourseList = this.courseList;
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.filteredCourseList = this.courseList.filter(
+          (v) => v.name.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
   },
 
   created() {
     this.getTeaCourseInfo();
+    this.getCourses();
   },
 };
 </script>
