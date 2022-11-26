@@ -58,7 +58,7 @@
                   size="md"
                   color="primary"
                   icon="person_add"
-                  @click.stop=""
+                  @click.stop="handleAddStudentToTeaClassroom(props.row)"
                   ><q-tooltip> 添加学生 </q-tooltip></q-btn
                 >
                 <q-btn
@@ -140,7 +140,6 @@
           <q-tab-panel name="throughOriginClassroom">
             <q-card-section align="right">
               <q-input
-                outlined
                 dense
                 debounce="300"
                 v-model="combinedClassroomWaitToCreate.name"
@@ -157,7 +156,6 @@
                 @input="handleInputOriginClassroomNameChange"
                 multiple
                 class="q-mt-md"
-                outlined
                 clearable
                 v-model="combinedClassroomWaitToCreate.originClassroomList"
                 :options="filteredOriginClassroomList"
@@ -177,7 +175,6 @@
           <q-tab-panel name="throughOfficialFile">
             <q-card-section align="right">
               <q-input
-                outlined
                 dense
                 debounce="300"
                 v-model="combinedClassroomWaitToCreate.name"
@@ -191,7 +188,6 @@
               <q-file
                 dense
                 class="q-mt-md"
-                outlined
                 v-model="officalExcelFile"
                 label="请上传教务系统课堂花名册 Excel 文件"
                 :rules="[(val) => !!val || '这是必填项']"
@@ -292,11 +288,50 @@
       </q-table>
     </q-dialog>
 
+    <!-- 向教学班添加学生对话框 -->
+    <q-dialog v-model="showAddStuToTeaClsroomDig">
+      <q-card style="width: 600px; max-width: 80vw">
+        <q-card-section>
+          <div class="text-h5 q-ml-sm">
+            添加学生到教学班
+            <q-btn
+              round
+              flat
+              dense
+              icon="close"
+              class="float-right"
+              color="grey-8"
+              v-close-popup
+            ></q-btn>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            v-model="stuWaitToAddUsername"
+            type="text"
+            label="请输入学生学号"
+            dense
+          >
+            <template v-slot:prepend>
+              <q-icon name="person_add" @click.stop />
+            </template>
+          </q-input>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            label="确定"
+            color="primary"
+            @click="handleAddStudentToCombinedClassroomWithUsername"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <!-- 添加课程对话框 -->
     <q-dialog v-model="showAddTeaCourseDig">
       <q-card style="width: 600px; max-width: 80vw">
         <q-card-section>
-          <div class="text-h6 q-ml-sm">
+          <div class="text-h5 q-ml-sm">
             添加课程
             <q-btn
               round
@@ -312,14 +347,16 @@
 
         <q-card-section>
           <q-select
-            outlined
             use-input
+            dense
             @filter="filterFnForAddCourse"
             v-model="currSelectCourseForAddTeaCourse"
             :options="filteredCourseList"
             option-label="name"
             option-value="_id"
             label="请选择课程"
+            :rules="[(val) => !!val || '这是必填项']"
+            hide-bottom-space
           >
             <template v-slot:prepend>
               <q-icon name="class" />
@@ -334,7 +371,6 @@
 
         <q-card-actions align="right">
           <q-btn
-            flat
             label="确定"
             color="primary"
             @click="handleAddTeaCourse"
@@ -358,6 +394,7 @@ import {
   apiOriginClassroomList,
   apiCreatecombinedClassroomThroughOriginClassroom,
   apiCreateCombinedClassroomWithUsernameList,
+  apiAddStudentsToCombinedClassroomByUsername,
 } from "src/api/teacher/course";
 import { saveAs } from "file-saver";
 import { read, utils } from "xlsx";
@@ -372,6 +409,9 @@ export default {
       filteredCourseList: [],
       // 添加课程时选中的课程
       currSelectCourseForAddTeaCourse: null,
+
+      // 向教学班添加学生时选中的教学班
+      currSelectTeaClassroomForAddStu: null,
 
       // 当前点击的教学班名称
       currSelectedTeaClassroomName: "",
@@ -454,12 +494,17 @@ export default {
         originClassroomList: [],
       },
 
+      // 向教学班待添加的学生学号
+      stuWaitToAddUsername: "",
+
       // 添加教学班对话框
       showAddClassroomDig: false,
       // 教学班学生列表对话框
       showTeaClsroomStuListDig: false,
       // 添加teaCourse对话框
       showAddTeaCourseDig: false,
+      // 向教学班添加学生对话框
+      showAddStuToTeaClsroomDig: false,
     };
   },
 
@@ -792,6 +837,48 @@ export default {
       }
     },
 
+    // 通过username(学号)数组向教学班添加学生
+    async handleAddStudentToCombinedClassroomWithUsername() {
+      // 检查学号是否为空
+      if (this.stuWaitToAddUsername === "") {
+        this.$q.notify({
+          message: `请输入学号`,
+          type: "warning",
+          timeout: 300,
+        });
+        return;
+      }
+
+      // 构造请求Dto
+      const payload = {
+        classroom_id: this.currSelectTeaClassroomForAddStu._id,
+        student_usernames: [this.stuWaitToAddUsername],
+      };
+
+      // 发送请求
+      try {
+        await apiAddStudentsToCombinedClassroomByUsername(payload);
+        // 提示添加成功
+        this.$q.notify({
+          message: "添加成功",
+          type: "positive",
+        });
+        // 重置数据
+        this.stuWaitToAddUsername = "";
+        this.currSelectTeaClassroomForAddStu = null;
+        // 关闭对话框
+        this.showAddStuToTeaClsroomDig = false;
+        // 刷新页面
+        this.getTeaCourseInfo();
+      } catch (error) {
+        this.$q.notify({
+          message: `添加失败`,
+          type: "negative",
+          timeout: 300,
+        });
+      }
+    },
+
     /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
 
     // 点击教学班
@@ -851,6 +938,13 @@ export default {
         "https://cyberdownload.anrunlu.net/%E6%95%99%E5%B8%88%E5%88%9B%E5%BB%BA%E6%95%99%E5%AD%A6%E7%8F%AD%E6%A8%A1%E6%9D%BF.xls",
         "花名册模版.xls"
       );
+    },
+
+    // 点击添加学生到教学班按钮
+    handleAddStudentToTeaClassroom(row) {
+      this.showAddStuToTeaClsroomDig = true;
+      this.currSelectTeaClassroomForAddStu = row;
+      console.log(row);
     },
 
     /* ====== NOTICE: 以下为页面相关工具 ====== */

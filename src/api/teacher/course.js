@@ -85,3 +85,12 @@ export function apiCreateCombinedClassroomWithUsernameList(data) {
     data,
   });
 }
+
+// 通过username(学号)数组向教学班添加学生
+export function apiAddStudentsToCombinedClassroomByUsername(data) {
+  return loadingFn(request)({
+    url: "/tea/teachinfo/addStudentsToCombinedClassroomByUsername",
+    method: "POST",
+    data,
+  });
+}
