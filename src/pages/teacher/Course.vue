@@ -145,6 +145,8 @@
                 debounce="300"
                 v-model="combinedClassroomWaitToCreate.name"
                 placeholder="请输入将要创建的教学班名称"
+                :rules="[(val) => !!val || '这是必填项']"
+                hide-bottom-space
                 ><template v-slot:prepend>
                   <q-icon name="person" />
                 </template>
@@ -163,6 +165,8 @@
                 option-value="id"
                 dense
                 label="请选择或输入行政班(可多选)"
+                :rules="[(val) => !!val || '这是必填项']"
+                hide-bottom-space
               >
                 <template v-slot:prepend>
                   <q-icon name="class" />
@@ -178,6 +182,8 @@
                 debounce="300"
                 v-model="combinedClassroomWaitToCreate.name"
                 placeholder="请输入将要创建的教学班名称"
+                :rules="[(val) => !!val || '这是必填项']"
+                hide-bottom-space
                 ><template v-slot:prepend>
                   <q-icon name="person" />
                 </template>
@@ -186,8 +192,10 @@
                 dense
                 class="q-mt-md"
                 outlined
-                v-model="excelFile"
-                label="请上传课堂花名册 Excel 文件"
+                v-model="officalExcelFile"
+                label="请上传教务系统课堂花名册 Excel 文件"
+                :rules="[(val) => !!val || '这是必填项']"
+                hide-bottom-space
               >
                 <template v-slot:prepend>
                   <q-icon name="cloud_upload" @click.stop />
@@ -195,7 +203,7 @@
                 <template v-slot:append>
                   <q-icon
                     name="close"
-                    @click.stop="excelFile = null"
+                    @click.stop="officalExcelFile = null"
                     class="cursor-pointer"
                   />
                 </template>
@@ -209,6 +217,7 @@
             color="primary"
             icon="cloud_download"
             label="下载花名册模板"
+            @click="handleDownloadOfficialFileTemplateBtnClick"
           />
           <q-btn
             color="primary"
@@ -348,7 +357,10 @@ import {
   apiRemoveTeaClsroom,
   apiOriginClassroomList,
   apiCreatecombinedClassroomThroughOriginClassroom,
+  apiCreateCombinedClassroomWithUsernameList,
 } from "src/api/teacher/course";
+import { saveAs } from "file-saver";
+import { read, utils } from "xlsx";
 export default {
   data() {
     return {
@@ -435,7 +447,7 @@ export default {
       // 过滤后的自然班列表
       filteredOriginClassroomList: [],
       // 花名册文件
-      excelFile: null,
+      officalExcelFile: null,
       // 待添加的教学班
       combinedClassroomWaitToCreate: {
         name: "",
@@ -670,15 +682,6 @@ export default {
       combinedClassroomWaitToCreate
     ) {
       // 校验
-      if (combinedClassroomWaitToCreate.name === "") {
-        this.$q.notify({
-          message: `教学班名称不能为空`,
-          type: "warning",
-          timeout: 300,
-        });
-        return;
-      }
-
       if (combinedClassroomWaitToCreate.originClassroomList.length === 0) {
         this.$q.notify({
           message: `请选择行政班`,
@@ -725,7 +728,69 @@ export default {
     },
 
     // 创建教学班(基于学号列表)
-    async handleCreateCombinedClassroomWithUsernameList() {},
+    async handleCreateCombinedClassroomWithUsernameList() {
+      if (!this.officalExcelFile) {
+        this.$q.notify({
+          message: `请上传花名册 Excel 文件`,
+          type: "warning",
+          timeout: 300,
+        });
+        return;
+      }
+      const res = await this.importExcel(this.officalExcelFile);
+      let data = res[0].sheet;
+
+      let stuUserNameList = [];
+      for (let index = 1; index < data.length; index++) {
+        const element = data[index];
+        stuUserNameList.push(element.__EMPTY_4);
+      }
+
+      // 检查学号列表是否为空
+      if (stuUserNameList.length === 0) {
+        this.$q.notify({
+          message: `花名册中没有学生`,
+          type: "warning",
+          timeout: 300,
+        });
+        return;
+      }
+
+      // 构造请求Dto
+      const payload = {
+        classroom_name: this.combinedClassroomWaitToCreate.name,
+        teaCourse_id: this.currSelectedTeaCourseId,
+        student_usernames: stuUserNameList,
+      };
+
+      console.log(payload);
+
+      // 发送请求
+      try {
+        await apiCreateCombinedClassroomWithUsernameList(payload);
+        // 提示创建成功
+        this.$q.notify({
+          message: "创建成功",
+          type: "positive",
+        });
+        // 重置数据
+        this.combinedClassroomWaitToCreate = {
+          name: "",
+          originClassroomList: [],
+        };
+        this.currSelectedTeaCourseId = "";
+        // 关闭对话框
+        this.showAddClassroomDig = false;
+        // 刷新页面
+        this.getTeaCourseInfo();
+      } catch (error) {
+        this.$q.notify({
+          message: `创建失败`,
+          type: "negative",
+          timeout: 300,
+        });
+      }
+    },
 
     /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
 
@@ -760,6 +825,15 @@ export default {
 
     // 点击添加教学班对话框的确认按钮
     handleClickCreateCombinedClassroom() {
+      // 校验
+      if (this.combinedClassroomWaitToCreate.name === "") {
+        this.$q.notify({
+          message: `教学班名称不能为空`,
+          type: "warning",
+          timeout: 300,
+        });
+        return;
+      }
       // 判断通过何种方式创建教学班
       if (this.addClassroomTabMode === "throughOriginClassroom") {
         this.handleCreatecombinedClassroomThroughOriginClassroom(
@@ -769,6 +843,14 @@ export default {
       } else if (this.addClassroomTabMode === "throughOfficialFile") {
         this.handleCreateCombinedClassroomWithUsernameList();
       }
+    },
+
+    // 点击下载花名册模版按钮
+    handleDownloadOfficialFileTemplateBtnClick() {
+      saveAs(
+        "https://cyberdownload.anrunlu.net/%E6%95%99%E5%B8%88%E5%88%9B%E5%BB%BA%E6%95%99%E5%AD%A6%E7%8F%AD%E6%A8%A1%E6%9D%BF.xls",
+        "花名册模版.xls"
+      );
     },
 
     /* ====== NOTICE: 以下为页面相关工具 ====== */
@@ -806,6 +888,46 @@ export default {
         this.filteredOriginClassroomList = this.originClassroomList.filter(
           (v) => v.name.toLowerCase().indexOf(needle) > -1
         );
+      });
+    },
+
+    // 导入 excel 文件
+    async importExcel(file) {
+      const types = file.name.split(".")[1];
+      const fileType = ["xlsx", "xlc", "xlm", "xls", "xlt", "xlw", "csv"].some(
+        (item) => item === types
+      );
+      if (!fileType) {
+        this.$q.notify({
+          message: `文件类型不正确，请重新选择`,
+          type: "negative",
+          timeout: 300,
+        });
+        return;
+      }
+      const tabJson = await this.file2Xce(file);
+      return tabJson;
+    },
+
+    // 将文件转换为 json
+    async file2Xce(file) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const data = e.target.result;
+          this.wb = read(data, {
+            type: "binary",
+          });
+          const result = [];
+          this.wb.SheetNames.forEach((sheetName) => {
+            result.push({
+              sheetName: sheetName,
+              sheet: utils.sheet_to_json(this.wb.Sheets[sheetName]),
+            });
+          });
+          resolve(result);
+        };
+        reader.readAsBinaryString(file);
       });
     },
   },
