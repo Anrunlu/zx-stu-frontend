@@ -264,7 +264,7 @@
                 size="sm"
                 color="primary"
                 icon="settings"
-                @click="resetPassword(props.row)"
+                @click="resetStuPassword(props.row)"
                 ><q-tooltip> 重置密码 </q-tooltip></q-btn
               >
               <q-btn
@@ -273,8 +273,10 @@
                 size="md"
                 color="red"
                 icon="delete"
-                @click="deleteStudent(props.row)"
-                ><q-tooltip> 删除学生 </q-tooltip></q-btn
+                @click="
+                  handleRemoveStudentToCombinedClassroomWithUsername(props.row)
+                "
+                ><q-tooltip> 从教学班移除学生 </q-tooltip></q-btn
               >
             </div>
           </q-td>
@@ -395,6 +397,8 @@ import {
   apiCreatecombinedClassroomThroughOriginClassroom,
   apiCreateCombinedClassroomWithUsernameList,
   apiAddStudentsToCombinedClassroomByUsername,
+  apiResetStuPassword,
+  apiRemoveStudentsFromCombinedClassroom,
 } from "src/api/teacher/course";
 import { saveAs } from "file-saver";
 import { read, utils } from "xlsx";
@@ -411,7 +415,7 @@ export default {
       currSelectCourseForAddTeaCourse: null,
 
       // 向教学班添加学生时选中的教学班
-      currSelectTeaClassroomForAddStu: null,
+      currSelectTeaClassroom: null,
 
       // 当前点击的教学班名称
       currSelectedTeaClassroomName: "",
@@ -542,6 +546,7 @@ export default {
           nickname: curr.user.nickname,
           sex: curr.user.sex,
           grade: curr.grade,
+          _id: curr._id,
         };
         pre.push(stu);
         return pre;
@@ -808,8 +813,6 @@ export default {
         student_usernames: stuUserNameList,
       };
 
-      console.log(payload);
-
       // 发送请求
       try {
         await apiCreateCombinedClassroomWithUsernameList(payload);
@@ -851,7 +854,7 @@ export default {
 
       // 构造请求Dto
       const payload = {
-        classroom_id: this.currSelectTeaClassroomForAddStu._id,
+        classroom_id: this.currSelectTeaClassroom._id,
         student_usernames: [this.stuWaitToAddUsername],
       };
 
@@ -865,7 +868,7 @@ export default {
         });
         // 重置数据
         this.stuWaitToAddUsername = "";
-        this.currSelectTeaClassroomForAddStu = null;
+        this.currSelectTeaClassroom = null;
         // 关闭对话框
         this.showAddStuToTeaClsroomDig = false;
         // 刷新页面
@@ -879,6 +882,51 @@ export default {
       }
     },
 
+    // 从教学班移除学生
+    async handleRemoveStudentToCombinedClassroomWithUsername(stu) {
+      const payload = {
+        classroom_id: this.currSelectTeaClassroom._id,
+        student_ids: [stu._id],
+      };
+
+      try {
+        await apiRemoveStudentsFromCombinedClassroom(payload);
+        // 提示添加成功
+        this.$q.notify({
+          message: "移除成功",
+          type: "positive",
+        });
+        // 刷新页面
+        this.getTeaClsroomStuList(this.currSelectTeaClassroom._id);
+        // 重置数据
+        this.currSelectTeaClassroom = null;
+      } catch (error) {
+        this.$q.notify({
+          message: `移除失败`,
+          type: "negative",
+          timeout: 300,
+        });
+      }
+    },
+
+    // 重置学生密码
+    async resetStuPassword(stu) {
+      try {
+        await apiResetStuPassword(stu.userid);
+        // 提示重置成功
+        this.$q.notify({
+          message: "密码重置成功",
+          type: "positive",
+        });
+      } catch (error) {
+        this.$q.notify({
+          message: `密码重置失败`,
+          type: "negative",
+          timeout: 300,
+        });
+      }
+    },
+
     /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
 
     // 点击教学班
@@ -886,6 +934,7 @@ export default {
       this.getTeaClsroomStuList(row._id);
       this.showTeaClsroomStuListDig = true;
       this.currSelectedTeaClassroomName = row.name;
+      this.currSelectTeaClassroom = row;
     },
 
     // 点击添加teaCourse按钮
@@ -943,8 +992,7 @@ export default {
     // 点击添加学生到教学班按钮
     handleAddStudentToTeaClassroom(row) {
       this.showAddStuToTeaClsroomDig = true;
-      this.currSelectTeaClassroomForAddStu = row;
-      console.log(row);
+      this.currSelectTeaClassroom = row;
     },
 
     /* ====== NOTICE: 以下为页面相关工具 ====== */

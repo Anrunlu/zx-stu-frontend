@@ -94,3 +94,20 @@ export function apiAddStudentsToCombinedClassroomByUsername(data) {
     data,
   });
 }
+
+// 从教学班移除学生
+export function apiRemoveStudentsFromCombinedClassroom(data) {
+  return loadingFn(request)({
+    url: `/tea/teachinfo/removeStudentsFromCombinedClassroom`,
+    method: "POST",
+    data,
+  });
+}
+
+// 重置学生密码
+export function apiResetStuPassword(userId) {
+  return loadingFn(request)({
+    url: `/tea/teachinfo/resetStuPassword/${userId}`,
+    method: "GET",
+  });
+}
