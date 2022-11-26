@@ -59,3 +59,29 @@ export function apiRemoveTeaClsroom(data) {
     data,
   });
 }
+
+// 获取自然班列表
+export function apiOriginClassroomList(data) {
+  return loadingFn(request)({
+    url: "/tea/teachinfo/classrooms",
+    method: "GET",
+  });
+}
+
+// 创建教学班(基于行政班)
+export function apiCreatecombinedClassroomThroughOriginClassroom(data) {
+  return loadingFn(request)({
+    url: "/tea/teachinfo/combinedClassroom",
+    method: "POST",
+    data,
+  });
+}
+
+// 创建教学班(基于学号列表)
+export function apiCreateCombinedClassroomWithUsernameList(data) {
+  return loadingFn(request)({
+    url: "/tea/teachinfo/createCombinedClassroomWithUsernameList",
+    method: "POST",
+    data,
+  });
+}

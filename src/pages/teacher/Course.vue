@@ -26,7 +26,7 @@
                 flat
                 color="positive"
                 icon="add"
-                label="添加班级"
+                label="添加教学班"
                 @click="handleAddClassroomClick(teaCourse)"
               ></q-btn>
               <q-btn
@@ -101,12 +101,12 @@
       >
     </q-page-sticky>
 
-    <!-- 添加班级对话框 -->
+    <!-- 添加教学班对话框 -->
     <q-dialog v-model="showAddClassroomDig" persistent>
       <q-card style="width: 700px; max-width: 80vw">
         <q-card-section>
           <div class="text-h5 q-ml-sm">
-            添加班级
+            添加教学班
             <q-btn
               round
               flat
@@ -117,7 +117,6 @@
               v-close-popup
             ></q-btn>
           </div>
-          <q-separator class="q-mt-md" />
         </q-card-section>
         <q-tabs
           v-model="addClassroomTabMode"
@@ -126,13 +125,13 @@
         >
           <q-tab
             name="throughOriginClassroom"
-            icon="fas fa-users"
-            label="选择行政班"
+            icon="folder_shared"
+            label="基于行政班创建"
           />
           <q-tab
             name="throughOfficialFile"
-            icon="fas fa-folder-open"
-            label="导入教学班"
+            icon="cloud_upload"
+            label="使用花名册导入"
           />
         </q-tabs>
         <q-separator />
@@ -144,41 +143,31 @@
                 outlined
                 dense
                 debounce="300"
-                v-model="combinedClassroom.name"
-                placeholder="班级名称"
+                v-model="combinedClassroomWaitToCreate.name"
+                placeholder="请输入将要创建的教学班名称"
                 ><template v-slot:prepend>
                   <q-icon name="person" />
                 </template>
               </q-input>
               <q-select
                 use-input
-                @filter="filterFn"
+                @filter="filterFnForAddClassroom"
                 @input="handleInputOriginClassroomNameChange"
                 multiple
                 class="q-mt-md"
                 outlined
                 clearable
-                v-model="combinedClassroom.classrooms"
-                :options="originClassroomList"
+                v-model="combinedClassroomWaitToCreate.originClassroomList"
+                :options="filteredOriginClassroomList"
                 option-label="name"
                 option-value="id"
                 dense
-                label="请选择班级导入"
+                label="请选择或输入行政班(可多选)"
               >
                 <template v-slot:prepend>
-                  <q-icon name="class" size="md" class="q-ml-none" />
+                  <q-icon name="class" />
                 </template>
-              </q-select>
-              <q-card-section align="right" class="q-pa-none">
-                <q-btn
-                  class="q-mt-sm"
-                  flat
-                  label="确认"
-                  color="primary"
-                  @click="handleAddClassroom"
-                  v-close-popup
-                />
-              </q-card-section> </q-card-section
+              </q-select> </q-card-section
           ></q-tab-panel>
           <!-- 通过花名册添加 -->
           <q-tab-panel name="throughOfficialFile">
@@ -187,8 +176,8 @@
                 outlined
                 dense
                 debounce="300"
-                v-model="combinedClassroom.name"
-                placeholder="班级名称"
+                v-model="combinedClassroomWaitToCreate.name"
+                placeholder="请输入将要创建的教学班名称"
                 ><template v-slot:prepend>
                   <q-icon name="person" />
                 </template>
@@ -210,25 +199,23 @@
                     class="cursor-pointer"
                   />
                 </template>
-              </q-file>
-              <q-card-section align="right" class="q-pa-none">
-                <q-btn
-                  class="q-mt-sm"
-                  flat
-                  style="margin-right: 13vw"
-                  label="下载模板"
-                  color="secondary"
-                />
-                <q-btn
-                  class="q-mt-sm"
-                  flat
-                  label="确认"
-                  color="primary"
-                  v-close-popup
-                />
-              </q-card-section> </q-card-section
+              </q-file> </q-card-section
           ></q-tab-panel>
         </q-tab-panels>
+        <q-card-actions align="right">
+          <q-btn
+            v-if="addClassroomTabMode === 'throughOfficialFile'"
+            flat
+            color="primary"
+            icon="cloud_download"
+            label="下载花名册模板"
+          />
+          <q-btn
+            color="primary"
+            label="确定"
+            @click="handleClickCreateCombinedClassroom"
+          />
+        </q-card-actions>
       </q-card>
     </q-dialog>
 
@@ -318,7 +305,7 @@
           <q-select
             outlined
             use-input
-            @filter="filterFn"
+            @filter="filterFnForAddCourse"
             v-model="currSelectCourseForAddTeaCourse"
             :options="filteredCourseList"
             option-label="name"
@@ -359,6 +346,8 @@ import {
   apiCreateTeaCourse,
   apiRenameTeaClsroom,
   apiRemoveTeaClsroom,
+  apiOriginClassroomList,
+  apiCreatecombinedClassroomThroughOriginClassroom,
 } from "src/api/teacher/course";
 export default {
   data() {
@@ -374,6 +363,9 @@ export default {
 
       // 当前点击的教学班名称
       currSelectedTeaClassroomName: "",
+      // 当前点击的TeaCourseId
+      currSelectedTeaCourseId: "",
+
       // 课程班级列表表头列表
       teaCourseClassroomColumns: [
         {
@@ -440,12 +432,14 @@ export default {
 
       // 自然班列表
       originClassroomList: [],
+      // 过滤后的自然班列表
+      filteredOriginClassroomList: [],
       // 花名册文件
       excelFile: null,
       // 待添加的教学班
-      combinedClassroom: {
+      combinedClassroomWaitToCreate: {
         name: "",
-        classrooms: [],
+        originClassroomList: [],
       },
 
       // 添加教学班对话框
@@ -503,6 +497,13 @@ export default {
       const { data } = await apiGetCourses();
       this.courseList = data.data.courses;
       this.filteredCourseList = data.data.courses;
+    },
+
+    // 获取自然班列表
+    async getOriginClassroomList() {
+      const { data } = await apiOriginClassroomList();
+      this.originClassroomList = data.data;
+      this.filteredOriginClassroomList = data.data;
     },
 
     // 添加teaCourse
@@ -579,9 +580,6 @@ export default {
           });
         });
     },
-
-    // 添加教学班
-    async handleAddClassroom() {},
 
     // 重命名教学班
     async handleRenameTeaClassroom(classroom) {
@@ -666,6 +664,69 @@ export default {
         });
     },
 
+    // 创建教学班(基于行政班)
+    async handleCreatecombinedClassroomThroughOriginClassroom(
+      teaCourseId,
+      combinedClassroomWaitToCreate
+    ) {
+      // 校验
+      if (combinedClassroomWaitToCreate.name === "") {
+        this.$q.notify({
+          message: `教学班名称不能为空`,
+          type: "warning",
+          timeout: 300,
+        });
+        return;
+      }
+
+      if (combinedClassroomWaitToCreate.originClassroomList.length === 0) {
+        this.$q.notify({
+          message: `请选择行政班`,
+          type: "warning",
+          timeout: 300,
+        });
+        return;
+      }
+
+      // 请求Dto
+      const payload = {
+        name: combinedClassroomWaitToCreate.name,
+        teaCourse_id: teaCourseId,
+        classroom_ids: combinedClassroomWaitToCreate.originClassroomList.map(
+          (item) => item._id
+        ),
+      };
+
+      // 发送请求
+      try {
+        await apiCreatecombinedClassroomThroughOriginClassroom(payload);
+        // 提示创建成功
+        this.$q.notify({
+          message: "创建成功",
+          type: "positive",
+        });
+        // 重置数据
+        this.combinedClassroomWaitToCreate = {
+          name: "",
+          originClassroomList: [],
+        };
+        this.currSelectedTeaCourseId = "";
+        // 关闭对话框
+        this.showAddClassroomDig = false;
+        // 刷新页面
+        this.getTeaCourseInfo();
+      } catch (error) {
+        this.$q.notify({
+          message: `创建失败`,
+          type: "negative",
+          timeout: 300,
+        });
+      }
+    },
+
+    // 创建教学班(基于学号列表)
+    async handleCreateCombinedClassroomWithUsernameList() {},
+
     /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
 
     // 点击教学班
@@ -682,21 +743,41 @@ export default {
 
     // 点击添加教学班按钮
     handleAddClassroomClick(teaCourse) {
-      console.log(teaCourse);
       this.showAddClassroomDig = true;
+      this.currSelectedTeaCourseId = teaCourse.id;
     },
 
     // 监听添加教学班input组件值的变化
-    handleInputOriginClassroomNameChange(val) {
-      console.log(val);
+    handleInputOriginClassroomNameChange(selectedClsrooms) {
+      this.combinedClassroomWaitToCreate.name = "";
+      for (let i = 0; i < selectedClsrooms.length; i++) {
+        this.combinedClassroomWaitToCreate.name += selectedClsrooms[i].name;
+        if (i !== selectedClsrooms.length - 1) {
+          this.combinedClassroomWaitToCreate.name += "+";
+        }
+      }
+    },
+
+    // 点击添加教学班对话框的确认按钮
+    handleClickCreateCombinedClassroom() {
+      // 判断通过何种方式创建教学班
+      if (this.addClassroomTabMode === "throughOriginClassroom") {
+        this.handleCreatecombinedClassroomThroughOriginClassroom(
+          this.currSelectedTeaCourseId,
+          this.combinedClassroomWaitToCreate
+        );
+      } else if (this.addClassroomTabMode === "throughOfficialFile") {
+        this.handleCreateCombinedClassroomWithUsernameList();
+      }
     },
 
     /* ====== NOTICE: 以下为页面相关工具 ====== */
 
-    // 选择框选项过滤函数
-    filterFn(val, update) {
+    // 添加课程选择框选项过滤函数
+    filterFnForAddCourse(val, update) {
       if (val === "") {
         update(async () => {
+          await this.getCourses();
           this.filteredCourseList = this.courseList;
         });
         return;
@@ -709,11 +790,28 @@ export default {
         );
       });
     },
+
+    // 添加教学班选择框选项过滤函数
+    filterFnForAddClassroom(val, update) {
+      if (val === "") {
+        update(async () => {
+          await this.getOriginClassroomList();
+          this.filteredOriginClassroomList = this.originClassroomList;
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.filteredOriginClassroomList = this.originClassroomList.filter(
+          (v) => v.name.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
   },
 
   created() {
     this.getTeaCourseInfo();
-    this.getCourses();
   },
 };
 </script>

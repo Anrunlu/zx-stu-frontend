@@ -37,30 +37,23 @@ export default ({ app, router, store }) => {
         Notify.create({
           message: err.response.data.error,
           type: "negative",
-          position: "bottom",
         });
         removeToken();
         router.push("/login");
       } else if (err.response.status === 500) {
         Notify.create({
           message: "服务器异常，请稍后再试",
-          color: "red",
-          icon: "error",
-          position: "bottom",
+          type: "negative",
         });
       } else if (err.response.status === 404) {
         Notify.create({
           message: err.response.data.error,
           type: "negative",
-          icon: "error",
-          position: "bottom",
         });
       } else {
         Notify.create({
           message: err.response.data.error,
           type: "negative",
-          icon: "error",
-          position: "center",
           timeout: 3000,
         });
       }
