@@ -15,3 +15,7 @@ export function setTeaCourseList(state, teaCourseList) {
 export function setCurrSelectedTeaCourse(state, currSelectedTeaCourse) {
   state.currSelectedTeaCourse = currSelectedTeaCourse;
 }
+
+export function setCurrSelectedTeaClassroom(state, currSelectedTeaClassroom) {
+  state.currSelectedTeaClassroom = currSelectedTeaClassroom;
+}

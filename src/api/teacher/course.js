@@ -35,7 +35,7 @@ export function apiRemoveTeaCourse(tcc_id) {
 }
 
 // 获取教学班学生信息
-export function apiGetTeaClsroomStuList(classroom_id) {
+export function apiGetTeaClassroomStuList(classroom_id) {
   return loadingFn(request)({
     url: `/tea/teachinfo/combinedClassroomStudents/${classroom_id}`,
     method: "get",

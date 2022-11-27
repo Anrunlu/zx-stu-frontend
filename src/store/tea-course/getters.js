@@ -5,3 +5,7 @@ export function teaCourseList(state) {
 export function currSelectedTeaCourse(state) {
   return state.currSelectedTeaCourse;
 }
+
+export function currSelectedTeaClassroom(state) {
+  return state.currSelectedTeaClassroom;
+}

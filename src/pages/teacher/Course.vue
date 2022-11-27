@@ -101,77 +101,9 @@
       >
     </q-page-sticky>
 
-    <!-- 添加教学班对话框 -->
-    <q-dialog v-model="showAddClassroomDig" persistent>
-      <AddTeaClassroomCard
-        @closeAddTeaClassroomDialog="showAddClassroomDig = false"
-      />
-    </q-dialog>
-
     <!-- 教学班学生列表对话框 -->
-    <q-dialog
-      v-model="showTeaClsroomStuListDig"
-      @hide="(teaClsroomStuList = []), (currSelectedTeaClassroomName = '')"
-    >
-      <q-table
-        class="full-width"
-        :data="teaClsroomStuList"
-        :columns="teaClsroomStuListColumns"
-        row-key="userid"
-        :pagination="teaClsroomStuListTablePagination"
-      >
-        <template v-slot:top-left>
-          <div class="q-gutter-sm row">
-            <q-chip square>
-              <q-avatar icon="people" color="secondary" text-color="white" />
-              {{ currSelectedTeaClassroomName }}
-            </q-chip>
-          </div>
-        </template>
-        <template v-slot:top-right>
-          <q-btn
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="grey-8"
-            v-close-popup
-          ></q-btn>
-        </template>
-        <template v-slot:body-cell-action="props">
-          <q-td :props="props">
-            <div class="q-gutter-sm">
-              <q-btn
-                flat
-                dense
-                size="sm"
-                color="primary"
-                icon="settings"
-                @click="resetStuPassword(props.row)"
-                ><q-tooltip> 重置密码 </q-tooltip></q-btn
-              >
-              <q-btn
-                flat
-                dense
-                size="md"
-                color="red"
-                icon="delete"
-                @click="
-                  handleRemoveStudentToCombinedClassroomWithUsername(props.row)
-                "
-                ><q-tooltip> 从教学班移除学生 </q-tooltip></q-btn
-              >
-            </div>
-          </q-td>
-        </template>
-
-        <template v-slot:no-data>
-          <div class="full-width row flex-center text-grey q-gutter-sm">
-            <span class="text-h6"> 暂无数据 </span>
-          </div>
-        </template>
-      </q-table>
+    <q-dialog v-model="showTeaClsroomStuListDig">
+      <TeaClassroomStuTable />
     </q-dialog>
 
     <!-- 向教学班添加学生对话框 -->
@@ -217,6 +149,13 @@
     <q-dialog v-model="showAddTeaCourseDig">
       <AddTeaCourseCard />
     </q-dialog>
+
+    <!-- 添加教学班对话框 -->
+    <q-dialog v-model="showAddClassroomDig" persistent>
+      <AddTeaClassroomCard
+        @closeAddTeaClassroomDialog="showAddClassroomDig = false"
+      />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -227,11 +166,10 @@ import {
   apiRenameTeaClsroom,
   apiRemoveTeaClsroom,
   apiAddStudentsToCombinedClassroomByUsername,
-  apiResetStuPassword,
-  apiRemoveStudentsFromCombinedClassroom,
 } from "src/api/teacher/course";
 import AddTeaCourseCard from "src/components/common/teacher/course/AddTeaCourseCard.vue";
 import AddTeaClassroomCard from "src/components/common/teacher/course/AddTeaClassroomCard.vue";
+import TeaClassroomStuTable from "src/components/common/teacher/course/TeaClassroomStuTable.vue";
 import { mapGetters } from "vuex";
 export default {
   data() {
@@ -243,9 +181,6 @@ export default {
 
       // 向教学班添加学生时选中的教学班
       currSelectTeaClassroom: null,
-
-      // 当前点击的教学班名称
-      currSelectedTeaClassroomName: "",
 
       // 课程班级列表表头列表
       teaCourseClassroomColumns: [
@@ -262,51 +197,6 @@ export default {
           label: "操作",
         },
       ],
-
-      // 教学班学生列表数据
-      teaClsroomStuList: [],
-      // 教学班学生列表表头列表
-      teaClsroomStuListColumns: [
-        {
-          name: "classroom",
-          label: "班级",
-          align: "center",
-          field: "classroom",
-          sortable: true,
-        },
-        {
-          name: "username",
-          label: "学号",
-          align: "center",
-          field: "username",
-          sortable: true,
-        },
-        {
-          name: "nickname",
-          label: "姓名",
-          align: "center",
-          field: "nickname",
-          sortable: true,
-        },
-        {
-          name: "sex",
-          label: "性别",
-          align: "center",
-          field: "sex",
-          sortable: true,
-        },
-        {
-          name: "action",
-          align: "center",
-          label: "操作",
-        },
-      ],
-      // 教学班学生列表分页设置
-      teaClsroomStuListTablePagination: {
-        sortBy: "username",
-        descending: false,
-        rowsPerPage: 10,
-      },
 
       // 向教学班待添加的学生学号
       stuWaitToAddUsername: "",
@@ -325,6 +215,7 @@ export default {
   components: {
     AddTeaCourseCard,
     AddTeaClassroomCard,
+    TeaClassroomStuTable,
   },
 
   computed: {
@@ -335,27 +226,6 @@ export default {
 
   methods: {
     /* ====== NOTICE: 以下为对接API完成异步请求相关方法 ====== */
-
-    // 获取教学班学生列表
-    async getTeaClsroomStuList(classroomId) {
-      const { data } = await apiGetTeaClsroomStuList(classroomId);
-      // 过滤数据
-      const teaClsroomStuList = [];
-      data.data.reduce((pre, curr) => {
-        const stu = {
-          userid: curr.user._id,
-          classroom: curr.joinedClassrooms[0].name,
-          username: curr.user.username,
-          nickname: curr.user.nickname,
-          sex: curr.user.sex,
-          grade: curr.grade,
-          _id: curr._id,
-        };
-        pre.push(stu);
-        return pre;
-      }, teaClsroomStuList);
-      this.teaClsroomStuList = teaClsroomStuList;
-    },
 
     // 移除teaCourse
     async handleRemoveTeaCourese(teaCourse) {
@@ -518,58 +388,12 @@ export default {
       }
     },
 
-    // 从教学班移除学生
-    async handleRemoveStudentToCombinedClassroomWithUsername(stu) {
-      const payload = {
-        classroom_id: this.currSelectTeaClassroom._id,
-        student_ids: [stu._id],
-      };
-
-      try {
-        await apiRemoveStudentsFromCombinedClassroom(payload);
-        // 提示添加成功
-        this.$q.notify({
-          message: "移除成功",
-          type: "positive",
-        });
-        // 刷新页面
-        this.getTeaClsroomStuList(this.currSelectTeaClassroom._id);
-        // 重置数据
-        this.currSelectTeaClassroom = null;
-      } catch (error) {
-        this.$q.notify({
-          message: `移除失败`,
-          type: "negative",
-          timeout: 300,
-        });
-      }
-    },
-
-    // 重置学生密码
-    async resetStuPassword(stu) {
-      try {
-        await apiResetStuPassword(stu.userid);
-        // 提示重置成功
-        this.$q.notify({
-          message: "密码重置成功",
-          type: "positive",
-        });
-      } catch (error) {
-        this.$q.notify({
-          message: `密码重置失败`,
-          type: "negative",
-          timeout: 300,
-        });
-      }
-    },
-
     /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
 
     // 点击教学班
     handleTeaClassroomClick(evt, row) {
-      this.getTeaClsroomStuList(row._id);
       this.showTeaClsroomStuListDig = true;
-      this.currSelectedTeaClassroomName = row.name;
+      this.$store.commit("teaCourse/setCurrSelectedTeaClassroom", row);
       this.currSelectTeaClassroom = row;
     },
 
