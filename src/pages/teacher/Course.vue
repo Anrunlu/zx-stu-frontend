@@ -75,7 +75,7 @@
     </div>
 
     <!-- 添加课程按钮 -->
-    <q-page-sticky position="top-right" :offset="[25, -10]">
+    <q-page-sticky position="top-right" :offset="[25, 10]">
       <q-btn
         class="q-ma-xs bg-purple"
         round

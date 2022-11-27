@@ -1,273 +1,226 @@
 <template>
-  <q-layout view="lHh LpR lFf">
+  <q-layout view="hHh Lpr lff" class="bg-grey-1">
     <!-- 头部 -->
-    <q-header
-      reveal
-      :class="$q.dark.isActive ? 'header_dark' : 'header_normal'"
-    >
-      <q-toolbar>
-        <!-- 隐藏左侧导航栏按钮 -->
+    <q-header elevated class="bg-white text-grey-8" height-hint="64">
+      <!-- 头部工具栏 -->
+      <q-toolbar class="GPL__toolbar" style="height: 50px">
         <q-btn
-          @click="left = !left"
           flat
-          round
           dense
-          :icon="left ? 'chevron_left' : 'chevron_right'"
-          class="q-mr-sm"
-        />
-        <!-- 头部标题 -->
-        <q-toolbar-title>知新教师端</q-toolbar-title>
-        <q-btn
-          class="q-mr-xs"
-          flat
           round
-          @click="$q.dark.toggle()"
-          :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
+          @click="leftDrawerOpen = !leftDrawerOpen"
+          aria-label="Menu"
+          icon="menu"
+          class="q-mx-md"
         />
-        <q-btn flat round dense icon="notifications" class="q-mr-xs">
-          <q-badge color="red" floating>4</q-badge>
+
+        <q-toolbar-title
+          v-if="$q.screen.gt.sm"
+          shrink
+          class="row items-center no-wrap"
+        >
+          <img src="~assets/teacherLogo.png" width="130" />
+          <span class="q-ml-sm"
+            ><q-btn color="gray" flat label="工作台" to="/"
+          /></span>
+        </q-toolbar-title>
+
+        <q-space />
+
+        <q-input
+          class="GPL__toolbar-input"
+          dense
+          standout="bg-primary"
+          v-model="search"
+          placeholder="Search"
+        >
+          <template v-slot:prepend>
+            <q-icon v-if="search === ''" name="search" />
+            <q-icon
+              v-else
+              name="clear"
+              class="cursor-pointer"
+              @click="search = ''"
+            />
+          </template>
+        </q-input>
+
+        <q-btn
+          v-if="$q.screen.gt.xs"
+          flat
+          dense
+          no-wrap
+          color="primary"
+          icon="add"
+          label="快速创建"
+          class="q-ml-sm q-px-md"
+        >
+          <q-menu anchor="bottom right" self="top right">
+            <q-list class="text-grey-8" style="min-width: 100px">
+              <q-item
+                v-for="menu in createMenu"
+                :key="menu.text"
+                :to="menu.to"
+                clickable
+                v-close-popup
+                aria-hidden="true"
+              >
+                <q-item-section avatar>
+                  <q-icon :name="menu.icon" />
+                </q-item-section>
+                <q-item-section>{{ menu.text }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
         </q-btn>
-        <q-btn flat round dense icon="exit_to_app" @click="logout" />
+
+        <q-btn
+          v-if="$q.screen.gt.xs"
+          flat
+          dense
+          no-wrap
+          color="primary"
+          icon="topic"
+          label="题库管理"
+          class="q-ml-sm q-px-md"
+          to="/collections/myTasks"
+        />
+
+        <q-space />
+
+        <div class="q-gutter-sm row items-center no-wrap">
+          <q-btn round dense flat color="text-grey-7" icon="apps" to="/">
+            <q-tooltip>工作台</q-tooltip>
+          </q-btn>
+          <q-btn
+            round
+            dense
+            flat
+            color="grey-8"
+            icon="notifications"
+            to="notice"
+          >
+            <q-badge color="red" text-color="white" floating> 5 </q-badge>
+            <q-tooltip>消息通知</q-tooltip>
+          </q-btn>
+
+          <q-btn dense flat no-wrap>
+            <q-avatar rounded size="25px">
+              <img :src="avatar" />
+            </q-avatar>
+            <q-icon name="arrow_drop_down" size="16px" />
+
+            <q-menu auto-close>
+              <q-list dense>
+                <q-item class="GPL__menu-link-signed-in">
+                  <q-item-section>
+                    <div>
+                      <strong>{{ nickname }}</strong>
+                    </div>
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable class="GPL__menu-link">
+                  <q-item-section @click="$router.push('profile')">
+                    个人设置</q-item-section
+                  >
+                </q-item>
+                <q-item clickable class="GPL__menu-link">
+                  <q-item-section @click="logout">退出登录</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
-    <!-- 左侧导航栏 -->
+    <!-- 抽屉 -->
     <q-drawer
-      class="left-navigation text-white"
-      show-if-above
-      v-model="left"
-      side="left"
-      :width="210"
+      v-model="leftDrawerOpen"
+      :mini="!leftDrawerOpen || miniState"
       elevated
+      :width="210"
+      :breakpoint="500"
+      @click.capture="drawerClick"
+      side="left"
     >
-      <div
-        class="full-height"
-        :class="$q.dark.isActive ? 'drawer_dark' : 'drawer_normal'"
-      >
-        <div style="height: calc(100% - 117px); padding: 10px">
-          <q-toolbar class="cursor-pointer" @click="handleClickUserInfoRegion">
-            <!-- 头像 -->
-            <q-avatar>
-              <img :src="avatar" />
-            </q-avatar>
-            <div class="q-ml-md text-center">
-              <!-- 姓名 -->
-              <q-toolbar-title> {{ nickname }} </q-toolbar-title>
-              <!-- 学/工号 -->
-              <div
-                class="text-overline q-ma-none q-pa-none"
-                style="line-height: 1rem; color: #f2d541"
-              >
-                {{ username }}
-              </div>
-              <!-- 班级/教研室 -->
-              <div
-                class="text-overline q-ma-none q-pa-none"
-                style="line-height: 1rem; color: #f29f05"
-              >
-                {{ officeName }}
-              </div>
-            </div>
-          </q-toolbar>
-          <hr />
-          <!-- 左侧导航栏可滚动区域 -->
-          <q-scroll-area style="height: 100%">
-            <q-list padding>
-              <q-item
-                active-class="tab-active"
-                to="dashboard"
-                exact
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="dashboard" />
-                </q-item-section>
+      <q-scroll-area class="fit">
+        <q-toolbar class="GPL__toolbar mobile-only">
+          <q-toolbar-title class="row items-center text-grey-8">
+            <img class="q-pl-md" src="~assets/logo.png" width="140" />
+          </q-toolbar-title>
+        </q-toolbar>
 
-                <q-item-section> Dashboard </q-item-section>
-              </q-item>
+        <q-list padding>
+          <q-item
+            v-for="link in links1"
+            :key="link.text"
+            :to="link.to"
+            clickable
+            exact
+            v-ripple.early
+          >
+            <q-item-section avatar>
+              <q-icon :name="link.icon" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ link.text }}</q-item-label>
+            </q-item-section>
+          </q-item>
 
-              <q-item
-                active-class="tab-active"
-                to="course"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="folder_shared" />
-                </q-item-section>
+          <q-separator class="q-my-md" />
 
-                <q-item-section> 课程管理 </q-item-section>
-              </q-item>
+          <q-item
+            v-for="link in links2"
+            :key="link.text"
+            :to="link.to"
+            clickable
+            exact
+            v-ripple.early
+          >
+            <q-item-section avatar>
+              <q-icon :name="link.icon" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ link.text }}</q-item-label>
+            </q-item-section>
+          </q-item>
 
-              <!-- <q-item
-                active-class="tab-active"
-                to=""
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="bubble_chart" />
-                </q-item-section>
+          <q-separator class="q-my-md" />
 
-                <q-item-section> 课程图谱 </q-item-section>
-              </q-item> -->
-              <!-- <q-item
-                active-class="tab-active"
-                to="/teacher/editstudentgraph"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="agriculture" />
-                </q-item-section>
-
-                <q-item-section> 课程导图 </q-item-section>
-              </q-item> -->
-
-              <q-item
-                active-class="tab-active"
-                to="question_bank"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="forum" size="sm" />
-                </q-item-section>
-
-                <q-item-section> 题库管理 </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="questionSetManagement"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="topic" />
-                </q-item-section>
-
-                <q-item-section> 题集管理 </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="homework"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="work" />
-                </q-item-section>
-
-                <q-item-section> 作业管理 </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="classwork"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="cast_for_education" />
-                </q-item-section>
-
-                <q-item-section> 课堂互动 </q-item-section>
-              </q-item>
-              <!-- <q-item
-                active-class="tab-active"
-                to="knowledge_portrait"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="flutter_dash" />
-                </q-item-section>
-
-                <q-item-section> 知识画像 </q-item-section>
-              </q-item> -->
-              <!-- <q-item
-                active-class="tab-active"
-                to="testmanagement"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="fas fa-diagnoses" />
-                </q-item-section>
-
-                <q-item-section> 考试系统 </q-item-section>
-              </q-item> -->
-              <q-item
-                active-class="tab-active"
-                to="grade"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="leaderboard" size="sm" />
-                </q-item-section>
-
-                <q-item-section> 成绩管理 </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="source"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="cloud_circle" size="sm" />
-                </q-item-section>
-
-                <q-item-section> 教学资源 </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="profile"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="manage_accounts" />
-                </q-item-section>
-
-                <q-item-section> 个人设置 </q-item-section>
-              </q-item>
-            </q-list>
-          </q-scroll-area>
-        </div>
+          <q-item
+            v-for="link in links3"
+            :key="link.text"
+            :to="link.to"
+            clickable
+            exact
+            v-ripple.early
+          >
+            <q-item-section avatar>
+              <q-icon :name="link.icon" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ link.text }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+      <div class="q-mini-drawer-hide absolute" style="top: 15px; right: -10px">
+        <q-btn
+          dense
+          round
+          unelevated
+          color="primary"
+          icon="chevron_left"
+          @click="miniState = true"
+        />
       </div>
     </q-drawer>
 
     <!-- 主体 -->
-    <q-page-container>
-      <q-page class="row no-wrap">
-        <div class="col">
-          <div class="full-height">
-            <q-scroll-area class="col q-pa-sm full-height" visible>
-              <router-view />
-            </q-scroll-area>
-          </div>
-        </div>
-      </q-page>
+    <q-page-container class="GPL__page-container">
+      <router-view />
     </q-page-container>
 
     <!-- 实时通知组件 -->
@@ -282,7 +235,38 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      left: false,
+      miniState: false,
+      leftDrawerOpen: true,
+      search: "",
+      links1: [
+        { icon: "dashboard", text: "Dashboard", to: "dashboard" },
+        {
+          icon: "folder_shared",
+          text: "课程管理",
+          to: "course",
+        },
+        {
+          icon: "cast_for_education",
+          text: "课堂互动",
+          to: "classwork",
+        },
+      ],
+      links2: [
+        { icon: "forum", text: "题库管理", to: "questionBank" },
+        { icon: "topic", text: "题集管理", to: "questionSet" },
+        { icon: "work", text: "作业管理", to: "homework" },
+        { icon: "leaderboard", text: "成绩管理", to: "grade" },
+      ],
+      links3: [
+        { icon: "notifications", text: "消息中心", to: "announcement" },
+        { icon: "settings", text: "个人设置", to: "profile" },
+        { icon: "help", text: "问题反馈", to: "feedback" },
+        // { icon: 'get_app', text: '客户端下载', to: '/' }
+      ],
+      createMenu: [
+        { icon: "topic", text: "试题集", to: "questionSet/create" },
+        { icon: "work", text: "作业" },
+      ],
     };
   },
 
@@ -313,10 +297,18 @@ export default {
       this.$router.push(`/login`);
     },
 
-    // 个人设置
-    handleClickUserInfoRegion() {
-      // TODO: 跳转到个人设置页面
-      // this.$router.push(`/profile`);
+    // 点击抽屉
+    drawerClick(e) {
+      // if in "mini" state and user
+      // click on drawer, we switch it to "normal" mode
+      if (this.miniState) {
+        this.miniState = false;
+
+        // notice we have registered an event with capture flag;
+        // we need to stop further propagation as this click is
+        // intended for switching drawer to "normal" mode only
+        e.stopPropagation();
+      }
     },
   },
 
@@ -330,38 +322,61 @@ export default {
   created() {
     // 建立socket连接
     openAuthedSocket(this);
+
+    // 如果是移动端，自动折叠抽屉
+    if (this.$q.platform.is.mobile) {
+      this.leftDrawerOpen = false;
+    }
   },
 };
 </script>
 
-<style>
-.q-drawer {
-  background-image: url("https://cyberdownload.anrunlu.net/dengta.jpg") !important;
-  background-size: cover !important;
-}
-.drawer_normal {
-  background-color: rgba(1, 1, 1, 0.4);
-}
-.drawer_dark {
-  background-color: #010101f2;
-}
-.navigation-item {
-  border-radius: 5px;
-}
-.tab-active {
-  background-color: green;
-}
-body {
-  background: #f1f1f1 !important;
-}
-.header_normal {
-  background: linear-gradient(
-    145deg,
-    rgb(32, 106, 80) 15%,
-    rgb(21, 57, 102) 70%
-  );
-}
-.header_dark {
-  background: linear-gradient(145deg, rgb(61, 14, 42) 15%, rgb(14, 43, 78) 70%);
-}
+<style lang="sass">
+.q-router-link--active
+  background-color:#e4eceb
+.GPL
+  &__toolbar
+    height: 64px
+  &__toolbar-input
+    width: 35%
+  &__menu-link:hover
+    background: #0366d6
+    color: white
+  &__menu-link-signed-in
+  &__menu-link-status
+    &:hover
+      & > div
+        background: white !important
+  &__menu-link-status
+    color: $blue-grey-6
+    &:hover
+      color: $light-blue-9
+  &__drawer-item
+    line-height: 24px
+    border-radius: 0 24px 24px 0
+    margin-right: 12px
+    .q-item__section--avatar
+      padding-left: 12px
+      .q-icon
+        color: #5f6368
+    .q-item__label:not(.q-item__label--caption)
+      color: #3c4043
+      letter-spacing: .01785714em
+      font-size: .875rem
+      font-weight: 500
+      line-height: 1.25rem
+
+    &--storage
+      border-radius: 0
+      margin-right: 0
+      padding-top: 24px
+      padding-bottom: 24px
+  &__side-btn
+    &__label
+      font-size: 12px
+      line-height: 24px
+      letter-spacing: .01785714em
+      font-weight: 500
+  @media (min-width: 1024px)
+    &__page-container
 </style>
