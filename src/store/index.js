@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import user from "./user";
 import socketio from "./socketio";
+import teaCourse from "./tea-course";
 
 Vue.use(Vuex);
 
@@ -19,6 +20,7 @@ export default function (/* { ssrContext } */) {
     modules: {
       user,
       socketio,
+      teaCourse,
     },
 
     // enable strict mode (adds overhead!)

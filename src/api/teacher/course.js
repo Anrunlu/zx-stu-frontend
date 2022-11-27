@@ -61,7 +61,7 @@ export function apiRemoveTeaClsroom(data) {
 }
 
 // 获取自然班列表
-export function apiOriginClassroomList(data) {
+export function apiGetOriginClassroomList(data) {
   return loadingFn(request)({
     url: "/tea/teachinfo/classrooms",
     method: "GET",

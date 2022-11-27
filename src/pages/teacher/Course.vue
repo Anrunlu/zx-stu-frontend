@@ -103,125 +103,9 @@
 
     <!-- 添加教学班对话框 -->
     <q-dialog v-model="showAddClassroomDig" persistent>
-      <q-card style="width: 700px; max-width: 80vw">
-        <q-card-section>
-          <div class="text-h5 q-ml-sm">
-            添加教学班
-            <q-btn
-              round
-              flat
-              dense
-              icon="close"
-              class="float-right"
-              color="grey-8"
-              v-close-popup
-            ></q-btn>
-          </div>
-        </q-card-section>
-        <q-tabs
-          v-model="addClassroomTabMode"
-          class="bg-primary text-white shadow-2"
-          inline-label
-        >
-          <q-tab
-            name="throughOriginClassroom"
-            icon="folder_shared"
-            label="基于行政班创建"
-          />
-          <q-tab
-            name="throughOfficialFile"
-            icon="cloud_upload"
-            label="使用花名册导入"
-          />
-        </q-tabs>
-        <q-separator />
-        <q-tab-panels v-model="addClassroomTabMode" animated>
-          <!-- 通过自然班添加 -->
-          <q-tab-panel name="throughOriginClassroom">
-            <q-card-section align="right">
-              <q-input
-                dense
-                debounce="300"
-                v-model="combinedClassroomWaitToCreate.name"
-                placeholder="请输入将要创建的教学班名称"
-                :rules="[(val) => !!val || '这是必填项']"
-                hide-bottom-space
-                ><template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-              <q-select
-                use-input
-                @filter="filterFnForAddClassroom"
-                @input="handleInputOriginClassroomNameChange"
-                multiple
-                class="q-mt-md"
-                clearable
-                v-model="combinedClassroomWaitToCreate.originClassroomList"
-                :options="filteredOriginClassroomList"
-                option-label="name"
-                option-value="id"
-                dense
-                label="请选择或输入行政班(可多选)"
-                :rules="[(val) => !!val || '这是必填项']"
-                hide-bottom-space
-              >
-                <template v-slot:prepend>
-                  <q-icon name="class" />
-                </template>
-              </q-select> </q-card-section
-          ></q-tab-panel>
-          <!-- 通过花名册添加 -->
-          <q-tab-panel name="throughOfficialFile">
-            <q-card-section align="right">
-              <q-input
-                dense
-                debounce="300"
-                v-model="combinedClassroomWaitToCreate.name"
-                placeholder="请输入将要创建的教学班名称"
-                :rules="[(val) => !!val || '这是必填项']"
-                hide-bottom-space
-                ><template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-              <q-file
-                dense
-                class="q-mt-md"
-                v-model="officalExcelFile"
-                label="请上传教务系统课堂花名册 Excel 文件"
-                :rules="[(val) => !!val || '这是必填项']"
-                hide-bottom-space
-              >
-                <template v-slot:prepend>
-                  <q-icon name="cloud_upload" @click.stop />
-                </template>
-                <template v-slot:append>
-                  <q-icon
-                    name="close"
-                    @click.stop="officalExcelFile = null"
-                    class="cursor-pointer"
-                  />
-                </template>
-              </q-file> </q-card-section
-          ></q-tab-panel>
-        </q-tab-panels>
-        <q-card-actions align="right">
-          <q-btn
-            v-if="addClassroomTabMode === 'throughOfficialFile'"
-            flat
-            color="primary"
-            icon="cloud_download"
-            label="下载花名册模板"
-            @click="handleDownloadOfficialFileTemplateBtnClick"
-          />
-          <q-btn
-            color="primary"
-            label="确定"
-            @click="handleClickCreateCombinedClassroom"
-          />
-        </q-card-actions>
-      </q-card>
+      <AddTeaClassroomCard
+        @closeAddTeaClassroomDialog="showAddClassroomDig = false"
+      />
     </q-dialog>
 
     <!-- 教学班学生列表对话框 -->
@@ -331,55 +215,7 @@
 
     <!-- 添加课程对话框 -->
     <q-dialog v-model="showAddTeaCourseDig">
-      <q-card style="width: 600px; max-width: 80vw">
-        <q-card-section>
-          <div class="text-h5 q-ml-sm">
-            添加课程
-            <q-btn
-              round
-              flat
-              dense
-              icon="close"
-              class="float-right"
-              color="grey-8"
-              v-close-popup
-            ></q-btn>
-          </div>
-        </q-card-section>
-
-        <q-card-section>
-          <q-select
-            use-input
-            dense
-            @filter="filterFnForAddCourse"
-            v-model="currSelectCourseForAddTeaCourse"
-            :options="filteredCourseList"
-            option-label="name"
-            option-value="_id"
-            label="请选择课程"
-            :rules="[(val) => !!val || '这是必填项']"
-            hide-bottom-space
-          >
-            <template v-slot:prepend>
-              <q-icon name="class" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn
-            label="确定"
-            color="primary"
-            @click="handleAddTeaCourse"
-            v-close-popup
-          />
-        </q-card-actions>
-      </q-card>
+      <AddTeaCourseCard />
     </q-dialog>
   </q-page>
 </template>
@@ -388,39 +224,28 @@
 import {
   apiRemoveTeaCourse,
   apiGetTeaClsroomStuList,
-  apiGetTeaCourseInfo,
-  apiGetCourses,
-  apiCreateTeaCourse,
   apiRenameTeaClsroom,
   apiRemoveTeaClsroom,
-  apiOriginClassroomList,
-  apiCreatecombinedClassroomThroughOriginClassroom,
-  apiCreateCombinedClassroomWithUsernameList,
   apiAddStudentsToCombinedClassroomByUsername,
   apiResetStuPassword,
   apiRemoveStudentsFromCombinedClassroom,
 } from "src/api/teacher/course";
-import { saveAs } from "file-saver";
-import { read, utils } from "xlsx";
+import AddTeaCourseCard from "src/components/common/teacher/course/AddTeaCourseCard.vue";
+import AddTeaClassroomCard from "src/components/common/teacher/course/AddTeaClassroomCard.vue";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      // teaCourse 数据
-      teaCourseList: [],
       // 课程列表
       courseList: [],
       // 过滤后的课程列表
       filteredCourseList: [],
-      // 添加课程时选中的课程
-      currSelectCourseForAddTeaCourse: null,
 
       // 向教学班添加学生时选中的教学班
       currSelectTeaClassroom: null,
 
       // 当前点击的教学班名称
       currSelectedTeaClassroomName: "",
-      // 当前点击的TeaCourseId
-      currSelectedTeaCourseId: "",
 
       // 课程班级列表表头列表
       teaCourseClassroomColumns: [
@@ -483,21 +308,6 @@ export default {
         rowsPerPage: 10,
       },
 
-      // 添加教学班Tab模式
-      addClassroomTabMode: "throughOriginClassroom",
-
-      // 自然班列表
-      originClassroomList: [],
-      // 过滤后的自然班列表
-      filteredOriginClassroomList: [],
-      // 花名册文件
-      officalExcelFile: null,
-      // 待添加的教学班
-      combinedClassroomWaitToCreate: {
-        name: "",
-        originClassroomList: [],
-      },
-
       // 向教学班待添加的学生学号
       stuWaitToAddUsername: "",
 
@@ -512,26 +322,19 @@ export default {
     };
   },
 
+  components: {
+    AddTeaCourseCard,
+    AddTeaClassroomCard,
+  },
+
+  computed: {
+    ...mapGetters("teaCourse", {
+      teaCourseList: "teaCourseList",
+    }),
+  },
+
   methods: {
     /* ====== NOTICE: 以下为对接API完成异步请求相关方法 ====== */
-
-    // 获取教师课程信息
-    async getTeaCourseInfo() {
-      const { data } = await apiGetTeaCourseInfo();
-      const teaCourseList = [];
-      data.data.reduce((pre, curr) => {
-        const course = {
-          id: curr._id,
-          courseId: curr.course._id,
-          name: curr.course.name,
-          classrooms: curr.classrooms,
-          classroomsNum: 0,
-        };
-        pre.push(course);
-        return pre;
-      }, teaCourseList);
-      this.teaCourseList = teaCourseList;
-    },
 
     // 获取教学班学生列表
     async getTeaClsroomStuList(classroomId) {
@@ -552,59 +355,6 @@ export default {
         return pre;
       }, teaClsroomStuList);
       this.teaClsroomStuList = teaClsroomStuList;
-    },
-
-    // 获取课程列表
-    async getCourses() {
-      const { data } = await apiGetCourses();
-      this.courseList = data.data.courses;
-      this.filteredCourseList = data.data.courses;
-    },
-
-    // 获取自然班列表
-    async getOriginClassroomList() {
-      const { data } = await apiOriginClassroomList();
-      this.originClassroomList = data.data;
-      this.filteredOriginClassroomList = data.data;
-    },
-
-    // 添加teaCourse
-    async handleAddTeaCourse() {
-      // 判断是否选择了课程
-      if (!this.currSelectCourseForAddTeaCourse) {
-        this.$q.notify({
-          message: "请选择课程",
-          type: "warning",
-        });
-        return;
-      }
-
-      // 判断是否已经添加了该课程
-      const isExist = this.teaCourseList.some(
-        (item) => item.courseId === this.currSelectCourseForAddTeaCourse._id
-      );
-      if (isExist) {
-        this.$q.notify({
-          message: "添加失败，该课程已存在",
-          type: "negative",
-        });
-        return;
-      }
-
-      // 发送添加请求
-      const { data } = await apiCreateTeaCourse({
-        course_id: this.currSelectCourseForAddTeaCourse._id,
-      });
-
-      this.$q.notify({
-        message: `添加课程成功`,
-        type: "positive",
-        timeout: 300,
-      });
-
-      // 刷新页面
-      this.currSelectCourseForAddTeaCourse = null;
-      this.getTeaCourseInfo();
     },
 
     // 移除teaCourse
@@ -632,7 +382,7 @@ export default {
             type: "positive",
           });
           // 刷新页面
-          this.getTeaCourseInfo();
+          this.$store.dispatch("teaCourse/getTeaCourseInfo");
         })
         .onCancel(() => {
           this.$q.notify({
@@ -678,7 +428,7 @@ export default {
             type: "positive",
           });
           // 刷新页面
-          this.getTeaCourseInfo();
+          this.$store.dispatch("teaCourse/getTeaCourseInfo");
         })
         .onCancel(() => {})
         .onDismiss(() => {});
@@ -715,7 +465,7 @@ export default {
             timeout: 300,
           });
           // 刷新页面
-          this.getTeaCourseInfo();
+          this.$store.dispatch("teaCourse/getTeaCourseInfo");
         })
         .onCancel(() => {
           this.$q.notify({
@@ -724,120 +474,6 @@ export default {
             timeout: 300,
           });
         });
-    },
-
-    // 创建教学班(基于行政班)
-    async handleCreatecombinedClassroomThroughOriginClassroom(
-      teaCourseId,
-      combinedClassroomWaitToCreate
-    ) {
-      // 校验
-      if (combinedClassroomWaitToCreate.originClassroomList.length === 0) {
-        this.$q.notify({
-          message: `请选择行政班`,
-          type: "warning",
-          timeout: 300,
-        });
-        return;
-      }
-
-      // 请求Dto
-      const payload = {
-        name: combinedClassroomWaitToCreate.name,
-        teaCourse_id: teaCourseId,
-        classroom_ids: combinedClassroomWaitToCreate.originClassroomList.map(
-          (item) => item._id
-        ),
-      };
-
-      // 发送请求
-      try {
-        await apiCreatecombinedClassroomThroughOriginClassroom(payload);
-        // 提示创建成功
-        this.$q.notify({
-          message: "创建成功",
-          type: "positive",
-        });
-        // 重置数据
-        this.combinedClassroomWaitToCreate = {
-          name: "",
-          originClassroomList: [],
-        };
-        this.currSelectedTeaCourseId = "";
-        // 关闭对话框
-        this.showAddClassroomDig = false;
-        // 刷新页面
-        this.getTeaCourseInfo();
-      } catch (error) {
-        this.$q.notify({
-          message: `创建失败`,
-          type: "negative",
-          timeout: 300,
-        });
-      }
-    },
-
-    // 创建教学班(基于学号列表)
-    async handleCreateCombinedClassroomWithUsernameList() {
-      if (!this.officalExcelFile) {
-        this.$q.notify({
-          message: `请上传花名册 Excel 文件`,
-          type: "warning",
-          timeout: 300,
-        });
-        return;
-      }
-      const res = await this.importExcel(this.officalExcelFile);
-      let data = res[0].sheet;
-
-      let stuUserNameList = [];
-      for (let index = 1; index < data.length; index++) {
-        const element = data[index];
-        stuUserNameList.push(element.__EMPTY_4);
-      }
-
-      // 检查学号列表是否为空
-      if (stuUserNameList.length === 0) {
-        this.$q.notify({
-          message: `花名册中没有学生`,
-          type: "warning",
-          timeout: 300,
-        });
-        return;
-      }
-
-      // 构造请求Dto
-      const payload = {
-        classroom_name: this.combinedClassroomWaitToCreate.name,
-        teaCourse_id: this.currSelectedTeaCourseId,
-        student_usernames: stuUserNameList,
-      };
-
-      // 发送请求
-      try {
-        await apiCreateCombinedClassroomWithUsernameList(payload);
-        // 提示创建成功
-        this.$q.notify({
-          message: "创建成功",
-          type: "positive",
-        });
-        // 重置数据
-        this.combinedClassroomWaitToCreate = {
-          name: "",
-          originClassroomList: [],
-        };
-        this.currSelectedTeaCourseId = "";
-        // 关闭对话框
-        this.showAddClassroomDig = false;
-        // 刷新页面
-        this.getTeaCourseInfo();
-      } catch (error) {
-        this.$q.notify({
-          message: `创建失败`,
-          type: "negative",
-          timeout: 300,
-        });
-      }
     },
 
     // 通过username(学号)数组向教学班添加学生
@@ -872,7 +508,7 @@ export default {
         // 关闭对话框
         this.showAddStuToTeaClsroomDig = false;
         // 刷新页面
-        this.getTeaCourseInfo();
+        this.$store.dispatch("teaCourse/getTeaCourseInfo");
       } catch (error) {
         this.$q.notify({
           message: `添加失败`,
@@ -945,48 +581,8 @@ export default {
     // 点击添加教学班按钮
     handleAddClassroomClick(teaCourse) {
       this.showAddClassroomDig = true;
-      this.currSelectedTeaCourseId = teaCourse.id;
-    },
-
-    // 监听添加教学班input组件值的变化
-    handleInputOriginClassroomNameChange(selectedClsrooms) {
-      this.combinedClassroomWaitToCreate.name = "";
-      for (let i = 0; i < selectedClsrooms.length; i++) {
-        this.combinedClassroomWaitToCreate.name += selectedClsrooms[i].name;
-        if (i !== selectedClsrooms.length - 1) {
-          this.combinedClassroomWaitToCreate.name += "+";
-        }
-      }
-    },
-
-    // 点击添加教学班对话框的确认按钮
-    handleClickCreateCombinedClassroom() {
-      // 校验
-      if (this.combinedClassroomWaitToCreate.name === "") {
-        this.$q.notify({
-          message: `教学班名称不能为空`,
-          type: "warning",
-          timeout: 300,
-        });
-        return;
-      }
-      // 判断通过何种方式创建教学班
-      if (this.addClassroomTabMode === "throughOriginClassroom") {
-        this.handleCreatecombinedClassroomThroughOriginClassroom(
-          this.currSelectedTeaCourseId,
-          this.combinedClassroomWaitToCreate
-        );
-      } else if (this.addClassroomTabMode === "throughOfficialFile") {
-        this.handleCreateCombinedClassroomWithUsernameList();
-      }
-    },
-
-    // 点击下载花名册模版按钮
-    handleDownloadOfficialFileTemplateBtnClick() {
-      saveAs(
-        "https://cyberdownload.anrunlu.net/%E6%95%99%E5%B8%88%E5%88%9B%E5%BB%BA%E6%95%99%E5%AD%A6%E7%8F%AD%E6%A8%A1%E6%9D%BF.xls",
-        "花名册模版.xls"
-      );
+      // 设置当前选中的教学课程
+      this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
     },
 
     // 点击添加学生到教学班按钮
@@ -994,88 +590,11 @@ export default {
       this.showAddStuToTeaClsroomDig = true;
       this.currSelectTeaClassroom = row;
     },
-
-    /* ====== NOTICE: 以下为页面相关工具 ====== */
-
-    // 添加课程选择框选项过滤函数
-    filterFnForAddCourse(val, update) {
-      if (val === "") {
-        update(async () => {
-          await this.getCourses();
-          this.filteredCourseList = this.courseList;
-        });
-        return;
-      }
-
-      update(() => {
-        const needle = val.toLowerCase();
-        this.filteredCourseList = this.courseList.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
-    // 添加教学班选择框选项过滤函数
-    filterFnForAddClassroom(val, update) {
-      if (val === "") {
-        update(async () => {
-          await this.getOriginClassroomList();
-          this.filteredOriginClassroomList = this.originClassroomList;
-        });
-        return;
-      }
-
-      update(() => {
-        const needle = val.toLowerCase();
-        this.filteredOriginClassroomList = this.originClassroomList.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
-    // 导入 excel 文件
-    async importExcel(file) {
-      const types = file.name.split(".")[1];
-      const fileType = ["xlsx", "xlc", "xlm", "xls", "xlt", "xlw", "csv"].some(
-        (item) => item === types
-      );
-      if (!fileType) {
-        this.$q.notify({
-          message: `文件类型不正确，请重新选择`,
-          type: "negative",
-          timeout: 300,
-        });
-        return;
-      }
-      const tabJson = await this.file2Xce(file);
-      return tabJson;
-    },
-
-    // 将文件转换为 json
-    async file2Xce(file) {
-      return new Promise(function (resolve, reject) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const data = e.target.result;
-          this.wb = read(data, {
-            type: "binary",
-          });
-          const result = [];
-          this.wb.SheetNames.forEach((sheetName) => {
-            result.push({
-              sheetName: sheetName,
-              sheet: utils.sheet_to_json(this.wb.Sheets[sheetName]),
-            });
-          });
-          resolve(result);
-        };
-        reader.readAsBinaryString(file);
-      });
-    },
   },
 
   created() {
-    this.getTeaCourseInfo();
+    // 获取教师课程列表，store 事件
+    this.$store.dispatch("teaCourse/getTeaCourseInfo");
   },
 };
 </script>
