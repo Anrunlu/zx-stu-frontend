@@ -28,6 +28,14 @@ const routes = [
           title: "课程管理",
         },
       },
+      {
+        path: "homework",
+        component: () => import("pages/teacher/Homework.vue"),
+        meta: {
+          type: "teacher",
+          title: "作业管理",
+        },
+      },
     ],
   },
 ];
