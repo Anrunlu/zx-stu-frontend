@@ -124,15 +124,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      // 课程列表
-      courseList: [],
-      // 过滤后的课程列表
-      filteredCourseList: [],
-
-      // 向教学班添加学生时选中的教学班
-      currSelectTeaClassroom: null,
-
-      // 课程班级列表表头列表
+      // 教学课程列表表头列表
       teaCourseClassroomColumns: [
         {
           name: "className",
@@ -289,7 +281,6 @@ export default {
     handleTeaClassroomClick(evt, row) {
       this.showTeaClsroomStuListDig = true;
       this.$store.commit("teaCourse/setCurrSelectedTeaClassroom", row);
-      this.currSelectTeaClassroom = row;
     },
 
     // 点击添加teaCourse按钮
