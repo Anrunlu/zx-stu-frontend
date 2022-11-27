@@ -17,7 +17,7 @@
           ></q-btn>
         </div>
       </q-card-section>
-      <q-card-section>
+      <q-card-section class="q-py-none">
         <q-table
           class="full-width"
           flat
