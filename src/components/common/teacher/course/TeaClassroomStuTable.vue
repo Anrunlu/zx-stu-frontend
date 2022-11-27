@@ -4,7 +4,7 @@
     <q-card>
       <q-card-section class="bg-primary text-white q-py-sm">
         <div class="text-subtitle1">
-          <q-icon name="class" />
+          <q-icon name="people" />
           {{ currSelectedTeaClassroom.name }}
           <q-btn
             round
