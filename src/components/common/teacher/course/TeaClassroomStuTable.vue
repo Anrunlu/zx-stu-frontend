@@ -19,7 +19,8 @@
       </q-card-section>
       <q-card-section>
         <q-table
-          class="full-width no-shadow"
+          class="full-width"
+          flat
           :data="teaClassroomStuList"
           :columns="teaClassroomStuListColumns"
           row-key="userid"
