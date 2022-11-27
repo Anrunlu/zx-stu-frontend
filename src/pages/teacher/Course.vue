@@ -35,7 +35,7 @@
                 color="red"
                 icon="delete"
                 size="xs"
-                label="删除课程"
+                label="移除课程"
                 @click="handleRemoveTeaCourese(teaCourse)"
               ></q-btn>
             </div>
@@ -56,19 +56,10 @@
                   flat
                   dense
                   size="md"
-                  color="primary"
-                  icon="person_add"
-                  @click.stop="handleAddStudentToTeaClassroom(props.row)"
-                  ><q-tooltip> 添加学生 </q-tooltip></q-btn
-                >
-                <q-btn
-                  flat
-                  dense
-                  size="md"
                   color="red"
                   icon="delete"
                   @click.stop="handleDeleteTeaClassroom(teaCourse, props.row)"
-                  ><q-tooltip> 删除教学班</q-tooltip></q-btn
+                  ><q-tooltip> 移除教学班</q-tooltip></q-btn
                 >
               </div>
             </q-td>
@@ -106,45 +97,6 @@
       <TeaClassroomStuTable />
     </q-dialog>
 
-    <!-- 向教学班添加学生对话框 -->
-    <q-dialog v-model="showAddStuToTeaClsroomDig">
-      <q-card style="width: 600px; max-width: 80vw">
-        <q-card-section>
-          <div class="text-h5 q-ml-sm">
-            添加学生到教学班
-            <q-btn
-              round
-              flat
-              dense
-              icon="close"
-              class="float-right"
-              color="grey-8"
-              v-close-popup
-            ></q-btn>
-          </div>
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            v-model="stuWaitToAddUsername"
-            type="text"
-            label="请输入学生学号"
-            dense
-          >
-            <template v-slot:prepend>
-              <q-icon name="person_add" @click.stop />
-            </template>
-          </q-input>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            label="确定"
-            color="primary"
-            @click="handleAddStudentToCombinedClassroomWithUsername"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
     <!-- 添加课程对话框 -->
     <q-dialog v-model="showAddTeaCourseDig">
       <AddTeaCourseCard />
@@ -162,10 +114,8 @@
 <script>
 import {
   apiRemoveTeaCourse,
-  apiGetTeaClsroomStuList,
   apiRenameTeaClsroom,
   apiRemoveTeaClsroom,
-  apiAddStudentsToCombinedClassroomByUsername,
 } from "src/api/teacher/course";
 import AddTeaCourseCard from "src/components/common/teacher/course/AddTeaCourseCard.vue";
 import AddTeaClassroomCard from "src/components/common/teacher/course/AddTeaClassroomCard.vue";
@@ -198,17 +148,12 @@ export default {
         },
       ],
 
-      // 向教学班待添加的学生学号
-      stuWaitToAddUsername: "",
-
       // 添加教学班对话框
       showAddClassroomDig: false,
       // 教学班学生列表对话框
       showTeaClsroomStuListDig: false,
       // 添加teaCourse对话框
       showAddTeaCourseDig: false,
-      // 向教学班添加学生对话框
-      showAddStuToTeaClsroomDig: false,
     };
   },
 
@@ -227,14 +172,14 @@ export default {
   methods: {
     /* ====== NOTICE: 以下为对接API完成异步请求相关方法 ====== */
 
-    // 移除teaCourse
+    // 移除 teaCourse
     async handleRemoveTeaCourese(teaCourse) {
       this.$q
         .dialog({
           title: "请确认",
-          message: `删除【${teaCourse.name}】，操作不可恢复！`,
+          message: `移除教学课程【${teaCourse.name}】，操作不可恢复！`,
           ok: {
-            label: "删除",
+            label: "移除",
             push: true,
             color: "negative",
           },
@@ -246,20 +191,16 @@ export default {
         })
         .onOk(async () => {
           await apiRemoveTeaCourse(teaCourse.id);
-          // 提示删除成功
+          // 提示移除成功
           this.$q.notify({
-            message: "删除成功",
+            message: "移除成功",
             type: "positive",
           });
           // 刷新页面
           this.$store.dispatch("teaCourse/getTeaCourseInfo");
         })
         .onCancel(() => {
-          this.$q.notify({
-            message: "操作取消",
-            type: "warning",
-            timeout: 300,
-          });
+          return;
         });
     },
 
@@ -304,7 +245,7 @@ export default {
         .onDismiss(() => {});
     },
 
-    // 删除教学班
+    // 移除教学班
     async handleDeleteTeaClassroom(teaCourse, classroom) {
       this.$q
         .dialog({
@@ -338,54 +279,8 @@ export default {
           this.$store.dispatch("teaCourse/getTeaCourseInfo");
         })
         .onCancel(() => {
-          this.$q.notify({
-            message: "操作取消",
-            type: "warning",
-            timeout: 300,
-          });
+          return;
         });
-    },
-
-    // 通过username(学号)数组向教学班添加学生
-    async handleAddStudentToCombinedClassroomWithUsername() {
-      // 检查学号是否为空
-      if (this.stuWaitToAddUsername === "") {
-        this.$q.notify({
-          message: `请输入学号`,
-          type: "warning",
-          timeout: 300,
-        });
-        return;
-      }
-
-      // 构造请求Dto
-      const payload = {
-        classroom_id: this.currSelectTeaClassroom._id,
-        student_usernames: [this.stuWaitToAddUsername],
-      };
-
-      // 发送请求
-      try {
-        await apiAddStudentsToCombinedClassroomByUsername(payload);
-        // 提示添加成功
-        this.$q.notify({
-          message: "添加成功",
-          type: "positive",
-        });
-        // 重置数据
-        this.stuWaitToAddUsername = "";
-        this.currSelectTeaClassroom = null;
-        // 关闭对话框
-        this.showAddStuToTeaClsroomDig = false;
-        // 刷新页面
-        this.$store.dispatch("teaCourse/getTeaCourseInfo");
-      } catch (error) {
-        this.$q.notify({
-          message: `添加失败`,
-          type: "negative",
-          timeout: 300,
-        });
-      }
     },
 
     /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
@@ -407,12 +302,6 @@ export default {
       this.showAddClassroomDig = true;
       // 设置当前选中的教学课程
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
-    },
-
-    // 点击添加学生到教学班按钮
-    handleAddStudentToTeaClassroom(row) {
-      this.showAddStuToTeaClsroomDig = true;
-      this.currSelectTeaClassroom = row;
     },
   },
 
