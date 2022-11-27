@@ -17,6 +17,9 @@
         />
         <!-- 头部标题 -->
         <q-toolbar-title>知新教师端</q-toolbar-title>
+        <q-btn flat round dense icon="color_lens" @click="handleChangeLayout">
+          <q-tooltip>切换为新版布局</q-tooltip></q-btn
+        >
         <q-btn
           class="q-mr-xs"
           flat
@@ -279,6 +282,7 @@
 import { openAuthedSocket } from "src/utils/socketio";
 import ImmediatelyAncmt from "src/components/common/ImmediatelyAncmt";
 import { mapGetters } from "vuex";
+import { setLayout } from "src/utils/layout";
 export default {
   data() {
     return {
@@ -317,6 +321,13 @@ export default {
     handleClickUserInfoRegion() {
       // TODO: 跳转到个人设置页面
       // this.$router.push(`/profile`);
+    },
+
+    // 点击切换布局
+    handleChangeLayout() {
+      setLayout("TeacherLayout");
+      // 刷新页面
+      window.location.reload();
     },
   },
 

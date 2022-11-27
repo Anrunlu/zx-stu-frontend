@@ -89,8 +89,16 @@
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="text-grey-7" icon="apps" to="/">
-            <q-tooltip>工作台</q-tooltip>
+          <q-btn
+            v-if="$q.screen.gt.xs"
+            round
+            dense
+            flat
+            color="text-grey-7"
+            icon="color_lens"
+            @click="handleChangeLayout"
+          >
+            <q-tooltip>切换为旧版布局</q-tooltip>
           </q-btn>
           <q-btn
             round
@@ -232,6 +240,7 @@
 import { openAuthedSocket } from "src/utils/socketio";
 import ImmediatelyAncmt from "src/components/common/ImmediatelyAncmt";
 import { mapGetters } from "vuex";
+import { setLayout } from "src/utils/layout";
 export default {
   data() {
     return {
@@ -299,16 +308,17 @@ export default {
 
     // 点击抽屉
     drawerClick(e) {
-      // if in "mini" state and user
-      // click on drawer, we switch it to "normal" mode
       if (this.miniState) {
         this.miniState = false;
-
-        // notice we have registered an event with capture flag;
-        // we need to stop further propagation as this click is
-        // intended for switching drawer to "normal" mode only
         e.stopPropagation();
       }
+    },
+
+    // 点击切换布局
+    handleChangeLayout() {
+      setLayout("TeacherLayoutOld");
+      // 刷新页面
+      window.location.reload();
     },
   },
 

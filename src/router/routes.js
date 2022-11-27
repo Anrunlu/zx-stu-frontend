@@ -1,3 +1,7 @@
+import { getLayout } from "src/utils/layout";
+
+const defaultLayout = "TeacherLayout";
+
 const routes = [
   {
     path: "/login",
@@ -10,7 +14,7 @@ const routes = [
 
   {
     path: "/teacher",
-    component: () => import("layouts/TeacherLayout.vue"),
+    component: () => import(`layouts/${getLayout() || defaultLayout}.vue`),
     children: [
       {
         path: "dashboard",
