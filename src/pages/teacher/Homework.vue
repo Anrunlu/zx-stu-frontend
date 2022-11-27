@@ -12,6 +12,7 @@
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
+          <!-- 选择课程 -->
           <q-btn-dropdown
             :label="
               !currSelectedTeaCourse ? '选择课程' : currSelectedTeaCourse.name
@@ -32,7 +33,13 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn-dropdown label="选择作业类型" color="positive">
+          <!-- 选择作业类型 -->
+          <q-btn-dropdown
+            :label="
+              !currSelectedCategory ? '选择作业类型' : currSelectedCategory
+            "
+            color="positive"
+          >
             <q-list>
               <q-item
                 clickable
@@ -216,6 +223,9 @@ export default {
       // 作业列表表格紧凑模式
       homeworkListTableDense: true,
 
+      // 当前选中的作业分类
+      currSelectedCategory: "",
+
       // 作业过滤
       homeworFilter: "",
 
@@ -259,6 +269,8 @@ export default {
         return;
       }
 
+      this.currSelectedCategory = category;
+
       // 构造请求参数
       const payload = {
         status: "正常",
@@ -286,6 +298,11 @@ export default {
     // 设置当前选中的教学课程
     handleChangeTeaCourse(teaCourse) {
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
+
+      // 如果当前选中的作业分类不为空，则重新获取作业列表
+      if (this.currSelectedCategory) {
+        this.handleGetHomeworkList(this.currSelectedCategory);
+      }
     },
 
     // 处理点击作业列表中的某一行
