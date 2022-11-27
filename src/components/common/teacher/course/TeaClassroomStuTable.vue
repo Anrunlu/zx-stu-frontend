@@ -1,71 +1,88 @@
 <template>
-  <div style="width: 700px; max-width: 80vw">
+  <div style="width: 800px; max-width: 80vw">
     <!-- 教学班学生表格 -->
-    <q-table
-      class="full-width"
-      :data="teaClassroomStuList"
-      :columns="teaClassroomStuListColumns"
-      row-key="userid"
-      :pagination="teaClassroomStuListTablePagination"
-    >
-      <template v-slot:top-left>
-        <q-chip square>
-          <q-avatar icon="people" color="secondary" text-color="white" />
+    <q-card>
+      <q-card-section class="bg-primary text-white q-py-sm">
+        <div class="text-subtitle1">
+          <q-icon name="class" />
           {{ currSelectedTeaClassroom.name }}
-        </q-chip>
-        <div class="q-gutter-sm row q-mt-sm">
           <q-btn
-            dense
+            round
             flat
-            color="positive"
-            icon="person_add"
-            label="添加学生"
-            @click="handleAddStudentToTeaClassroom"
+            dense
+            icon="close"
+            class="float-right"
+            color="white"
+            v-close-popup
           ></q-btn>
         </div>
-      </template>
-      <template v-slot:top-right>
-        <q-btn
-          round
-          flat
-          dense
-          icon="close"
-          class="float-right"
-          color="grey-8"
-          v-close-popup
-        ></q-btn>
-      </template>
-      <template v-slot:body-cell-action="props">
-        <q-td :props="props">
-          <div class="q-gutter-sm">
-            <q-btn
-              flat
+      </q-card-section>
+      <q-card-section>
+        <q-table
+          class="full-width no-shadow"
+          :data="teaClassroomStuList"
+          :columns="teaClassroomStuListColumns"
+          row-key="userid"
+          :filter="stufilter"
+          :pagination="teaClassroomStuListTablePagination"
+        >
+          <template v-slot:top-left>
+            <div class="q-gutter-sm row q-mt-sm">
+              <q-btn
+                dense
+                flat
+                color="positive"
+                icon="person_add"
+                label="添加学生"
+                @click="handleAddStudentToTeaClassroom"
+              ></q-btn>
+            </div>
+          </template>
+          <template v-slot:top-right>
+            <q-input
               dense
-              size="sm"
-              color="primary"
-              icon="settings"
-              @click="resetStuPassword(props.row)"
-              ><q-tooltip> 重置密码 </q-tooltip></q-btn
+              debounce="300"
+              v-model="stufilter"
+              placeholder="搜索学生"
             >
-            <q-btn
-              flat
-              dense
-              size="md"
-              color="red"
-              icon="delete"
-              @click="handleRemoveStudentsFromCombinedClassroom(props.row)"
-              ><q-tooltip> 从教学班移除学生 </q-tooltip></q-btn
-            >
-          </div>
-        </q-td>
-      </template>
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <div class="q-gutter-sm">
+                <q-btn
+                  flat
+                  dense
+                  size="sm"
+                  color="primary"
+                  icon="settings"
+                  @click="resetStuPassword(props.row)"
+                  ><q-tooltip> 重置密码 </q-tooltip></q-btn
+                >
+                <q-btn
+                  flat
+                  dense
+                  size="md"
+                  color="red"
+                  icon="delete"
+                  @click="handleRemoveStudentsFromCombinedClassroom(props.row)"
+                  ><q-tooltip> 从教学班移除学生 </q-tooltip></q-btn
+                >
+              </div>
+            </q-td>
+          </template>
 
-      <template v-slot:no-data>
-        <div class="full-width row flex-center text-grey q-gutter-sm">
-          <span class="text-h6"> 暂无数据 </span>
-        </div>
-      </template>
-    </q-table>
+          <template v-slot:no-data>
+            <div class="full-width row flex-center text-grey q-gutter-sm">
+              <span class="text-h6"> 暂无数据 </span>
+            </div>
+          </template>
+        </q-table>
+      </q-card-section>
+    </q-card>
 
     <!-- 向教学班添加学生对话框 -->
     <q-dialog v-model="showAddStuToTeaClassroomDig">
@@ -160,6 +177,10 @@ export default {
           label: "操作",
         },
       ],
+
+      // 搜索学生过滤
+      stufilter: "",
+
       // 教学班学生列表分页设置
       teaClassroomStuListTablePagination: {
         sortBy: "username",
