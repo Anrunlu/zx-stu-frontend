@@ -117,9 +117,9 @@ import {
   apiRenameTeaClsroom,
   apiRemoveTeaClsroom,
 } from "src/api/teacher/course";
-import AddTeaCourseCard from "src/components/common/teacher/course/AddTeaCourseCard.vue";
-import AddTeaClassroomCard from "src/components/common/teacher/course/AddTeaClassroomCard.vue";
-import TeaClassroomStuTable from "src/components/common/teacher/course/TeaClassroomStuTable.vue";
+import AddTeaCourseCard from "src/components/teacher/course/AddTeaCourseCard.vue";
+import AddTeaClassroomCard from "src/components/teacher/course/AddTeaClassroomCard.vue";
+import TeaClassroomStuTable from "src/components/teacher/course/TeaClassroomStuTable.vue";
 import { mapGetters } from "vuex";
 export default {
   data() {

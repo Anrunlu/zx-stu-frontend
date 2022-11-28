@@ -113,7 +113,7 @@
               size="sm"
               color="primary"
               icon="edit"
-              @click.stop=""
+              @click.stop="handleModifyHomeworkClickClick(props.row)"
             >
               <q-tooltip> 修改作业 </q-tooltip>
             </q-btn>
@@ -157,6 +157,15 @@
         </div>
       </template>
     </q-table>
+
+    <!-- 作业编辑对话框 -->
+    <q-dialog v-model="homeworkEditingDig" persistent>
+      <EditingHomeworkCard
+        :homeworkId="currClickedRowHomework.id"
+        :mode="`modify`"
+        @closeEditingHomeworkDialog="handleCloseEditingHomeworkDialog"
+      />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -164,6 +173,7 @@
 import { apiGetHomeworks } from "src/api/teacher/homework";
 import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
+import EditingHomeworkCard from "src/components/teacher/homework/EditingHomeworkCard.vue";
 export default {
   data() {
     return {
@@ -219,21 +229,18 @@ export default {
           label: "操作",
         },
       ],
-
       // 作业列表表格紧凑模式
       homeworkListTableDense: true,
-
       // 当前选中的作业分类
       currSelectedCategory: "",
-
       // 作业过滤
       homeworFilter: "",
-
       // 作业列表分页设置
       homeworkListTablePagination: {
         rowsPerPage: 30,
       },
-
+      // 当前点击的那一会作业
+      currClickedRowHomework: {},
       // 作业类型选项
       homeworkCategoryOptions: [
         "课前预习",
@@ -246,10 +253,14 @@ export default {
         "期中考试",
         "期末考试",
       ],
+      // 作业编辑对话框
+      homeworkEditingDig: false,
     };
   },
 
-  components: {},
+  components: {
+    EditingHomeworkCard,
+  },
 
   computed: {
     ...mapGetters("teaCourse", {
@@ -307,13 +318,26 @@ export default {
 
     // 处理点击作业列表中的某一行
     handleHomeworkClick(row) {
-      console.log(row);
+      this.currClickedRowHomework = row;
       // this.$router.push({
       //   name: "homeworkDetail",
       //   params: {
       //     homeworkId: row.id,
       //   },
       // });
+    },
+
+    // 表格上修改作业按钮点击事件
+    handleModifyHomeworkClickClick(row) {
+      this.currClickedRowHomework = row;
+      this.homeworkEditingDig = true;
+    },
+
+    // 处理作业编辑对话框关闭事件
+    handleCloseEditingHomeworkDialog() {
+      this.homeworkEditingDig = false;
+      // 刷新作业列表
+      this.handleGetHomeworkList(this.currSelectedCategory);
     },
   },
 
