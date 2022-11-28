@@ -118,10 +118,12 @@
           </q-item>
 
           <!-- 开始时间 -->
-          <q-item class="col-6">
+          <q-item
+            class="col-6"
+            v-if="currHomeworkDetails.category != '课堂作业'"
+          >
             <q-item-section>
               <q-input
-                v-if="currHomeworkDetails.category != '课堂作业'"
                 outlined
                 square
                 dense
@@ -182,10 +184,12 @@
           </q-item>
 
           <!-- 截止时间 -->
-          <q-item class="col-6">
+          <q-item
+            class="col-6"
+            v-if="currHomeworkDetails.category != '课堂作业'"
+          >
             <q-item-section>
               <q-input
-                v-if="currHomeworkDetails.category != '课堂作业'"
                 outlined
                 square
                 dense
