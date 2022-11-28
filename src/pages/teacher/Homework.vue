@@ -62,7 +62,7 @@
           dense
           debounce="300"
           v-model="homeworFilter"
-          placeholder="搜索"
+          placeholder="搜索作业"
         >
           <template v-slot:append>
             <q-icon name="search" />
