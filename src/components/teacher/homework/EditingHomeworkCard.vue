@@ -139,6 +139,7 @@
                       <q-date
                         v-model="currHomeworkDetails.starttime"
                         mask="YYYY-MM-DD HH:mm"
+                        minimal
                       >
                         <div class="row items-center justify-end">
                           <q-btn
@@ -202,6 +203,7 @@
                       <q-date
                         v-model="currHomeworkDetails.endtime"
                         mask="YYYY-MM-DD HH:mm"
+                        minimal
                       >
                         <div class="row items-center justify-end">
                           <q-btn
