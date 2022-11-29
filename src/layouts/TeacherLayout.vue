@@ -255,15 +255,31 @@ export default {
           to: "course",
         },
         {
+          icon: "bubble_chart",
+          text: "课程图谱",
+          to: "",
+        },
+        {
           icon: "cast_for_education",
           text: "课堂互动",
           to: "classwork",
+        },
+        {
+          icon: "flutter_dash",
+          text: "知识画像",
+          to: "",
+        },
+        {
+          icon: "cloud_circle",
+          text: "教学资源",
+          to: "",
         },
       ],
       links2: [
         { icon: "forum", text: "题库管理", to: "questionBank" },
         { icon: "topic", text: "题集管理", to: "questionSet" },
         { icon: "work", text: "作业管理", to: "homework" },
+        { icon: "assignment", text: "考试系统", to: "" },
         { icon: "leaderboard", text: "成绩管理", to: "grade" },
       ],
       links3: [
