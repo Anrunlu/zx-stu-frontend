@@ -7,7 +7,7 @@
       row-key="index"
       @row-click="handleHomeworkClick"
       :pagination="homeworkListTablePagination"
-      :filter="homeworFilter"
+      :filter="homeworkFilter"
       :dense="homeworkListTableDense"
     >
       <template v-slot:top-left>
@@ -61,7 +61,7 @@
         <q-input
           dense
           debounce="300"
-          v-model="homeworFilter"
+          v-model="homeworkFilter"
           placeholder="搜索作业"
         >
           <template v-slot:append>
@@ -234,7 +234,7 @@ export default {
       // 当前选中的作业分类
       currSelectedCategory: "",
       // 作业过滤
-      homeworFilter: "",
+      homeworkFilter: "",
       // 作业列表分页设置
       homeworkListTablePagination: {
         rowsPerPage: 30,
