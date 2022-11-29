@@ -228,7 +228,13 @@
 
     <!-- 主体 -->
     <q-page-container class="GPL__page-container">
-      <router-view />
+      <q-page class="row no-wrap">
+        <div class="col">
+          <q-scroll-area class="col q-px-sm full-height" visible>
+            <router-view />
+          </q-scroll-area>
+        </div>
+      </q-page>
     </q-page-container>
 
     <!-- 实时通知组件 -->
