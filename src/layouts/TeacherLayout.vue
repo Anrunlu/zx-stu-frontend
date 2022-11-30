@@ -279,7 +279,7 @@ export default {
         {
           icon: "cloud_circle",
           text: "教学资源",
-          to: "",
+          to: "teaResource",
         },
       ],
       links2: [

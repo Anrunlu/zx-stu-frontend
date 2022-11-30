@@ -33,6 +33,14 @@ const routes = [
         },
       },
       {
+        path: "teaResource",
+        component: () => import("pages/teacher/TeaResource.vue"),
+        meta: {
+          type: "teacher",
+          title: "教学资源",
+        },
+      },
+      {
         path: "questionBank",
         component: () => import("pages/teacher/QuestionBank.vue"),
         meta: {
