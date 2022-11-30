@@ -249,6 +249,12 @@
         <q-card-actions align="right">
           <q-btn
             color="primary"
+            flat
+            label="重置"
+            @click="handleQuestionTableFilterDigResetBtnClick"
+          />
+          <q-btn
+            color="primary"
             @click="handleQuestionTableFilterDigConfirmBtnClick"
           >
             确定
@@ -463,6 +469,22 @@ export default {
     // 点击高级筛选对话框的确定按钮
     handleQuestionTableFilterDigConfirmBtnClick() {
       this.getQuestionList();
+    },
+
+    // 点击高级筛选对话框的重置按钮
+    handleQuestionTableFilterDigResetBtnClick() {
+      // 重置筛选条件
+      this.questionTableFilterOptions.type = [];
+      this.questionTableFilterOptions.createdAtfromTo = {
+        from: "",
+        to: "",
+      };
+      this.questionTableFilterOptions.isSelfOnly = false;
+
+      // 获取题目列表
+      this.getQuestionList();
+      // 关闭高级筛选对话框
+      this.questionTableFilterDig = false;
     },
   },
 
