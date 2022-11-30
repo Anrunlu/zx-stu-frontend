@@ -328,10 +328,7 @@ export default {
 
       // 发送请求
       try {
-        const { data } = await apiModifyTeaResource(payload);
-
-        console.log(data.data);
-
+        await apiModifyTeaResource(payload);
         this.$q.notify({
           message: "修改成功",
           type: "positive",
@@ -351,7 +348,7 @@ export default {
       this.$q
         .dialog({
           title: "请确认",
-          message: `移除教学资源，操作不可恢复！`,
+          message: `移除【${this.currClickedRowTeaResource.filename}】，操作不可恢复！`,
           ok: {
             label: "移除",
             push: true,
@@ -380,6 +377,7 @@ export default {
           return;
         });
     },
+
     // 设置当前选中的教学课程
     handleChangeTeaCourse(teaCourse) {
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
