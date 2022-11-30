@@ -113,7 +113,7 @@
               size="sm"
               color="red"
               icon="delete_outline"
-              @click.stop=""
+              @click.stop="handleDeleteTeaReasource(props.row)"
             >
               <q-tooltip> 删除 </q-tooltip>
             </q-btn>
@@ -186,6 +186,7 @@
 
 <script>
 import {
+  apiDeleteTeaResource,
   apiGetTeaResources,
   apiModifyTeaResource,
 } from "src/api/teacher/teaResource";
@@ -344,6 +345,41 @@ export default {
       }
     },
 
+    // 删除教学资源
+    async handleDeleteTeaReasource(row) {
+      this.currClickedRowTeaResource = row;
+      this.$q
+        .dialog({
+          title: "请确认",
+          message: `移除教学资源，操作不可恢复！`,
+          ok: {
+            label: "移除",
+            push: true,
+            color: "negative",
+          },
+          cancel: {
+            label: "取消",
+            push: true,
+          },
+          persistent: true,
+        })
+        .onOk(async () => {
+          const payload = {
+            tearesource_id: this.currClickedRowTeaResource.id,
+          };
+          await apiDeleteTeaResource(payload);
+          this.$q.notify({
+            message: `移除成功`,
+            type: "positive",
+          });
+          this.currClickedRowTeaResource = {};
+          // 刷新列表
+          await this.handleGetTeaResourceList(this.currSelectedCategory);
+        })
+        .onCancel(() => {
+          return;
+        });
+    },
     // 设置当前选中的教学课程
     handleChangeTeaCourse(teaCourse) {
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);

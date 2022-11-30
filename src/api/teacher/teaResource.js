@@ -18,3 +18,12 @@ export function apiModifyTeaResource(data) {
     data,
   });
 }
+
+// 删除教学资源
+export function apiDeleteTeaResource(data) {
+  return loadingFn(request)({
+    url: "/tea/tearesource/remove",
+    method: "POST",
+    data,
+  });
+}
