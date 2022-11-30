@@ -8,6 +8,8 @@
       :pagination="questionListTablePagination"
       :filter="questionFilter"
       :dense="questionListTableDense"
+      :selected.sync="questionListSelectedQuestions"
+      selection="multiple"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -262,6 +264,26 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- 悬浮按钮 -->
+    <q-page-sticky
+      position="bottom"
+      :offset="[-20, 18]"
+      v-if="questionListSelectedQuestions.length > 0"
+    >
+      <q-btn
+        fab
+        icon="check_box"
+        color="accent"
+        :label="`已选中(${questionListSelectedQuestions.length})`"
+        ><q-tooltip
+          content-class="bg-indigo"
+          content-style="font-size: 16px"
+          :offset="[10, 10]"
+          >点击查看已选中的题目</q-tooltip
+        >
+      </q-btn>
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -284,13 +306,6 @@ export default {
           sortable: true,
         },
         {
-          name: "creator",
-          label: "出题人",
-          align: "center",
-          field: "creator",
-          sortable: true,
-        },
-        {
           name: "type",
           label: "类型",
           align: "center",
@@ -309,6 +324,13 @@ export default {
           label: "难度",
           align: "center",
           field: "difficulty",
+          sortable: true,
+        },
+        {
+          name: "creator",
+          label: "出题人",
+          align: "center",
+          field: "creator",
           sortable: true,
         },
         {
@@ -365,6 +387,9 @@ export default {
         // 仅我创建的
         isSelfOnly: false,
       },
+
+      // 题目列表表格当前选中的一些题目
+      questionListSelectedQuestions: [],
     };
   },
 
@@ -390,6 +415,11 @@ export default {
       } else {
         return "";
       }
+    },
+
+    // 题目列表表格当前选中的一些题目的id
+    questionListSelectedQuestionsIds() {
+      return this.questionListSelectedQuestions.map((item) => item._id);
     },
   },
 
