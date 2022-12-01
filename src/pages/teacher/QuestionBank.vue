@@ -4,11 +4,11 @@
       flat
       :data="questionList"
       :columns="questionColumns"
-      row-key="index"
+      row-key="id"
       :pagination="questionListTablePagination"
       :filter="questionFilter"
       :dense="questionListTableDense"
-      :selected.sync="questionListSelectedQuestions"
+      :selected.sync="questionCar"
       selection="multiple"
     >
       <template v-slot:top-left>
@@ -92,7 +92,7 @@
               icon="insert_chart"
               @click.stop=""
             >
-              <q-tooltip> 查看成绩 </q-tooltip>
+              <q-tooltip> 添加到 </q-tooltip>
             </q-btn>
             <q-btn
               flat
@@ -265,24 +265,37 @@
       </q-card>
     </q-dialog>
 
-    <!-- 悬浮按钮 -->
+    <!-- 题车悬浮按钮 -->
     <q-page-sticky
       position="bottom"
       :offset="[-20, 18]"
-      v-if="questionListSelectedQuestions.length > 0"
+      v-if="questionCar.length > 0"
     >
-      <q-btn
-        fab
-        icon="check_box"
-        color="accent"
-        :label="`已选中(${questionListSelectedQuestions.length})`"
-        ><q-tooltip
-          content-class="bg-indigo"
-          content-style="font-size: 16px"
-          :offset="[10, 10]"
-          >点击查看已选中的题目</q-tooltip
+      <q-btn-group push rounded>
+        <q-btn
+          icon="check_box"
+          color="primary"
+          :label="`已选(总${questionCarCountInfo.total}|单选${questionCarCountInfo.singleChoice}|多选${questionCarCountInfo.multipleChoice}|判断${questionCarCountInfo.trueOrFalse}|填空${questionCarCountInfo.fillInBlank}|解答${questionCarCountInfo.jieda})`"
+          ><q-tooltip
+            content-class="bg-indigo"
+            content-style="font-size: 16px"
+            :offset="[10, 10]"
+            >点击查看题车</q-tooltip
+          >
+        </q-btn>
+        <q-btn
+          icon="clear_all"
+          color="red-5"
+          @click="handleQuestionCarClearBtnClick"
         >
-      </q-btn>
+          <q-tooltip
+            content-class="bg-indigo"
+            content-style="font-size: 16px"
+            :offset="[10, 10]"
+            >清空题车</q-tooltip
+          >
+        </q-btn>
+      </q-btn-group>
     </q-page-sticky>
   </q-page>
 </template>
@@ -388,8 +401,8 @@ export default {
         isSelfOnly: false,
       },
 
-      // 题目列表表格当前选中的一些题目
-      questionListSelectedQuestions: [],
+      // 题车
+      questionCar: [],
     };
   },
 
@@ -417,9 +430,31 @@ export default {
       }
     },
 
-    // 题目列表表格当前选中的一些题目的id
-    questionListSelectedQuestionsIds() {
-      return this.questionListSelectedQuestions.map((item) => item._id);
+    // 题车题目的统计信息
+    questionCarCountInfo() {
+      return {
+        // 总数
+        total: this.questionCar.length,
+        // 单选题
+        singleChoice: this.questionCar.filter(
+          (question) => question.type === "单选"
+        ).length,
+        // 多选题
+        multipleChoice: this.questionCar.filter(
+          (question) => question.type === "多选"
+        ).length,
+        // 判断题
+        trueOrFalse: this.questionCar.filter(
+          (question) => question.type === "判断"
+        ).length,
+        // 填空题
+        fillInBlank: this.questionCar.filter(
+          (question) => question.type === "填空"
+        ).length,
+        // 解答题
+        jieda: this.questionCar.filter((question) => question.type === "解答")
+          .length,
+      };
     },
   },
 
@@ -462,6 +497,7 @@ export default {
 
       this.questionList = questions.map((question, index) => {
         return {
+          id: question._id,
           index: index + 1,
           creator: question.creator.nickname,
           type: question.type,
@@ -515,6 +551,33 @@ export default {
       this.getQuestionList();
       // 关闭高级筛选对话框
       this.questionTableFilterDig = false;
+    },
+
+    // 点击清空题车按钮
+    handleQuestionCarClearBtnClick() {
+      // 弹窗提示
+      this.$q
+        .dialog({
+          title: "请确认",
+          message: `确定要清空题车吗？`,
+          ok: {
+            label: "清空",
+            push: true,
+            color: "negative",
+          },
+          cancel: {
+            label: "取消",
+            push: true,
+          },
+          persistent: true,
+        })
+        .onOk(async () => {
+          // 清空题车
+          this.questionCar = [];
+        })
+        .onCancel(() => {
+          return;
+        });
     },
   },
 
