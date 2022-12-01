@@ -89,16 +89,6 @@
               dense
               size="sm"
               color="primary"
-              icon="insert_chart"
-              @click.stop=""
-            >
-              <q-tooltip> 添加到 </q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              dense
-              size="sm"
-              color="primary"
               icon="edit"
               @click.stop=""
             >
@@ -273,9 +263,10 @@
     >
       <q-btn-group push rounded>
         <q-btn
-          icon="check_box"
+          icon="add_shopping_cart"
           color="primary"
           :label="`已选(总${questionCarCountInfo.total}|单选${questionCarCountInfo.singleChoice}|多选${questionCarCountInfo.multipleChoice}|判断${questionCarCountInfo.trueOrFalse}|填空${questionCarCountInfo.fillInBlank}|解答${questionCarCountInfo.jieda})`"
+          @click="handleViewQuestionCarBtnClick"
           ><q-tooltip
             content-class="bg-indigo"
             content-style="font-size: 16px"
@@ -297,6 +288,128 @@
         </q-btn>
       </q-btn-group>
     </q-page-sticky>
+
+    <!-- 题车对话框 -->
+    <q-dialog v-model="questionCarDig">
+      <q-card style="width: 1100px; max-width: 80vw">
+        <q-card-section class="bg-primary text-white q-py-sm">
+          <div class="text-h5">
+            <q-icon name="add_shopping_cart" />
+            题车
+            <q-btn
+              round
+              flat
+              dense
+              icon="close"
+              class="float-right"
+              color="white"
+              v-close-popup
+            ></q-btn>
+          </div>
+        </q-card-section>
+        <q-card-section class="q-pb-sm">
+          <q-btn color="primary" icon="settings" label="设置分数" />
+        </q-card-section>
+        <q-card-section>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              expand-separator
+              :icon="questionIcon[qType.label]"
+              :label="`${qType.label}(${questionCarCountInfo[qType.value]})`"
+              :key="index"
+              :class="questionClass[qType.label]"
+              v-for="(qType, index) in questionTypes"
+            >
+              <draggable
+                class="list-group"
+                :list="questionCar"
+                v-bind="dragOptions"
+                @start="drag = true"
+                @end="drag = false"
+              >
+                <q-list
+                  v-for="(question, index) in questionCar.filter(
+                    (question) => question.type === qType.label
+                  )"
+                  :key="index"
+                  bordered
+                  class="rounded-borders cursor-move"
+                  dense
+                >
+                  <q-item class="bg-white">
+                    <q-item-section avatar>
+                      <q-chip
+                        :color="questionBadgeColor[question.type]"
+                        text-color="white"
+                        :label="question.type"
+                        :icon="questionIcon[question.type]"
+                        square
+                        size="sm"
+                      />
+                    </q-item-section>
+
+                    <q-item-section style="font-size: 18px" class="text-grey-9">
+                      {{ `${index + 1}、${question.content}` }}
+                    </q-item-section>
+
+                    <q-item-section class="col-1">
+                      <span>{{ question.creator }}</span>
+                    </q-item-section>
+
+                    <span style="width: 145px" class="inline-block text-grey-9"
+                      ><span> {{ question.updatedAt }}</span></span
+                    >
+
+                    <!-- <q-item-section class="col-2">
+                <div class="q-pa-sm q-gutter-md">
+                  <q-badge
+                    filled
+                    class="q-pa-sm text-bold"
+                    v-bind:key="index"
+                    v-for="(tag, index) in question.tags"
+                    :color="tag.color"
+                    style="font-size: 15px"
+                    >{{ tag.name }}
+                  </q-badge>
+                </div>
+              </q-item-section> -->
+
+                    <q-item-section side>
+                      <div class="text-grey-8 q-gutter-xs">
+                        <q-btn
+                          size="12px"
+                          color="primary"
+                          flat
+                          dense
+                          round
+                          icon="edit"
+                        />
+                        <q-btn
+                          size="12px"
+                          color="red"
+                          flat
+                          dense
+                          round
+                          icon="delete"
+                          @click="
+                            handleQuestionCarQuestionRemoveBtnClick(question.id)
+                          "
+                        />
+                        <!-- <q-btn size="12px" flat dense round icon="more_vert" /> -->
+                      </div>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </draggable>
+            </q-expansion-item>
+          </q-list>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="关闭" />
+          <q-btn flat label="创建试题集" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -304,6 +417,7 @@
 import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
+import draggable from "vuedraggable";
 export default {
   data() {
     return {
@@ -383,9 +497,6 @@ export default {
         "期中考试",
         "期末考试",
       ],
-      // 高级筛选对话框
-      questionTableFilterDig: false,
-
       // 筛选条件
       questionTableFilterOptions: {
         // 题目类型
@@ -400,13 +511,65 @@ export default {
         // 仅我创建的
         isSelfOnly: false,
       },
-
       // 题车
       questionCar: [],
+      // 高级筛选对话框
+      questionTableFilterDig: false,
+      // 题车对话框
+      questionCarDig: false,
+
+      questionClass: {
+        单选: "border-single-choice",
+        多选: "border-multiple-choice",
+        判断: "border-true-or-false",
+        填空: "border-fill-in-blank",
+        解答: "border-jieda",
+      },
+
+      questionIcon: {
+        单选: "radio_button_checked",
+        多选: "check_box",
+        判断: "compare_arrows",
+        填空: "border_color",
+        解答: "description",
+      },
+
+      questionBadgeColor: {
+        单选: "blue",
+        多选: "green",
+        判断: "red",
+        填空: "orange",
+        解答: "purple",
+      },
+
+      questionTypes: [
+        {
+          label: "单选",
+          value: "singleChoice",
+        },
+        {
+          label: "多选",
+          value: "multipleChoice",
+        },
+        {
+          label: "判断",
+          value: "trueOrFalse",
+        },
+        {
+          label: "填空",
+          value: "fillInBlank",
+        },
+        {
+          label: "解答",
+          value: "jieda",
+        },
+      ],
     };
   },
 
-  components: {},
+  components: {
+    draggable,
+  },
 
   computed: {
     ...mapGetters("teaCourse", {
@@ -454,6 +617,16 @@ export default {
         // 解答题
         jieda: this.questionCar.filter((question) => question.type === "解答")
           .length,
+      };
+    },
+
+    // 拖拽组件设置
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost",
       };
     },
   },
@@ -553,6 +726,24 @@ export default {
       this.questionTableFilterDig = false;
     },
 
+    // 点击查看题车按钮
+    handleViewQuestionCarBtnClick() {
+      // 按照题目类型排序
+      this.questionCar = this.questionCar.sort((a, b) => {
+        return a.type.localeCompare(b.type);
+      });
+      // this.questionCar = this.questionCar.sort((a, b) => a.type - b.type);
+      this.questionCarDig = true;
+    },
+
+    // 点击题车中移除题目按钮
+    handleQuestionCarQuestionRemoveBtnClick(questionId) {
+      // 根据题目id从题车中移除题目
+      this.questionCar = this.questionCar.filter(
+        (question) => question.id !== questionId
+      );
+    },
+
     // 点击清空题车按钮
     handleQuestionCarClearBtnClick() {
       // 弹窗提示
@@ -591,4 +782,24 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.border-single-choice {
+  border-left: 5px solid blue !important;
+}
+
+.border-multiple-choice {
+  border-left: 5px solid green !important;
+}
+
+.border-true-or-false {
+  border-left: 5px solid red !important;
+}
+
+.border-fill-in-blank {
+  border-left: 5px solid orange !important;
+}
+
+.border-jieda {
+  border-left: 5px solid purple !important;
+}
+</style>
