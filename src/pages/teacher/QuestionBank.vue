@@ -92,7 +92,7 @@
               icon="edit"
               @click.stop=""
             >
-              <q-tooltip> 修改题目 </q-tooltip>
+              <q-tooltip> 编辑题目 </q-tooltip>
             </q-btn>
             <q-btn
               flat
@@ -295,7 +295,7 @@
         <q-card-section class="bg-primary text-white q-py-sm">
           <div class="text-h5">
             <q-icon name="add_shopping_cart" />
-            题车
+            题车(共{{ questionCarCountInfo.total }}题)
             <q-btn
               round
               flat
@@ -308,18 +308,55 @@
           </div>
         </q-card-section>
         <q-card-section class="q-pb-sm">
-          <q-btn color="primary" icon="settings" label="设置分数" />
+          <q-btn color="primary" icon="lock" label="当前总分(80)">
+            <q-tooltip> 总分须为100分 </q-tooltip>
+          </q-btn>
         </q-card-section>
         <q-card-section>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
               expand-separator
-              :icon="questionIcon[qType.label]"
-              :label="`${qType.label}(${questionCarCountInfo[qType.value]})`"
               :key="index"
               :class="questionClass[qType.label]"
               v-for="(qType, index) in questionTypes"
             >
+              <template v-slot:header>
+                <q-item-section avatar>
+                  <q-avatar :icon="questionIcon[qType.label]" />
+                </q-item-section>
+
+                <q-item-section>
+                  {{
+                    `${qType.label}(${questionCarCountInfo[qType.value]})`
+                  }}</q-item-section
+                >
+
+                <q-item-section side>
+                  <div class="row items-center">
+                    <q-input
+                      square
+                      dense
+                      :disable="qType.lockScore"
+                      v-model.number="qType.currSettingScore"
+                      type="number"
+                      label="分数"
+                      @click.stop=""
+                      style="width: 65px"
+                    />
+                    <q-toggle
+                      color="primary"
+                      v-model="qType.lockScore"
+                      size="sm"
+                    >
+                      锁定分数
+                      <q-tooltip v-if="!qType.lockScore">
+                        锁定后，题目分数将平均化且不可修改
+                      </q-tooltip>
+                    </q-toggle>
+                  </div>
+                </q-item-section>
+              </template>
+
               <draggable
                 class="list-group"
                 :list="questionCar"
@@ -353,26 +390,65 @@
                     </q-item-section>
 
                     <q-item-section class="col-1">
+                      <span>SFFX001</span>
+                    </q-item-section>
+
+                    <q-item-section class="col-1">
                       <span>{{ question.creator }}</span>
                     </q-item-section>
 
-                    <span style="width: 145px" class="inline-block text-grey-9"
+                    <!-- <span style="width: 145px" class="inline-block text-grey-9"
                       ><span> {{ question.updatedAt }}</span></span
-                    >
+                    > -->
 
-                    <!-- <q-item-section class="col-2">
-                <div class="q-pa-sm q-gutter-md">
-                  <q-badge
-                    filled
-                    class="q-pa-sm text-bold"
-                    v-bind:key="index"
-                    v-for="(tag, index) in question.tags"
-                    :color="tag.color"
-                    style="font-size: 15px"
-                    >{{ tag.name }}
-                  </q-badge>
-                </div>
-              </q-item-section> -->
+                    <div class="row items-center">
+                      <q-chip
+                        dense
+                        label="2分"
+                        color="positive"
+                        text-color="white"
+                      />
+                      <q-popup-edit
+                        v-model="nickname"
+                        :validate="(val) => val.length > 5"
+                      >
+                        <template v-slot="scope">
+                          <q-input
+                            autofocus
+                            dense
+                            v-model="scope.value"
+                            hint="Your nickname"
+                            :rules="[
+                              (val) =>
+                                scope.validate(val) ||
+                                'More than 5 chars required',
+                            ]"
+                          >
+                            <template v-slot:after>
+                              <q-btn
+                                flat
+                                dense
+                                color="negative"
+                                icon="cancel"
+                                @click.stop="scope.cancel"
+                              />
+
+                              <q-btn
+                                flat
+                                dense
+                                color="positive"
+                                icon="check_circle"
+                                @click.stop="scope.set"
+                                :disable="
+                                  scope.validate(scope.value) === false ||
+                                  scope.initialValue === scope.value
+                                "
+                              />
+                            </template>
+                          </q-input>
+                        </template>
+                      </q-popup-edit>
+                    </div>
 
                     <q-item-section side>
                       <div class="text-grey-8 q-gutter-xs">
@@ -383,19 +459,21 @@
                           dense
                           round
                           icon="edit"
-                        />
+                        >
+                          <q-tooltip> 编辑题目 </q-tooltip>
+                        </q-btn>
                         <q-btn
                           size="12px"
                           color="red"
                           flat
                           dense
                           round
-                          icon="delete"
+                          icon="delete_sweep"
                           @click="
                             handleQuestionCarQuestionRemoveBtnClick(question.id)
                           "
-                        />
-                        <!-- <q-btn size="12px" flat dense round icon="more_vert" /> -->
+                          ><q-tooltip> 从题车移除 </q-tooltip></q-btn
+                        >
                       </div>
                     </q-item-section>
                   </q-item>
@@ -406,7 +484,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="关闭" />
-          <q-btn flat label="创建试题集" />
+          <q-btn color="primary" label="创建试题集" icon="topic" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -485,18 +563,6 @@ export default {
       },
       // 当前点击的那一会题目
       currClickedRowHomework: {},
-      // 题目类型选项
-      questionCategoryOptions: [
-        "课前预习",
-        "课堂题目",
-        "课后题目",
-        "课程实验",
-        "课程论文",
-        "课程设计",
-        "毕业设计",
-        "期中考试",
-        "期末考试",
-      ],
       // 筛选条件
       questionTableFilterOptions: {
         // 题目类型
@@ -529,7 +595,7 @@ export default {
       questionIcon: {
         单选: "radio_button_checked",
         多选: "check_box",
-        判断: "compare_arrows",
+        判断: "done",
         填空: "border_color",
         解答: "description",
       },
@@ -546,22 +612,32 @@ export default {
         {
           label: "单选",
           value: "singleChoice",
+          currSettingScore: 0,
+          lockScore: false,
         },
         {
           label: "多选",
           value: "multipleChoice",
+          currSettingScore: 0,
+          lockScore: false,
         },
         {
           label: "判断",
           value: "trueOrFalse",
+          currSettingScore: 0,
+          lockScore: false,
         },
         {
           label: "填空",
           value: "fillInBlank",
+          currSettingScore: 0,
+          lockScore: false,
         },
         {
           label: "解答",
           value: "jieda",
+          currSettingScore: 0,
+          lockScore: false,
         },
       ],
     };
