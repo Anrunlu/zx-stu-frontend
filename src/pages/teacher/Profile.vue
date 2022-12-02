@@ -209,7 +209,7 @@ export default {
     async getUserProfile() {
       const { data } = await apiGetProfile();
       this.qq = data.data.qq;
-      this.email = "1739046583@qq.com";
+      this.email = data.data.email;
     },
 
     // 修改个人信息
