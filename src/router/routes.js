@@ -11,7 +11,6 @@ const routes = [
       title: "登录",
     },
   },
-
   {
     path: "/teacher",
     component: () => import(`layouts/${getLayout() || defaultLayout}.vue`),
@@ -54,6 +53,14 @@ const routes = [
         meta: {
           type: "teacher",
           title: "作业管理",
+        },
+      },
+      {
+        path: "profile",
+        component: () => import("pages/teacher/Profile.vue"),
+        meta: {
+          type: "teacher",
+          title: "个人设置",
         },
       },
     ],

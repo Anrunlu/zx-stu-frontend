@@ -1,4 +1,4 @@
-import { getProfile, getTermList, login } from "src/api/auth";
+import { apiGetProfile, getTermList, login } from "src/api/auth";
 import { removeToken, setToken } from "src/utils/auth";
 
 // 用户登录
@@ -43,7 +43,7 @@ export function termList({ commit }) {
 // 获取用户信息
 export function getUserInfo({ commit, dispatch }) {
   return new Promise((resolve, reject) => {
-    getProfile()
+    apiGetProfile()
       .then((response) => {
         const { data } = response;
         commit("setUserId", data.data._id);

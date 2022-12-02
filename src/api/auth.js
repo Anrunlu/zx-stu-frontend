@@ -34,7 +34,7 @@ export function getAppInfo() {
 }
 
 // 获取用户信息
-export function getProfile() {
+export function apiGetProfile() {
   return request({
     url: "/auth/user",
     method: "get",
