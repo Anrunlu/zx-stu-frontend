@@ -1,4 +1,5 @@
 import { request } from "src/boot/axios";
+import { loadingFn } from "src/utils/loadingTools";
 
 // 获取当前学院的学期列表
 export function getTermList() {
@@ -42,17 +43,17 @@ export function apiGetProfile() {
 }
 
 // 验证验证码
-export function authEmail(data) {
+export function apiVerifyCode(data) {
   return request({
-    url: "/auth/cache/authEmail",
+    url: "/auth/cache/verifyCode",
     method: "post",
     data,
   });
 }
 
 // 修改个人信息
-export function putProfile(data) {
-  return request({
+export function apiModifyProfile(data) {
+  return loadingFn(request)({
     url: "/auth/user",
     method: "put",
     data,
@@ -60,8 +61,8 @@ export function putProfile(data) {
 }
 
 // 发送邮件
-export function sendEmail(data) {
-  return request({
+export function apiSendCodeByEmail(data) {
+  return loadingFn(request)({
     url: "/auth/cache/sendEmail",
     method: "post",
     data,
@@ -78,8 +79,8 @@ export function sendUserEmail(data) {
 }
 
 // 修改个人密码
-export function putPWD(data) {
-  return request({
+export function apiModifyPwd(data) {
+  return loadingFn(request)({
     url: "/auth/chgPassword",
     method: "put",
     data,

@@ -149,7 +149,7 @@ export default {
       // 登录信息
       userLoginDto: {
         username: "19970746",
-        password: "13012614032Zzl@",
+        password: "qwe@123",
       },
     };
   },
