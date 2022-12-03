@@ -347,6 +347,7 @@
                       color="primary"
                       v-model="qType.lockScore"
                       size="sm"
+                      @input="handleQuestionCarLockScoreToggleClick(qType)"
                     >
                       锁定分数
                       <q-tooltip v-if="!qType.lockScore">
@@ -404,8 +405,8 @@
                     <div class="row items-center">
                       <q-chip
                         dense
-                        label="2分"
-                        color="positive"
+                        :label="`${question.presetScore}分`"
+                        :color="question.presetScore > 0 ? 'positive' : ''"
                         text-color="white"
                       />
                       <q-popup-edit
@@ -497,6 +498,7 @@ import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
 import draggable from "vuedraggable";
 export default {
+  name: "QuestionBank",
   data() {
     return {
       // 题目列表
@@ -507,7 +509,7 @@ export default {
           name: "index",
           label: "序号",
           align: "left",
-          field: "index",
+          field: "questionTableIndex",
           sortable: true,
         },
         {
@@ -747,8 +749,9 @@ export default {
       this.questionList = questions.map((question, index) => {
         return {
           id: question._id,
-          index: index + 1,
+          questionTableIndex: index + 1,
           creator: question.creator.nickname,
+          presetScore: 0,
           type: question.type,
           // 截取一部分内容
           content: question.content.slice(0, 20),
@@ -845,6 +848,25 @@ export default {
         .onCancel(() => {
           return;
         });
+    },
+
+    // 题车锁定分数
+    handleQuestionCarLockScoreToggleClick(qType) {
+      // 判断是否已经锁定分数
+      if (qType.lockScore) {
+        // 如果锁定分数，则将分数平均分给同类型的每一个题目
+        this.questionCar.forEach((question) => {
+          if (question.type === qType.label) {
+            question.presetScore =
+              qType.currSettingScore / this.questionCarCountInfo[qType.value];
+
+            // 保留两位小数
+            question.presetScore = Math.floor(question.presetScore * 100) / 100;
+          }
+        });
+      } else {
+        // 锁定分数
+      }
     },
   },
 
