@@ -308,7 +308,13 @@
           </div>
         </q-card-section>
         <q-card-section class="q-pb-sm">
-          <q-btn color="primary" icon="lock" label="当前总分(80)">
+          <q-btn
+            :color="
+              questionCarCountInfo.totalScore == 100 ? 'positive' : 'negative'
+            "
+            :icon="questionCarCountInfo.totalScore == 100 ? 'check' : 'warning'"
+            :label="`当前总分(${questionCarCountInfo.totalScore})`"
+          >
             <q-tooltip> 总分须为100分 </q-tooltip>
           </q-btn>
         </q-card-section>
@@ -398,32 +404,34 @@
                       <span>{{ question.creator }}</span>
                     </q-item-section>
 
-                    <!-- <span style="width: 145px" class="inline-block text-grey-9"
-                      ><span> {{ question.updatedAt }}</span></span
-                    > -->
-
                     <div class="row items-center">
                       <q-chip
                         dense
                         :label="`${question.presetScore}分`"
                         :color="question.presetScore > 0 ? 'positive' : ''"
+                        :disable="qType.lockScore"
                         text-color="white"
+                        style="cursor: pointer"
                       />
                       <q-popup-edit
-                        v-model="nickname"
-                        :validate="(val) => val.length > 5"
+                        v-model="question.presetScore"
+                        :validate="(val) => val > 0"
+                        :disable="qType.lockScore"
+                        anchor="top start"
                       >
                         <template v-slot="scope">
                           <q-input
                             autofocus
                             dense
+                            type="number"
                             v-model="scope.value"
-                            hint="Your nickname"
+                            hint="输入题目得分"
                             :rules="[
-                              (val) =>
-                                scope.validate(val) ||
-                                'More than 5 chars required',
+                              (val) => scope.validate(val) || '分数必须大于0',
                             ]"
+                            @keyup.enter="
+                              handleSetQuestionPresetscore(scope, qType)
+                            "
                           >
                             <template v-slot:after>
                               <q-btn
@@ -439,7 +447,9 @@
                                 dense
                                 color="positive"
                                 icon="check_circle"
-                                @click.stop="scope.set"
+                                @click.stop="
+                                  handleSetQuestionPresetscore(scope, qType)
+                                "
                                 :disable="
                                   scope.validate(scope.value) === false ||
                                   scope.initialValue === scope.value
@@ -484,8 +494,56 @@
           </q-list>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="关闭" />
-          <q-btn color="primary" label="创建试题集" icon="topic" />
+          <q-btn
+            class="q-ml-sm"
+            color="primary"
+            label="创建试题集"
+            icon="topic"
+            @click="handleQuestionCarCreateQuestionSetBtnClick"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!-- 基于题车创建试题集对话框 -->
+    <q-dialog
+      v-model="createQuestionSetDig"
+      persistent
+      transition-show="scale"
+      transition-hide="scale"
+    >
+      <q-card style="width: 600px">
+        <q-card-section>
+          <div class="text-h5 q-ml-sm">
+            创建试题集
+            <q-btn
+              round
+              flat
+              dense
+              icon="close"
+              class="float-right"
+              color="grey-8"
+              v-close-popup
+            ></q-btn>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-input dense square outlined label="试题集名称">
+            <template v-slot:prepend>
+              <q-icon name="topic" />
+            </template>
+          </q-input>
+          <q-toggle
+            class="q-mt-sm"
+            color="green"
+            label="共享试题集"
+            v-model="isShare"
+          >
+            <q-tooltip> 共享后，同课程的其他教师可以使用该试题集 </q-tooltip>
+          </q-toggle>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn label="创建" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -586,6 +644,12 @@ export default {
       // 题车对话框
       questionCarDig: false,
 
+      // 基于题车创建试题集对话框
+      createQuestionSetDig: false,
+
+      // 是否共享试题集
+      isShare: false,
+
       questionClass: {
         单选: "border-single-choice",
         多选: "border-multiple-choice",
@@ -671,9 +735,13 @@ export default {
       }
     },
 
-    // 题车题目的统计信息
+    // 题车统计信息
     questionCarCountInfo() {
       return {
+        // 总分
+        totalScore: this.questionTypes.reduce((total, curr) => {
+          return total + curr.currSettingScore * 1;
+        }, 0),
         // 总数
         total: this.questionCar.length,
         // 单选题
@@ -706,6 +774,17 @@ export default {
         disabled: false,
         ghostClass: "ghost",
       };
+    },
+  },
+
+  watch: {
+    "questionCarCountInfo.totalScore"(newVal, oldVale) {
+      if (newVal > 100) {
+        this.$q.notify({
+          message: `题集总分必须为100分`,
+          type: "warning",
+        });
+      }
     },
   },
 
@@ -864,9 +943,52 @@ export default {
             question.presetScore = Math.floor(question.presetScore * 100) / 100;
           }
         });
-      } else {
-        // 锁定分数
       }
+    },
+
+    // 设置题目分数, 第一个参数勿动
+    handleSetQuestionPresetscore(scope, qType) {
+      scope.set(); // 固定写法
+
+      // 重新计算题目总分
+      let totalScore = 0;
+      this.questionCar.forEach((question) => {
+        if (question.type === qType.label) {
+          totalScore += question.presetScore * 1;
+        }
+      });
+      qType.currSettingScore = Math.floor(totalScore * 100) / 100;
+    },
+
+    // 点击题车中的创建试题集
+    handleQuestionCarCreateQuestionSetBtnClick() {
+      // 校验是否有题目未设置分数
+      let hasQuestionWithoutScore = false;
+      this.questionCar.forEach((question) => {
+        if (!question.presetScore) {
+          hasQuestionWithoutScore = true;
+        }
+      });
+
+      if (hasQuestionWithoutScore) {
+        this.$q.notify({
+          message: "部分题目未设置分数，请检查",
+          type: "negative",
+        });
+        return;
+      }
+
+      // 校验题目总分是否超过100分
+      if (this.questionCarCountInfo.totalScore > 100) {
+        this.$q.notify({
+          message: "题目总分不能超过100分，请检查",
+          type: "negative",
+        });
+        return;
+      }
+
+      // 打开创建试题集对话框
+      this.createQuestionSetDig = true;
     },
   },
 
