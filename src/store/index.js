@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import user from "./user";
 import socketio from "./socketio";
 import teaCourse from "./tea-course";
+import questionCar from "./question-car";
 
 Vue.use(Vuex);
 
@@ -21,6 +22,7 @@ export default function (/* { ssrContext } */) {
       user,
       socketio,
       teaCourse,
+      questionCar,
     },
 
     // enable strict mode (adds overhead!)
