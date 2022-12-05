@@ -528,7 +528,26 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <q-input dense square outlined label="试题集名称">
+          <q-input
+            class="q-mb-sm"
+            dense
+            square
+            outlined
+            disable
+            v-model="currSelectedTeaCourse.name"
+            label="当前课程"
+          >
+            <template v-slot:prepend>
+              <q-icon name="folder_shared" />
+            </template>
+          </q-input>
+          <q-input
+            dense
+            square
+            outlined
+            label="试题集名称"
+            v-model="questionSetName"
+          >
             <template v-slot:prepend>
               <q-icon name="topic" />
             </template>
@@ -543,7 +562,12 @@
           </q-toggle>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn label="创建" />
+          <q-btn
+            color="primary"
+            label="创建"
+            icon="cloud_upload"
+            @click="handleConfirmCreateQuestionSetBtnClick"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -554,6 +578,7 @@
 import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
+import { apiCreateQuestionSet } from "src/api/teacher/questionSet";
 import draggable from "vuedraggable";
 export default {
   name: "QuestionBank",
@@ -646,6 +671,9 @@ export default {
 
       // 基于题车创建试题集对话框
       createQuestionSetDig: false,
+
+      // 试题集名称
+      questionSetName: "",
 
       // 是否共享试题集
       isShare: false,
@@ -789,6 +817,7 @@ export default {
   },
 
   methods: {
+    // 获取题目列表
     async getQuestionList() {
       // 校验是否选择了课程
       if (!this.currSelectedTeaCourse) {
@@ -832,12 +861,59 @@ export default {
           creator: question.creator.nickname,
           presetScore: 0,
           type: question.type,
+          // 用于排序
+          sortOrder:
+            question.type === "单选"
+              ? 0
+              : question.type === "多选"
+              ? 1
+              : question.type === "判断"
+              ? 2
+              : question.type === "填空"
+              ? 3
+              : 4,
           // 截取一部分内容
           content: question.content.slice(0, 20),
           difficulty: question.difficulty,
           updatedAt: formatTimeWithWeekDay(question.updatedAt),
         };
       });
+    },
+
+    // 创建试题集
+    async createQuestionSet() {
+      // 构造请求体
+      const createQuestionSetDto = {
+        title: this.questionSetName,
+        course_id: this.currSelectedTeaCourse.courseId,
+        question_ids: this.questionCar.map((question) => question.id),
+        questionsMeta: this.questionCar.map((question, index) => {
+          return {
+            index: index + 1,
+            presetScore: question.presetScore,
+            question_id: question.id,
+            groupName: question.type,
+          };
+        }),
+        isShare: this.isShare,
+      };
+
+      // 发送请求
+
+      try {
+        const { data } = await apiCreateQuestionSet(createQuestionSetDto);
+        // 提示创建成功
+        this.$q.notify({
+          message: "创建成功",
+          type: "positive",
+        });
+      } catch (e) {
+        // 提示创建失败
+        this.$q.notify({
+          message: "创建失败",
+          type: "negative",
+        });
+      }
     },
 
     // 设置当前选中的教学课程
@@ -887,10 +963,9 @@ export default {
     // 点击查看题车按钮
     handleViewQuestionCarBtnClick() {
       // 按照题目类型排序
-      this.questionCar = this.questionCar.sort((a, b) => {
-        return a.type.localeCompare(b.type);
-      });
-      // this.questionCar = this.questionCar.sort((a, b) => a.type - b.type);
+      this.questionCar = this.questionCar.sort(
+        (a, b) => a.sortOrder - b.sortOrder
+      );
       this.questionCarDig = true;
     },
 
@@ -989,6 +1064,21 @@ export default {
 
       // 打开创建试题集对话框
       this.createQuestionSetDig = true;
+    },
+
+    // 点击创建试题集对话框的确定按钮
+    handleConfirmCreateQuestionSetBtnClick() {
+      // 校验试题集名称
+      if (!this.questionSetName) {
+        this.$q.notify({
+          message: "试题集名称不能为空",
+          type: "negative",
+        });
+        return;
+      }
+
+      // 创建试题集
+      this.createQuestionSet();
     },
   },
 
