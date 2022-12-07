@@ -283,7 +283,7 @@ import { mapGetters } from "vuex";
 import { apiCreateQuestionSet } from "src/api/teacher/questionSet";
 import draggable from "vuedraggable";
 export default {
-  name: "QuestionCar",
+  name: "QuestionCarCard",
   data() {
     return {
       // 基于题车创建试题集对话框

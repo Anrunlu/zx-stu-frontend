@@ -10,6 +10,7 @@
       :dense="questionListTableDense"
       :selected.sync="questionCar"
       selection="multiple"
+      @row-click="handleQuestionTableRowClick"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -271,6 +272,11 @@
 
     <!-- 题车对话框 -->
     <q-dialog v-model="questionCarDig"> <QuestionCar /> </q-dialog>
+
+    <!-- 题目预览对话框 -->
+    <q-dialog v-model="questionViewDig">
+      <QuestionViewCardVue :questionId="currClickedRowHomework.id" />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -279,6 +285,7 @@ import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
 import QuestionCar from "src/components/teacher/questionBank/QuestionCarCard.vue";
+import QuestionViewCardVue from "src/components/teacher/questionBank/QuestionViewCard.vue";
 
 export default {
   name: "QuestionBank",
@@ -366,11 +373,14 @@ export default {
       questionTableFilterDig: false,
       // 题车对话框
       questionCarDig: false,
+      // 题目编辑对话框
+      questionViewDig: false,
     };
   },
 
   components: {
     QuestionCar,
+    QuestionViewCardVue,
   },
 
   computed: {
@@ -482,6 +492,12 @@ export default {
       this.getQuestionList();
     },
 
+    // 点击题目列表的行
+    handleQuestionTableRowClick(evt, row) {
+      this.currClickedRowHomework = row;
+      this.questionViewDig = true;
+    },
+
     // 点击表格上的高级筛选按钮
     handleQuestionTableFilterBtnClick() {
       // 校验是否选择了课程
@@ -500,6 +516,7 @@ export default {
     // 点击高级筛选对话框的确定按钮
     handleQuestionTableFilterDigConfirmBtnClick() {
       this.getQuestionList();
+      this.questionTableFilterDig = false;
     },
 
     // 点击高级筛选对话框的重置按钮

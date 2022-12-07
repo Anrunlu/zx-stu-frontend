@@ -3,7 +3,6 @@ import { uploadWrapper } from "src/utils/qiniu";
 // 剪切板适配器
 export function MyClipboardAdapterPlugin(editor) {
   const editingView = editor.editing.view;
-  console.log(editingView);
   editingView.document.on("clipboardInput", (evt, data) => {
     if (editor.isReadOnly) {
       return;
@@ -42,8 +41,6 @@ export function MyClipboardAdapterPlugin(editor) {
         }
 
         content += `<a href='${url}'>${file.name}</a> &emsp;`;
-
-        console.log(content);
 
         // uploadWrapper(file, fileRename).then(() => {
         //   console.log("123456");
