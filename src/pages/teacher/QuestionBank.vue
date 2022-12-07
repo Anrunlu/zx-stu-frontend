@@ -440,7 +440,7 @@ export default {
 
       // 构造查询条件
       const queryCondition = {
-        type: this.questionTableFilterOptions.type,
+        type: this.questionTableFilterOptions.type || [],
         isSelfOnly: this.questionTableFilterOptions.isSelfOnly,
       };
 
