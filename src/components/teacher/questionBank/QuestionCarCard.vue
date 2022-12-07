@@ -26,177 +26,171 @@
     </q-card-section>
     <q-card-section>
       <q-list bordered class="rounded-borders">
-        <q-expansion-item
-          expand-separator
-          :key="index"
-          :class="questionClass[qType.label]"
-          v-for="(qType, index) in questionTypes"
-        >
-          <template v-slot:header>
-            <q-item-section avatar>
-              <q-avatar :icon="questionIcon[qType.label]" />
-            </q-item-section>
-
-            <q-item-section>
-              {{
-                `${qType.label}(${questionsCountInfo[qType.value]})`
-              }}</q-item-section
-            >
-
-            <q-item-section side>
-              <div class="row items-center">
-                <q-input
-                  square
-                  dense
-                  :disable="qType.lockScore"
-                  v-model.number="qType.currSettingScore"
-                  type="number"
-                  label="分数"
-                  @click.stop=""
-                  style="width: 65px"
-                />
-                <q-toggle
-                  color="primary"
-                  v-model="qType.lockScore"
-                  size="sm"
-                  @input="handleQuestionCarLockScoreToggleClick(qType)"
-                >
-                  锁定分数
-                  <q-tooltip v-if="!qType.lockScore">
-                    锁定后，题目分数将平均化且不可修改
-                  </q-tooltip>
-                </q-toggle>
-              </div>
-            </q-item-section>
-          </template>
-
-          <draggable
-            class="list-group"
-            :list="questions"
-            v-bind="dragOptions"
-            @start="drag = true"
-            @end="drag = false"
+        <div v-for="(qType, index) in questionTypes" :key="index">
+          <q-expansion-item
+            expand-separator
+            :class="questionClass[qType.label]"
+            v-if="questionsCountInfo[qType.value] > 0"
           >
-            <q-list
-              v-for="(question, index) in questions.filter(
-                (question) => question.type === qType.label
-              )"
-              :key="index"
-              bordered
-              class="rounded-borders cursor-move"
-              dense
-            >
-              <q-item class="bg-white">
-                <q-item-section avatar>
-                  <q-chip
-                    :color="questionBadgeColor[question.type]"
-                    text-color="white"
-                    :label="question.type"
-                    :icon="questionIcon[question.type]"
-                    square
-                    size="sm"
-                  />
-                </q-item-section>
+            <template v-slot:header>
+              <q-item-section avatar>
+                <q-avatar :icon="questionIcon[qType.label]" />
+              </q-item-section>
 
-                <q-item-section style="font-size: 18px" class="text-grey-9">
-                  {{ `${index + 1}、${question.content}` }}
-                </q-item-section>
+              <q-item-section>
+                {{
+                  `${qType.label}(${questionsCountInfo[qType.value]})`
+                }}</q-item-section
+              >
 
-                <q-item-section class="col-1">
-                  <span>SFFX001</span>
-                </q-item-section>
-
-                <q-item-section class="col-1">
-                  <span>{{ question.creator }}</span>
-                </q-item-section>
-
+              <q-item-section side>
                 <div class="row items-center">
-                  <q-chip
+                  <q-input
+                    square
                     dense
-                    :label="`${question.presetScore}分`"
-                    :color="question.presetScore > 0 ? 'positive' : ''"
                     :disable="qType.lockScore"
-                    text-color="white"
-                    style="cursor: pointer"
+                    v-model.number="qType.currSettingScore"
+                    type="number"
+                    label="分数"
+                    @click.stop=""
+                    style="width: 65px"
                   />
-                  <q-popup-edit
-                    v-model="question.presetScore"
-                    :validate="(val) => val > 0"
-                    :disable="qType.lockScore"
-                    anchor="top start"
+                  <q-toggle
+                    color="primary"
+                    v-model="qType.lockScore"
+                    size="sm"
+                    @input="handleQuestionCarLockScoreToggleClick(qType)"
                   >
-                    <template v-slot="scope">
-                      <q-input
-                        autofocus
-                        dense
-                        type="number"
-                        v-model="scope.value"
-                        hint="输入题目得分"
-                        :rules="[
-                          (val) => scope.validate(val) || '分数必须大于0',
-                        ]"
-                        @keyup.enter="
-                          handleSetQuestionPresetscore(scope, qType)
-                        "
-                      >
-                        <template v-slot:after>
-                          <q-btn
-                            flat
-                            dense
-                            color="negative"
-                            icon="cancel"
-                            @click.stop="scope.cancel"
-                          />
-
-                          <q-btn
-                            flat
-                            dense
-                            color="positive"
-                            icon="check_circle"
-                            @click.stop="
-                              handleSetQuestionPresetscore(scope, qType)
-                            "
-                            :disable="
-                              scope.validate(scope.value) === false ||
-                              scope.initialValue === scope.value
-                            "
-                          />
-                        </template>
-                      </q-input>
-                    </template>
-                  </q-popup-edit>
+                    锁定分数
+                    <q-tooltip v-if="!qType.lockScore">
+                      锁定后，题目分数将平均化且不可修改
+                    </q-tooltip>
+                  </q-toggle>
                 </div>
+              </q-item-section>
+            </template>
 
-                <q-item-section side>
-                  <div class="text-grey-8 q-gutter-xs">
-                    <q-btn
-                      size="12px"
-                      color="primary"
-                      flat
+            <draggable
+              class="list-group"
+              :list="questions"
+              v-bind="dragOptions"
+              @start="drag = true"
+              @end="drag = false"
+            >
+              <q-list
+                v-for="(question, index) in questions.filter(
+                  (question) => question.type === qType.label
+                )"
+                :key="index"
+                bordered
+                class="rounded-borders cursor-move"
+                dense
+              >
+                <q-item class="bg-white">
+                  <q-item-section avatar>
+                    <QuestionChip :questionType="question.type" />
+                  </q-item-section>
+
+                  <q-item-section style="font-size: 18px" class="text-grey-9">
+                    {{ `${index + 1}、${question.content}` }}
+                  </q-item-section>
+
+                  <q-item-section class="col-1">
+                    <span>SFFX001</span>
+                  </q-item-section>
+
+                  <q-item-section class="col-1">
+                    <span>{{ question.creator }}</span>
+                  </q-item-section>
+
+                  <div class="row items-center">
+                    <q-chip
                       dense
-                      round
-                      icon="edit"
+                      :label="`${question.presetScore}分`"
+                      :color="question.presetScore > 0 ? 'positive' : ''"
+                      :disable="qType.lockScore"
+                      text-color="white"
+                      style="cursor: pointer"
+                    />
+                    <q-popup-edit
+                      v-model="question.presetScore"
+                      :validate="(val) => val > 0"
+                      :disable="qType.lockScore"
+                      anchor="top start"
                     >
-                      <q-tooltip> 编辑题目 </q-tooltip>
-                    </q-btn>
-                    <q-btn
-                      size="12px"
-                      color="red"
-                      flat
-                      dense
-                      round
-                      icon="delete_sweep"
-                      @click="
-                        handleQuestionCarQuestionRemoveBtnClick(question.id)
-                      "
-                      ><q-tooltip> 从题车移除 </q-tooltip></q-btn
-                    >
+                      <template v-slot="scope">
+                        <q-input
+                          autofocus
+                          dense
+                          type="number"
+                          v-model="scope.value"
+                          hint="输入题目得分"
+                          :rules="[
+                            (val) => scope.validate(val) || '分数必须大于0',
+                          ]"
+                          @keyup.enter="
+                            handleSetQuestionPresetscore(scope, qType)
+                          "
+                        >
+                          <template v-slot:after>
+                            <q-btn
+                              flat
+                              dense
+                              color="negative"
+                              icon="cancel"
+                              @click.stop="scope.cancel"
+                            />
+
+                            <q-btn
+                              flat
+                              dense
+                              color="positive"
+                              icon="check_circle"
+                              @click.stop="
+                                handleSetQuestionPresetscore(scope, qType)
+                              "
+                              :disable="
+                                scope.validate(scope.value) === false ||
+                                scope.initialValue === scope.value
+                              "
+                            />
+                          </template>
+                        </q-input>
+                      </template>
+                    </q-popup-edit>
                   </div>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </draggable>
-        </q-expansion-item>
+
+                  <q-item-section side>
+                    <div class="text-grey-8 q-gutter-xs">
+                      <q-btn
+                        size="12px"
+                        color="primary"
+                        flat
+                        dense
+                        round
+                        icon="edit"
+                      >
+                        <q-tooltip> 编辑题目 </q-tooltip>
+                      </q-btn>
+                      <q-btn
+                        size="12px"
+                        color="red"
+                        flat
+                        dense
+                        round
+                        icon="delete_sweep"
+                        @click="
+                          handleQuestionCarQuestionRemoveBtnClick(question.id)
+                        "
+                        ><q-tooltip> 从题车移除 </q-tooltip></q-btn
+                      >
+                    </div>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </draggable>
+          </q-expansion-item>
+        </div>
       </q-list>
     </q-card-section>
     <q-card-actions align="right">
@@ -282,6 +276,7 @@
 import { mapGetters } from "vuex";
 import { apiCreateQuestionSet } from "src/api/teacher/questionSet";
 import draggable from "vuedraggable";
+import QuestionChip from "src/components/common/QuestionChip.vue";
 export default {
   name: "QuestionCarCard",
   data() {
@@ -330,6 +325,7 @@ export default {
 
   components: {
     draggable,
+    QuestionChip,
   },
 
   computed: {
@@ -340,7 +336,6 @@ export default {
     ...mapGetters("questionCar", {
       questionClass: "questionClass",
       questionIcon: "questionIcon",
-      questionBadgeColor: "questionBadgeColor",
     }),
 
     questions: {

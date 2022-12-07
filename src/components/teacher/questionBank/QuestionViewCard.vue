@@ -19,15 +19,7 @@
     <q-card-section>
       <!-- 题干区域 -->
       <div>
-        <q-chip
-          :color="questionBadgeColor[questionDetails.type]"
-          text-color="white"
-          :label="questionDetails.type"
-          :icon="questionIcon[questionDetails.type]"
-          square
-          size="sm"
-          class="q-mb-sm q-ml-none"
-        />
+        <QuestionChip :questionType="questionDetails.type" />
         <div
           class="text-subtitle1 q-pt-sm"
           v-html="questionDetails.content"
@@ -67,15 +59,14 @@
 
     <q-card-actions align="right">
       <q-btn
-        flat
         class="q-ml-sm"
-        color="primary"
+        color="positive"
         icon="add_shopping_cart"
         :disable="inQuestionCar"
         :label="inQuestionCar ? '已加入题车' : '加入题车'"
         @click="handleAddQuestionToCarBtnClick"
       />
-      <q-btn flat class="q-ml-sm" color="primary" icon="edit" label="编辑" />
+      <q-btn class="q-ml-sm" color="primary" icon="edit" label="编辑" />
     </q-card-actions>
   </q-card>
 </template>
@@ -84,6 +75,7 @@
 import { mapGetters } from "vuex";
 import { marked } from "marked";
 import { apiGetQuestionDetail } from "src/api/teacher/questionBank";
+import QuestionChip from "src/components/common/QuestionChip.vue";
 export default {
   name: "QuestionViewCard",
   props: ["questionId", "inQuestionCar"],
@@ -93,12 +85,8 @@ export default {
     };
   },
 
-  computed: {
-    ...mapGetters("questionCar", {
-      questionClass: "questionClass",
-      questionIcon: "questionIcon",
-      questionBadgeColor: "questionBadgeColor",
-    }),
+  components: {
+    QuestionChip,
   },
 
   methods: {

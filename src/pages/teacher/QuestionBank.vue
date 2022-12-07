@@ -70,16 +70,10 @@
         </q-btn>
       </template>
 
-      <template v-slot:body-cell-status="props">
-        <q-linear-progress size="25px" :value="props.row.status" color="accent">
-          <div class="absolute-full flex flex-center">
-            <q-badge
-              color="white"
-              text-color="accent"
-              :label="props.row.status"
-            />
-          </div>
-        </q-linear-progress>
+      <template v-slot:body-cell-type="props">
+        <q-td :props="props">
+          <QuestionChip :questionType="props.row.type" :size="'xs'" />
+        </q-td>
       </template>
 
       <template v-slot:body-cell-action="props">
@@ -290,6 +284,7 @@ import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
 import QuestionCar from "src/components/teacher/questionBank/QuestionCarCard.vue";
 import QuestionViewCardVue from "src/components/teacher/questionBank/QuestionViewCard.vue";
+import QuestionChip from "src/components/common/QuestionChip.vue";
 
 export default {
   name: "QuestionBank",
@@ -385,6 +380,7 @@ export default {
   components: {
     QuestionCar,
     QuestionViewCardVue,
+    QuestionChip,
   },
 
   computed: {
@@ -403,7 +399,14 @@ export default {
         return this.$store.state.questionCar.questions;
       },
       set(val) {
-        this.$store.commit("questionCar/setQuestions", val);
+        if (val.length > 0) {
+          this.$store.commit("questionCar/setQuestions", val);
+        } else {
+          this.questionList.forEach((question) => {
+            question.inQuestionCar = false;
+          });
+          this.$store.commit("questionCar/setQuestions", val);
+        }
       },
     },
 
