@@ -273,6 +273,7 @@
         :questionId="currClickedRowHomework.id"
         :in-question-car="currClickedRowHomework.inQuestionCar"
         @addQuestionToCar="handleAddQuestionToCarReq"
+        @removeQuestionFromCar="handleRemoveQuestionFromCarReq"
       />
     </q-dialog>
   </q-page>
@@ -550,14 +551,6 @@ export default {
       this.questionCarDig = true;
     },
 
-    // 点击题车中移除题目按钮
-    handleQuestionCarQuestionRemoveBtnClick(questionId) {
-      // 根据题目id从题车中移除题目
-      this.questionCar = this.questionCar.filter(
-        (question) => question.id !== questionId
-      );
-    },
-
     // 点击清空题车按钮
     handleQuestionCarClearBtnClick() {
       // 弹窗提示
@@ -593,6 +586,12 @@ export default {
       );
       // 添加到题车
       this.$store.commit("questionCar/addQuestion", question);
+    },
+
+    // 处理子组件传递过来的题目从题车中移除的请求
+    handleRemoveQuestionFromCarReq(questionId) {
+      // 从题车移除
+      this.$store.commit("questionCar/removeQuestion", questionId);
     },
   },
 

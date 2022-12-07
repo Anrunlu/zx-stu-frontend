@@ -73,6 +73,15 @@ export function addQuestion(state, question) {
   state.questions.push(question);
 }
 
+export function removeQuestion(state, questionId) {
+  // 为题目添加一个已离开题车的标识
+  const question = state.questions.find(
+    (question) => question.id === questionId
+  );
+  question.inQuestionCar = false;
+  state.questions.splice(state.questions.indexOf(question), 1);
+}
+
 export function setQuestions(state, questions) {
   // 为每个题目添加一个已加入题车的标识
   questions.forEach((question) => {

@@ -61,9 +61,8 @@
       <q-btn
         class="q-ml-sm"
         color="positive"
-        icon="add_shopping_cart"
-        :disable="inQuestionCar"
-        :label="inQuestionCar ? '已加入题车' : '加入题车'"
+        :icon="inQuestionCar ? 'remove_shopping_cart' : 'add_shopping_cart'"
+        :label="inQuestionCar ? '移出题车' : '加入题车'"
         @click="handleAddQuestionToCarBtnClick"
       />
       <q-btn class="q-ml-sm" color="primary" icon="edit" label="编辑" />
@@ -72,7 +71,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import { marked } from "marked";
 import { apiGetQuestionDetail } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
@@ -108,6 +106,11 @@ export default {
 
     // 加入题车按钮点击事件
     handleAddQuestionToCarBtnClick() {
+      if (this.inQuestionCar) {
+        // 告知题库组件，从题车移除题目
+        this.$emit("removeQuestionFromCar", this.questionDetails.id);
+        return;
+      }
       // 告知题库组件，添加题目到题车
       this.$emit("addQuestionToCar", this.questionDetails.id);
     },

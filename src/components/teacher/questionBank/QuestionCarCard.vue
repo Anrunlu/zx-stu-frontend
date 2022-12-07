@@ -449,6 +449,12 @@ export default {
       }
     },
 
+    // 点击题车中移除题目按钮
+    handleQuestionCarQuestionRemoveBtnClick(questionId) {
+      // 从题车移除
+      this.$store.commit("questionCar/removeQuestion", questionId);
+    },
+
     // 设置题目分数, 第一个参数勿动
     handleSetQuestionPresetscore(scope, qType) {
       scope.set(); // 固定写法
