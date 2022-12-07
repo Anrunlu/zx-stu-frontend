@@ -277,6 +277,7 @@
     <q-dialog v-model="questionViewDig">
       <QuestionViewCardVue
         :questionId="currClickedRowHomework.id"
+        :in-question-car="currClickedRowHomework.inQuestionCar"
         @addQuestionToCar="handleAddQuestionToCarReq"
       />
     </q-dialog>
@@ -583,7 +584,6 @@ export default {
 
     // 处理子组件传递过来的题目添加到题车的请求
     handleAddQuestionToCarReq(questionId) {
-      console.log(questionId);
       // 根据题目id获取题目信息
       const question = this.questionList.find(
         (question) => question.id === questionId

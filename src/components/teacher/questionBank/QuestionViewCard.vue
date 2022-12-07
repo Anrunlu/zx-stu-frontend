@@ -41,9 +41,14 @@
           v-for="(option, index) in questionDetails.answer"
           :key="index"
         >
-          <q-item-section avatar>
+          <q-item-section avatar v-if="questionDetails.type != '填空'">
             <q-icon :color="option.isRight ? 'positive' : 'primary'">{{
               option.mark
+            }}</q-icon>
+          </q-item-section>
+          <q-item-section avatar v-else>
+            <q-icon :color="option.isRight ? 'positive' : 'primary'">{{
+              option.mark.slice(1, 2)
             }}</q-icon>
           </q-item-section>
           <q-item-section>
@@ -66,7 +71,8 @@
         class="q-ml-sm"
         color="primary"
         icon="add_shopping_cart"
-        label="加入题车"
+        :disable="inQuestionCar"
+        :label="inQuestionCar ? '已加入题车' : '加入题车'"
         @click="handleAddQuestionToCarBtnClick"
       />
       <q-btn flat class="q-ml-sm" color="primary" icon="edit" label="编辑" />
@@ -80,7 +86,7 @@ import { marked } from "marked";
 import { apiGetQuestionDetail } from "src/api/teacher/questionBank";
 export default {
   name: "QuestionViewCard",
-  props: ["questionId"],
+  props: ["questionId", "inQuestionCar"],
   data() {
     return {
       questionDetails: {},

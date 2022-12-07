@@ -68,10 +68,16 @@ export function resetState(state) {
 }
 
 export function addQuestion(state, question) {
+  // 为题目添加一个已加入题车的标识
+  question.inQuestionCar = true;
   state.questions.push(question);
 }
 
 export function setQuestions(state, questions) {
+  // 为每个题目添加一个已加入题车的标识
+  questions.forEach((question) => {
+    question.inQuestionCar = true;
+  });
   state.questions = questions;
 }
 
