@@ -400,14 +400,12 @@ export default {
         return this.$store.state.questionCar.questions;
       },
       set(val) {
-        if (val.length > 0) {
-          this.$store.commit("questionCar/setQuestions", val);
-        } else {
-          this.questionList.forEach((question) => {
-            question.inQuestionCar = false;
-          });
-          this.$store.commit("questionCar/setQuestions", val);
-        }
+        // 初始化题目是否在题车状态
+        this.questionList.forEach((question) => {
+          question.inQuestionCar = false;
+        });
+
+        this.$store.commit("questionCar/setQuestions", val);
       },
     },
 
