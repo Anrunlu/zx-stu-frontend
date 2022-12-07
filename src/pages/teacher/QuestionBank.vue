@@ -275,7 +275,10 @@
 
     <!-- 题目预览对话框 -->
     <q-dialog v-model="questionViewDig">
-      <QuestionViewCardVue :questionId="currClickedRowHomework.id" />
+      <QuestionViewCardVue
+        :questionId="currClickedRowHomework.id"
+        @addQuestionToCar="handleAddQuestionToCarReq"
+      />
     </q-dialog>
   </q-page>
 </template>
@@ -576,6 +579,17 @@ export default {
         .onCancel(() => {
           return;
         });
+    },
+
+    // 处理子组件传递过来的题目添加到题车的请求
+    handleAddQuestionToCarReq(questionId) {
+      console.log(questionId);
+      // 根据题目id获取题目信息
+      const question = this.questionList.find(
+        (question) => question.id === questionId
+      );
+      // 添加到题车
+      this.$store.commit("questionCar/addQuestion", question);
     },
   },
 

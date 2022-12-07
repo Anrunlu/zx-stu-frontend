@@ -67,6 +67,7 @@
         color="primary"
         icon="add_shopping_cart"
         label="加入题车"
+        @click="handleAddQuestionToCarBtnClick"
       />
       <q-btn flat class="q-ml-sm" color="primary" icon="edit" label="编辑" />
     </q-card-actions>
@@ -109,6 +110,12 @@ export default {
           type: "negative",
         });
       }
+    },
+
+    // 加入题车按钮点击事件
+    handleAddQuestionToCarBtnClick() {
+      // 告知题库组件，添加题目到题车
+      this.$emit("addQuestionToCar", this.questionDetails.id);
     },
   },
 

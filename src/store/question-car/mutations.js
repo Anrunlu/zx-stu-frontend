@@ -1,3 +1,5 @@
+import { formatTimeWithWeekDay } from "src/utils/time";
+
 function getDefaultState() {
   return {
     questions: [], // 题车
@@ -63,6 +65,10 @@ function getDefaultState() {
 
 export function resetState(state) {
   Object.assign(state, getDefaultState());
+}
+
+export function addQuestion(state, question) {
+  state.questions.push(question);
 }
 
 export function setQuestions(state, questions) {
