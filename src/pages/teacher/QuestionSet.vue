@@ -228,7 +228,7 @@ export default {
         {
           name: "index",
           label: "序号",
-          align: "left",
+          align: "center",
           field: "questionTableIndex",
           sortable: true,
         },
