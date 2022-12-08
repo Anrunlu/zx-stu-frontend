@@ -48,6 +48,14 @@ const routes = [
         },
       },
       {
+        path: "questionSet",
+        component: () => import("pages/teacher/QuestionSet.vue"),
+        meta: {
+          type: "teacher",
+          title: "题集管理",
+        },
+      },
+      {
         path: "homework",
         component: () => import("pages/teacher/Homework.vue"),
         meta: {

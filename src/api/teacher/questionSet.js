@@ -9,3 +9,12 @@ export function apiCreateQuestionSet(data) {
     data,
   });
 }
+
+// 过滤试题集
+export function apiFilterQuestionSets(data) {
+  return loadingFn(request)({
+    url: "/tea/question-set/filterQuestionSets",
+    method: "POST",
+    data,
+  });
+}

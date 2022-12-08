@@ -194,6 +194,7 @@
       </q-list>
     </q-card-section>
     <q-card-actions align="right">
+      <q-btn class="q-ml-sm" color="primary" label="预览" icon="visibility" />
       <q-btn
         class="q-ml-sm"
         color="primary"
