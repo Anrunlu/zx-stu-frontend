@@ -1,22 +1,13 @@
 <template>
   <q-card style="width: 1100px; max-width: 80vw">
-    <q-card-section class="bg-primary text-white q-py-sm">
-      <div class="text-h5">
-        <q-icon name="add_shopping_cart" />
-        题车(共{{ questionsCountInfo.total }}题)
-        <q-btn
-          round
-          flat
-          dense
-          icon="close"
-          class="float-right"
-          color="white"
-          v-close-popup
-        ></q-btn>
-      </div>
-    </q-card-section>
+    <!-- 标题栏 -->
+    <CardBar
+      :title="`题车(共${questionsCountInfo.total}题)`"
+      icon="add_shopping_cart"
+    />
     <q-card-section class="q-pb-sm">
       <q-btn
+        outline
         :color="questionsCountInfo.totalScore == 100 ? 'positive' : 'negative'"
         :icon="questionsCountInfo.totalScore == 100 ? 'check' : 'warning'"
         :label="`当前总分(${questionsCountInfo.totalScore})`"
@@ -327,6 +318,7 @@ export default {
   components: {
     draggable,
     QuestionChip,
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {

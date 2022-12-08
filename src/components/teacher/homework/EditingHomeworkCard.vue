@@ -3,19 +3,9 @@
   <!-- 当 mode = publish 为发布作业; mode = modify 为修改作业  -->
   <q-card style="width: 700px; max-width: 80vw">
     <q-form @submit="handleEditingHomeworkFormSubmit">
-      <q-card-section>
-        <q-btn
-          round
-          flat
-          dense
-          icon="close"
-          class="float-right"
-          color="grey-8"
-          v-close-popup
-        ></q-btn>
-        <div class="text-h5">编辑作业</div>
-        <q-separator class="q-mt-md" />
-      </q-card-section>
+      <!-- 标题栏 -->
+      <CardBar title="编辑作业" icon="edit" />
+
       <q-card-section class="q-pa-sm">
         <q-list class="row">
           <!-- 使用的试题集 -->
@@ -354,6 +344,10 @@ export default {
         "期末考试",
       ],
     };
+  },
+
+  components: {
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {

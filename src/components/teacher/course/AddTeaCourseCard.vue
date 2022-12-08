@@ -1,23 +1,13 @@
 <template>
   <!-- 添加课程 -->
   <q-card style="width: 600px; max-width: 80vw">
-    <q-card-section>
-      <div class="text-h5 q-ml-sm">
-        添加课程
-        <q-btn
-          round
-          flat
-          dense
-          icon="close"
-          class="float-right"
-          color="grey-8"
-          v-close-popup
-        ></q-btn>
-      </div>
-    </q-card-section>
+    <!-- 标题栏 -->
+    <CardBar title="添加课程" icon="class" />
 
     <q-card-section>
       <q-select
+        square
+        outlined
         use-input
         dense
         @filter="filterFnForAddCourse"
@@ -64,6 +54,10 @@ export default {
       filteredCourseList: [],
       courseList: [],
     };
+  },
+
+  components: {
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {

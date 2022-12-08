@@ -2,22 +2,10 @@
   <div style="width: 800px; max-width: 80vw">
     <!-- 教学班学生表格 -->
     <q-card>
-      <q-card-section class="bg-primary text-white q-py-sm">
-        <div class="text-subtitle1">
-          <q-icon name="people" />
-          {{ currSelectedTeaClassroom.name }}
-          <q-btn
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="white"
-            v-close-popup
-          ></q-btn>
-        </div>
-      </q-card-section>
-      <q-card-section class="q-py-none">
+      <!-- 标题栏 -->
+      <CardBar :title="currSelectedTeaClassroom.name" icon="people" />
+
+      <q-card-section>
         <q-table
           class="full-width"
           flat
@@ -194,6 +182,10 @@ export default {
       // 向教学班待添加的学生学号
       stuWaitToAddUsername: "",
     };
+  },
+
+  components: {
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {

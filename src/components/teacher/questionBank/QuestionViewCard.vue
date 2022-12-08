@@ -1,44 +1,29 @@
 <template>
   <q-card style="width: 800px; max-width: 80vw">
-    <q-card-section class="bg-primary text-white q-py-sm">
-      <div class="text-h5">
-        <!-- 标题名称 -->
-        <q-icon name="visibility" />
-        题目预览
-        <!-- 右侧按钮 -->
-        <div class="float-right">
-          <!-- 上一题下一题 -->
-          <q-btn
-            round
-            flat
-            dense
-            icon="arrow_back"
-            color="white"
-            @click="$emit('prevQuestion', questionId)"
-          >
-            <q-tooltip> 上一题 </q-tooltip>
-          </q-btn>
-          <q-btn
-            round
-            flat
-            dense
-            icon="arrow_forward"
-            color="white"
-            @click="$emit('nextQuestion', questionId)"
-            ><q-tooltip> 下一题 </q-tooltip></q-btn
-          >
-          <!-- 关闭按钮 -->
-          <q-btn
-            round
-            flat
-            dense
-            icon="close"
-            color="white"
-            v-close-popup
-          ></q-btn>
-        </div>
-      </div>
-    </q-card-section>
+    <!-- 标题栏 -->
+    <CardBar title="题目预览" icon="visibility">
+      <template v-slot:right>
+        <q-btn
+          round
+          flat
+          dense
+          icon="arrow_back"
+          color="white"
+          @click="$emit('prevQuestion', questionId)"
+        >
+          <q-tooltip> 上一题 </q-tooltip>
+        </q-btn>
+        <q-btn
+          round
+          flat
+          dense
+          icon="arrow_forward"
+          color="white"
+          @click="$emit('nextQuestion', questionId)"
+          ><q-tooltip> 下一题 </q-tooltip></q-btn
+        >
+      </template>
+    </CardBar>
 
     <q-card-section style="max-height: 70vh" class="scroll">
       <!-- 题干区域 -->
@@ -110,6 +95,7 @@ export default {
 
   components: {
     QuestionChip,
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   watch: {

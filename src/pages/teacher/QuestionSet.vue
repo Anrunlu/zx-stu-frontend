@@ -82,12 +82,9 @@
           >
             <q-popup-proxy v-if="props.row.citationTimes > 0">
               <q-card>
-                <q-card-section
-                  class="bg-primary text-white text-subtitle1 q-py-sm"
-                >
-                  <q-icon name="poll" />
-                  引用本试题集的作业
-                </q-card-section>
+                <!-- 标题栏 -->
+                <CardBar title="引用本试题集的作业" icon="poll" />
+
                 <q-list>
                   <q-item
                     clickable
@@ -324,7 +321,9 @@ export default {
     };
   },
 
-  components: {},
+  components: {
+    CardBar: () => import("src/components/common/CardBar.vue"),
+  },
 
   computed: {
     ...mapGetters("teaCourse", {

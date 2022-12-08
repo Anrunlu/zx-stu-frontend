@@ -1,25 +1,10 @@
 <template>
   <!-- 添加教学班 -->
   <q-card style="width: 700px; max-width: 80vw">
-    <q-card-section>
-      <div class="text-h5 q-ml-sm">
-        添加教学班
-        <q-btn
-          round
-          flat
-          dense
-          icon="close"
-          class="float-right"
-          color="grey-8"
-          v-close-popup
-        ></q-btn>
-      </div>
-    </q-card-section>
-    <q-tabs
-      v-model="addClassroomTabMode"
-      class="bg-primary text-white shadow-2"
-      inline-label
-    >
+    <!-- 标题栏 -->
+    <CardBar title="添加教学班" icon="class" />
+
+    <q-tabs v-model="addClassroomTabMode" class="shadow-2" inline-label>
       <q-tab
         name="throughOriginClassroom"
         icon="folder_shared"
@@ -37,6 +22,8 @@
       <q-tab-panel name="throughOriginClassroom">
         <q-card-section align="right">
           <q-input
+            outlined
+            square
             dense
             debounce="300"
             v-model="combinedClassroomWaitToCreate.name"
@@ -48,6 +35,8 @@
             </template>
           </q-input>
           <q-select
+            outlined
+            square
             use-input
             @filter="filterFnForAddClassroom"
             @input="handleInputOriginClassroomNameChange"
@@ -73,6 +62,8 @@
       <q-tab-panel name="throughOfficialFile">
         <q-card-section align="right">
           <q-input
+            outlined
+            square
             dense
             debounce="300"
             v-model="combinedClassroomWaitToCreate.name"
@@ -84,6 +75,8 @@
             </template>
           </q-input>
           <q-file
+            outlined
+            square
             dense
             class="q-mt-md"
             v-model="officalExcelFile"
@@ -152,6 +145,10 @@ export default {
       // 过滤后的自然班列表
       filteredOriginClassroomList: [],
     };
+  },
+
+  components: {
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {
