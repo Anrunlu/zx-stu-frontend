@@ -83,6 +83,40 @@
       </template>
 
       <template v-slot:body-cell-status="props">
+        <q-td :props="props">
+          <q-chip
+            square
+            size="sm"
+            :icon="
+              props.row.statusByTime == '已截止'
+                ? 'alarm_off'
+                : props.row.statusByTime == '未开始'
+                ? 'alarm_add'
+                : 'alarm'
+            "
+            :color="
+              props.row.statusByTime == '已截止'
+                ? ''
+                : props.row.statusByTime == '未开始'
+                ? 'primary'
+                : 'positive'
+            "
+            :text-color="props.row.statusByTime == '已截止' ? 'grey' : 'white'"
+            dense
+            :label="props.row.statusByTime"
+          />
+
+          <q-tooltip
+            :disable="$q.platform.is.mobile"
+            v-close-popup
+            :label="props.row.endtime"
+          >
+            截止时间{{ props.row.endtimeFormatted }}
+          </q-tooltip>
+        </q-td>
+      </template>
+
+      <!-- <template v-slot:body-cell-status="props">
         <q-linear-progress size="25px" :value="props.row.status" color="accent">
           <div class="absolute-full flex flex-center">
             <q-badge
@@ -92,7 +126,7 @@
             />
           </div>
         </q-linear-progress>
-      </template>
+      </template> -->
 
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
@@ -125,7 +159,7 @@
               icon="access_time"
               @click.stop=""
             >
-              <q-tooltip> 延长某一个学生作答时间 </q-tooltip>
+              <q-tooltip> 延长学生作答时间 </q-tooltip>
             </q-btn>
             <!-- <q-btn
               flat
@@ -172,9 +206,14 @@
 <script>
 import { apiGetHomeworks } from "src/api/teacher/homework";
 import { mapGetters } from "vuex";
-import { formatTimeWithWeekDay } from "src/utils/time";
+import {
+  computeHomeworkStatusByTime,
+  formatTimeWithWeekDay,
+} from "src/utils/time";
 import EditingHomeworkCard from "src/components/teacher/homework/EditingHomeworkCard.vue";
+
 export default {
+  name: "Homework",
   data() {
     return {
       // 作业列表
@@ -210,10 +249,9 @@ export default {
           sortable: true,
         },
         {
-          name: "endtime",
-          label: "截止时间",
+          name: "status",
+          label: "作业状态",
           align: "center",
-          field: (row) => formatTimeWithWeekDay(row.endtime),
           sortable: true,
         },
         // {
@@ -296,6 +334,8 @@ export default {
           return {
             ...homework,
             index: index + 1,
+            endtimeFormatted: formatTimeWithWeekDay(homework.endtime),
+            statusByTime: computeHomeworkStatusByTime(homework),
           };
         });
       } catch (error) {

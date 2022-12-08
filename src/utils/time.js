@@ -1,3 +1,5 @@
+import { date } from "quasar";
+
 /**
  * 格式化时间1
  * @param {后端返回的标准时间} datatime
@@ -25,7 +27,7 @@ export function formatTimeWithWeekDay(datetime) {
  * @param {后端返回的标准时间} datatime
  * @returns 格式：2021-03-22/22:00:00/周一
  */
- export function formatTimeWithWeekDayAndSecond(datetime) {
+export function formatTimeWithWeekDayAndSecond(datetime) {
   const Time = new Date(datetime);
   const y = Time.getFullYear(); // 年
   let m = Time.getMonth() + 1; // 月
@@ -86,4 +88,21 @@ export function getHourAndMinute(datetime) {
   minute = minute < 10 ? "0" + minute : minute;
 
   return `${h}:${minute}`;
+}
+
+// 计算作业状态
+export function computeHomeworkStatusByTime(homework) {
+  const now = new Date();
+  const start = new Date(homework.starttime);
+  const end = new Date(homework.endtime);
+
+  const diff = date.getDateDiff(end, now, "hours");
+
+  if (now.getTime() < start.getTime()) {
+    return "未开始";
+  } else if (now.getTime() < end.getTime()) {
+    return `进行中|剩余${diff}小时`;
+  } else {
+    return "已截止";
+  }
 }
