@@ -156,7 +156,7 @@
               dense
               size="sm"
               color="primary"
-              icon="access_time"
+              icon="update"
               @click.stop=""
             >
               <q-tooltip> 延长学生作答时间 </q-tooltip>
