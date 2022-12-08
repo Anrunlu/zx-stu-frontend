@@ -16,7 +16,7 @@
       </div>
     </q-card-section>
 
-    <q-card-section>
+    <q-card-section style="max-height: 70vh" class="scroll">
       <!-- 题干区域 -->
       <div>
         <QuestionChip :questionType="questionDetails.type" />
