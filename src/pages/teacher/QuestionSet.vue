@@ -68,9 +68,43 @@
         </q-btn>
       </template>
 
-      <template v-slot:body-cell-type="props">
+      <template v-slot:body-cell-citationTimes="props">
         <q-td :props="props">
-          <QuestionChip :questionType="props.row.type" :size="'xs'" />
+          <q-chip
+            class="cursor-pointer"
+            size="sm"
+            dense
+            square
+            icon="poll"
+            :color="props.row.citationTimes > 0 ? 'primary' : 'grey'"
+            text-color="white"
+            :label="props.row.citationTimes"
+          >
+            <q-popup-proxy v-if="props.row.citationTimes > 0">
+              <q-card>
+                <q-card-section
+                  class="bg-primary text-white text-subtitle1 q-py-sm"
+                >
+                  <q-icon name="poll" />
+                  引用本试题集的作业
+                </q-card-section>
+                <q-list>
+                  <q-item
+                    clickable
+                    v-ripple
+                    :key="index"
+                    v-for="(homework, index) in props.row.homeworks"
+                  >
+                    <q-item-section
+                      >【{{ homework.receiver.name }}】{{
+                        homework.title
+                      }}</q-item-section
+                    >
+                  </q-item>
+                </q-list>
+              </q-card>
+            </q-popup-proxy>
+          </q-chip>
         </q-td>
       </template>
 
@@ -215,7 +249,6 @@
 import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestionSets } from "src/api/teacher/questionSet";
-import QuestionChip from "src/components/common/QuestionChip.vue";
 
 export default {
   name: "QuestionSet",
@@ -237,6 +270,13 @@ export default {
           label: "题集名称",
           align: "center",
           field: "title",
+          sortable: true,
+        },
+        {
+          name: "citationTimes",
+          label: "被引用",
+          align: "center",
+          field: "citationTimes",
           sortable: true,
         },
         {
@@ -284,9 +324,7 @@ export default {
     };
   },
 
-  components: {
-    QuestionChip,
-  },
+  components: {},
 
   computed: {
     ...mapGetters("teaCourse", {
@@ -355,6 +393,8 @@ export default {
           creator: questionSet.creator.nickname,
           title: questionSet.title,
           updatedAt: formatTimeWithWeekDay(questionSet.updatedAt),
+          citationTimes: questionSet.homeworks.length,
+          homeworks: questionSet.homeworks,
         };
       });
     },
