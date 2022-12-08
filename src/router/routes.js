@@ -65,7 +65,7 @@ const routes = [
       },
       {
         path: "profile",
-        component: () => import("pages/teacher/Profile.vue"),
+        component: () => import("pages/Profile.vue"),
         meta: {
           type: "teacher",
           title: "个人设置",

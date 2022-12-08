@@ -122,6 +122,7 @@ import AddTeaClassroomCard from "src/components/teacher/course/AddTeaClassroomCa
 import TeaClassroomStuTable from "src/components/teacher/course/TeaClassroomStuTable.vue";
 import { mapGetters } from "vuex";
 export default {
+  name: "Course",
   data() {
     return {
       // 教学课程列表表头列表

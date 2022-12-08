@@ -218,7 +218,7 @@ import { apiFilterQuestionSets } from "src/api/teacher/questionSet";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 
 export default {
-  name: "QuestionBank",
+  name: "QuestionSet",
   data() {
     return {
       // 题集列表

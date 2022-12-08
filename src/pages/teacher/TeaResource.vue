@@ -193,6 +193,7 @@ import {
 import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 export default {
+  name: "TeaResource",
   data() {
     return {
       // 教学资源列表

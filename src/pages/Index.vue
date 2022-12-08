@@ -14,7 +14,7 @@ import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 
 export default {
-  name: "app",
+  name: "Index",
   data() {
     return {
       editor: Editor,
