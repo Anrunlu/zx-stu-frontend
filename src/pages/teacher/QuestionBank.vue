@@ -270,10 +270,13 @@
     <!-- 题目预览对话框 -->
     <q-dialog v-model="questionViewDig">
       <QuestionViewCardVue
+        ref="questionViewCard"
         :questionId="currClickedRowHomework.id"
         :in-question-car="currClickedRowHomework.inQuestionCar"
         @addQuestionToCar="handleAddQuestionToCarReq"
         @removeQuestionFromCar="handleRemoveQuestionFromCarReq"
+        @prevQuestion="handlePrevQuestionReq"
+        @nextQuestion="handleNextQuestionReq"
       />
     </q-dialog>
   </q-page>
@@ -590,6 +593,48 @@ export default {
     handleRemoveQuestionFromCarReq(questionId) {
       // 从题车移除
       this.$store.commit("questionCar/removeQuestion", questionId);
+    },
+
+    // 处理子组件切换上一题的请求
+    handlePrevQuestionReq(currQuestionId) {
+      // 获取当前题目的索引
+      const currQuestionIndex = this.questionList.findIndex(
+        (question) => question.id === currQuestionId
+      );
+      // 获取上一题的索引
+      const prevQuestionIndex = currQuestionIndex - 1;
+      // 如果上一题的索引小于0，说明已经是第一题了，直接返回
+      if (prevQuestionIndex < 0) {
+        this.$q.notify({
+          message: "已经是第一题了",
+          type: "warning",
+        });
+        return;
+      }
+
+      // 切换到上一题
+      this.currClickedRowHomework = this.questionList[prevQuestionIndex];
+    },
+
+    // 处理子组件切换下一题的请求
+    handleNextQuestionReq(currQuestionId) {
+      // 获取当前题目的索引
+      const currQuestionIndex = this.questionList.findIndex(
+        (question) => question.id === currQuestionId
+      );
+      // 获取下一题的索引
+      const nextQuestionIndex = currQuestionIndex + 1;
+      // 如果下一题的索引大于题目列表的长度，说明已经是最后一题了，直接返回
+      if (nextQuestionIndex >= this.questionList.length) {
+        this.$q.notify({
+          message: "已经是最后一题了",
+          type: "warning",
+        });
+        return;
+      }
+
+      // 切换到下一题
+      this.currClickedRowHomework = this.questionList[nextQuestionIndex];
     },
   },
 
