@@ -24,7 +24,7 @@
         <q-tooltip> 总分须为100分 </q-tooltip>
       </q-btn>
     </q-card-section>
-    <q-card-section>
+    <q-card-section style="height: 70vh" class="scroll">
       <q-list bordered class="rounded-borders">
         <div v-for="(qType, index) in questionTypes" :key="index">
           <q-expansion-item
