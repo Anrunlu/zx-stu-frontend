@@ -325,7 +325,6 @@ export default {
 
       // 构造查询条件
       const queryCondition = {
-        type: this.questionSetTableFilterOptions.type || [],
         isSelfOnly: this.questionSetTableFilterOptions.isSelfOnly,
       };
 
