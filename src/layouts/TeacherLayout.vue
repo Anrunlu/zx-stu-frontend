@@ -319,12 +319,6 @@ export default {
       await this.$store.dispatch("user/userLogout");
       // 退出登录后，关闭socket连接
       this.$socket.close();
-      // 提示登录成功
-      this.$q.notify({
-        message: "退出成功",
-        color: "positive",
-        icon: "check",
-      });
       // 跳转到登录页面
       this.$router.push(`/login`);
     },

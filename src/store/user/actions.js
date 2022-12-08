@@ -98,6 +98,8 @@ export function userLogout({ commit }) {
     commit("resetState");
     removeToken();
     window.localStorage.clear();
+    // 刷新页面
+    window.location.reload();
     resolve();
   });
 }
