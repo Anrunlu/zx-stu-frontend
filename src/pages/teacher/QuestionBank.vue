@@ -271,8 +271,8 @@
     <q-dialog v-model="questionViewDig">
       <QuestionViewCardVue
         ref="questionViewCard"
-        :questionId="currClickedRowHomework.id"
-        :in-question-car="currClickedRowHomework.inQuestionCar"
+        :questionId="currClickedRowQuestion.id"
+        :in-question-car="currClickedRowQuestion.inQuestionCar"
         @addQuestionToCar="handleAddQuestionToCarReq"
         @removeQuestionFromCar="handleRemoveQuestionFromCarReq"
         @prevQuestion="handlePrevQuestionReq"
@@ -357,7 +357,7 @@ export default {
         rowsPerPage: 30,
       },
       // 当前点击的题目
-      currClickedRowHomework: {},
+      currClickedRowQuestion: {},
       // 筛选条件
       questionTableFilterOptions: {
         // 题目类型
@@ -376,7 +376,7 @@ export default {
       questionTableFilterDig: false,
       // 题车对话框
       questionCarDig: false,
-      // 题目编辑对话框
+      // 题目预览对话框
       questionViewDig: false,
     };
   },
@@ -503,7 +503,7 @@ export default {
 
     // 点击题目列表的行
     handleQuestionTableRowClick(evt, row) {
-      this.currClickedRowHomework = row;
+      this.currClickedRowQuestion = row;
       this.questionViewDig = true;
     },
 
@@ -613,7 +613,7 @@ export default {
       }
 
       // 切换到上一题
-      this.currClickedRowHomework = this.questionList[prevQuestionIndex];
+      this.currClickedRowQuestion = this.questionList[prevQuestionIndex];
     },
 
     // 处理子组件切换下一题的请求
@@ -634,7 +634,7 @@ export default {
       }
 
       // 切换到下一题
-      this.currClickedRowHomework = this.questionList[nextQuestionIndex];
+      this.currClickedRowQuestion = this.questionList[nextQuestionIndex];
     },
   },
 
