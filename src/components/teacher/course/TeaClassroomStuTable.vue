@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 750px; max-width: 80vw">
+  <div style="width: 700px; max-width: 80vw">
     <!-- 教学班学生表格 -->
     <q-card>
       <!-- 标题栏 -->
@@ -43,8 +43,9 @@
           <template v-slot:body-cell-nickname="props">
             <q-td :props="props">
               <q-chip square dense color="white" size="sm">
-                <q-avatar>
+                <q-avatar color="secondary" text-color="white">
                   <img v-if="props.row.avatar" :src="props.row.avatar" />
+                  <span v-else>{{ props.row.nickname.slice(0, 1) }}</span>
                 </q-avatar>
                 {{ props.row.nickname }}
               </q-chip>
@@ -147,14 +148,14 @@ export default {
         {
           name: "classroom",
           label: "班级",
-          align: "center",
+          align: "left",
           field: "classroom",
           sortable: true,
         },
         {
           name: "username",
           label: "学号",
-          align: "center",
+          align: "left",
           field: "username",
           sortable: true,
         },
@@ -168,7 +169,7 @@ export default {
         {
           name: "sex",
           label: "性别",
-          align: "center",
+          align: "left",
           field: "sex",
           sortable: true,
         },
