@@ -74,8 +74,28 @@
         :label="inQuestionCar ? '移出题车' : '加入题车'"
         @click="handleAddQuestionToCarBtnClick"
       />
-      <q-btn class="q-ml-sm" color="primary" icon="edit" label="编辑" />
+      <q-btn
+        class="q-ml-sm"
+        color="primary"
+        icon="edit"
+        label="编辑"
+        @click="handleEditQuestionBtnClick"
+      />
     </q-card-actions>
+
+    <!-- 题目编辑对话框 -->
+    <q-dialog
+      v-model="questionEditDig"
+      persistent
+      maximized
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+      <QuestionEditCard
+        :questionId="questionId"
+        @close="questionEditDig = false"
+      />
+    </q-dialog>
   </q-card>
 </template>
 
@@ -90,12 +110,15 @@ export default {
   data() {
     return {
       questionDetails: {},
+      questionEditDig: false,
     };
   },
 
   components: {
     QuestionChip,
     CardBar: () => import("src/components/common/CardBar.vue"),
+    QuestionEditCard: () =>
+      import("src/components/teacher/questionBank/QuestionEditCard.vue"),
   },
 
   watch: {
@@ -141,6 +164,11 @@ export default {
       }
       // 告知题库组件，添加题目到题车
       this.$emit("addQuestionToCar", this.questionDetails.id);
+    },
+
+    // 编辑题目按钮点击事件
+    handleEditQuestionBtnClick() {
+      this.questionEditDig = true;
     },
   },
 

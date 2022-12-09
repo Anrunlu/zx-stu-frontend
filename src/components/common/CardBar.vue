@@ -1,6 +1,20 @@
 <template>
   <div>
-    <q-bar class="bg-primary text-white shadow-1">
+    <q-toolbar v-if="toolbar" class="bg-primary text-white shadow-1">
+      <q-btn flat round dense :icon="icon" />
+      <q-toolbar-title>
+        {{ title }}
+      </q-toolbar-title>
+
+      <!-- 定义右侧功能插槽 -->
+      <slot name="right"> </slot>
+
+      <q-btn dense flat icon="close" v-close-popup>
+        <q-tooltip>关闭</q-tooltip>
+      </q-btn>
+    </q-toolbar>
+
+    <q-bar v-else class="bg-primary text-white shadow-1">
       <q-icon :name="icon" />
       <div>{{ title }}</div>
 
@@ -21,6 +35,10 @@
 export default {
   name: "CardBar",
   props: {
+    toolbar: {
+      type: Boolean,
+      default: false,
+    },
     icon: {
       type: String,
     },

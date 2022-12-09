@@ -85,7 +85,7 @@
               size="sm"
               color="primary"
               icon="edit"
-              @click.stop=""
+              @click.stop="handleTableCellEditBtnClick(props.row)"
             >
               <q-tooltip> 编辑题目 </q-tooltip>
             </q-btn>
@@ -279,6 +279,20 @@
         @nextQuestion="handleNextQuestionReq"
       />
     </q-dialog>
+
+    <!-- 题目编辑对话框 -->
+    <q-dialog
+      v-model="questionEditDig"
+      persistent
+      maximized
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+      <QuestionEditCard
+        :questionId="currClickedRowQuestion.id"
+        @close="questionEditDig = false"
+      />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -378,6 +392,8 @@ export default {
       questionCarDig: false,
       // 题目预览对话框
       questionViewDig: false,
+      // 题目编辑对话框
+      questionEditDig: false,
     };
   },
 
@@ -385,6 +401,8 @@ export default {
     QuestionCar,
     QuestionViewCard,
     QuestionChip,
+    QuestionEditCard: () =>
+      import("src/components/teacher/questionBank/QuestionEditCard.vue"),
   },
 
   computed: {
@@ -505,6 +523,12 @@ export default {
     handleQuestionTableRowClick(evt, row) {
       this.currClickedRowQuestion = row;
       this.questionViewDig = true;
+    },
+
+    // 点击题目列表的编辑按钮
+    handleTableCellEditBtnClick(row) {
+      this.currClickedRowQuestion = row;
+      this.questionEditDig = true;
     },
 
     // 点击表格上的高级筛选按钮
