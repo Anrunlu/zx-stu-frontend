@@ -33,7 +33,7 @@
                 dense
                 flat
                 color="red"
-                icon="delete"
+                icon="o_delete"
                 size="xs"
                 label="移除课程"
                 @click="handleRemoveTeaCourese(teaCourse)"
@@ -46,7 +46,7 @@
                 <q-btn
                   flat
                   dense
-                  size="sm"
+                  size="md"
                   color="primary"
                   icon="edit"
                   @click.stop="handleRenameTeaClassroom(props.row)"
@@ -55,9 +55,9 @@
                 <q-btn
                   flat
                   dense
-                  size="md"
+                  size="sm"
                   color="red"
-                  icon="delete"
+                  icon="o_delete"
                   @click.stop="handleDeleteTeaClassroom(teaCourse, props.row)"
                   ><q-tooltip> 移除教学班</q-tooltip></q-btn
                 >

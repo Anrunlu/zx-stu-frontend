@@ -1,13 +1,13 @@
 <template>
-  <div style="width: 800px; max-width: 80vw">
+  <div style="width: 750px; max-width: 80vw">
     <!-- 教学班学生表格 -->
     <q-card>
       <!-- 标题栏 -->
       <CardBar :title="currSelectedTeaClassroom.name" icon="people" />
 
-      <q-card-section>
+      <q-card-section style="max-height: 80vh" class="scroll">
         <q-table
-          class="full-width"
+          dense
           flat
           :data="teaClassroomStuList"
           :columns="teaClassroomStuListColumns"
@@ -16,7 +16,7 @@
           :pagination="teaClassroomStuListTablePagination"
         >
           <template v-slot:top-left>
-            <div class="q-gutter-sm row q-mt-sm">
+            <div class="q-gutter-sm row">
               <q-btn
                 dense
                 flat
@@ -39,6 +39,18 @@
               </template>
             </q-input>
           </template>
+
+          <template v-slot:body-cell-nickname="props">
+            <q-td :props="props">
+              <q-chip square dense color="white" size="sm">
+                <q-avatar>
+                  <img v-if="props.row.avatar" :src="props.row.avatar" />
+                </q-avatar>
+                {{ props.row.nickname }}
+              </q-chip>
+            </q-td>
+          </template>
+
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
               <div class="q-gutter-sm">
@@ -47,16 +59,16 @@
                   dense
                   size="sm"
                   color="primary"
-                  icon="settings"
-                  @click="resetStuPassword(props.row)"
+                  icon="settings_backup_restore"
+                  @click="handleResetStuPassword(props.row)"
                   ><q-tooltip> 重置密码 </q-tooltip></q-btn
                 >
                 <q-btn
                   flat
                   dense
-                  size="md"
+                  size="sm"
                   color="red"
-                  icon="delete"
+                  icon="o_delete"
                   @click="handleRemoveStudentsFromCombinedClassroom(props.row)"
                   ><q-tooltip> 从教学班移除学生 </q-tooltip></q-btn
                 >
@@ -149,7 +161,7 @@ export default {
         {
           name: "nickname",
           label: "姓名",
-          align: "center",
+          align: "left",
           field: "nickname",
           sortable: true,
         },
@@ -174,7 +186,7 @@ export default {
       teaClassroomStuListTablePagination: {
         sortBy: "username",
         descending: false,
-        rowsPerPage: 10,
+        rowsPerPage: 15,
       },
 
       // 向教学班添加学生对话框
@@ -209,6 +221,7 @@ export default {
           classroom: curr.joinedClassrooms[0].name,
           username: curr.user.username,
           nickname: curr.user.nickname,
+          avatar: curr.user.avatar,
           sex: curr.user.sex,
           grade: curr.grade,
           _id: curr._id,
@@ -309,21 +322,44 @@ export default {
     },
 
     // 重置学生密码
-    async resetStuPassword(stu) {
-      try {
-        await apiResetStuPassword(stu.userid);
-        // 提示重置成功
-        this.$q.notify({
-          message: "密码重置成功",
-          type: "positive",
-        });
-      } catch (error) {
-        this.$q.notify({
-          message: `密码重置失败`,
-          type: "negative",
-          timeout: 300,
-        });
-      }
+    async handleResetStuPassword(stu) {
+      // 弹出确认框
+      const confirm = await this.$q.dialog({
+        title: "请确认",
+        message: `重置学生【${stu.nickname}】密码`,
+        ok: {
+          label: "重置",
+          push: true,
+          color: "negative",
+        },
+        cancel: {
+          label: "取消",
+          push: true,
+        },
+        persistent: true,
+      });
+
+      confirm.onCancel(() => {
+        // 取消
+        return;
+      });
+
+      confirm.onOk(async () => {
+        try {
+          await apiResetStuPassword(stu.userid);
+          // 提示重置成功
+          this.$q.notify({
+            message: "密码重置成功",
+            type: "positive",
+          });
+        } catch (error) {
+          this.$q.notify({
+            message: `密码重置失败`,
+            type: "negative",
+            timeout: 300,
+          });
+        }
+      });
     },
 
     // 点击添加学生到教学班按钮
