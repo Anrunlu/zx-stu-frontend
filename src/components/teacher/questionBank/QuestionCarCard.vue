@@ -52,7 +52,7 @@
                     size="sm"
                     @input="handleQuestionCarLockScoreToggleClick(qType)"
                   >
-                    锁定分数
+                    平均化
                     <q-tooltip v-if="!qType.lockScore">
                       锁定后，题目分数将平均化且不可修改
                     </q-tooltip>
@@ -61,23 +61,23 @@
               </q-item-section>
             </template>
 
-            <draggable
-              class="list-group"
-              :list="questions"
-              v-bind="dragOptions"
-              @start="drag = true"
-              @end="drag = false"
-            >
-              <q-list
-                v-for="(question, index) in questions.filter(
-                  (question) => question.type === qType.label
-                )"
-                :key="index"
-                bordered
-                class="rounded-borders cursor-move"
-                dense
+            <q-list bordered class="rounded-borders cursor-move" dense>
+              <draggable
+                :list="questions"
+                v-bind="dragOptions"
+                @start="drag = true"
+                @end="drag = false"
               >
-                <q-item class="bg-white">
+                <q-item
+                  class="bg-white"
+                  v-for="(question, index) in questions.filter(
+                    (question) => question.type === qType.label
+                  )"
+                  :key="index"
+                  clickable
+                  @click="handleQuestionListItemClick(question)"
+                  dense
+                >
                   <q-item-section avatar>
                     <QuestionChip :questionType="question.type" />
                   </q-item-section>
@@ -94,7 +94,7 @@
                     <span>{{ question.creator }}</span>
                   </q-item-section>
 
-                  <div class="row items-center">
+                  <div class="row items-center" @click.stop="">
                     <q-chip
                       dense
                       :label="`${question.presetScore}分`"
@@ -102,6 +102,7 @@
                       :disable="qType.lockScore"
                       text-color="white"
                       style="cursor: pointer"
+                      @click.stop=""
                     />
                     <q-popup-edit
                       v-model="question.presetScore"
@@ -120,7 +121,11 @@
                             (val) => scope.validate(val) || '分数必须大于0',
                           ]"
                           @keyup.enter="
-                            handleSetQuestionPresetscore(scope, qType)
+                            handleSetQuestionPresetscore(
+                              scope,
+                              qType,
+                              question.id
+                            )
                           "
                         >
                           <template v-slot:after>
@@ -133,12 +138,17 @@
                             />
 
                             <q-btn
+                              v-close-popup
                               flat
                               dense
                               color="positive"
                               icon="check_circle"
                               @click.stop="
-                                handleSetQuestionPresetscore(scope, qType)
+                                handleSetQuestionPresetscore(
+                                  scope,
+                                  qType,
+                                  question.id
+                                )
                               "
                               :disable="
                                 scope.validate(scope.value) === false ||
@@ -155,22 +165,12 @@
                     <div class="text-grey-8 q-gutter-xs">
                       <q-btn
                         size="12px"
-                        color="primary"
-                        flat
-                        dense
-                        round
-                        icon="edit"
-                      >
-                        <q-tooltip> 编辑题目 </q-tooltip>
-                      </q-btn>
-                      <q-btn
-                        size="12px"
                         color="red"
                         flat
                         dense
                         round
                         icon="delete_sweep"
-                        @click="
+                        @click.stop="
                           handleQuestionCarQuestionRemoveBtnClick(question.id)
                         "
                         ><q-tooltip> 从题车移除 </q-tooltip></q-btn
@@ -178,14 +178,13 @@
                     </div>
                   </q-item-section>
                 </q-item>
-              </q-list>
-            </draggable>
+              </draggable>
+            </q-list>
           </q-expansion-item>
         </div>
       </q-list>
     </q-card-section>
     <q-card-actions align="right">
-      <q-btn class="q-ml-sm" color="primary" label="预览" icon="visibility" />
       <q-btn
         class="q-ml-sm"
         color="primary"
@@ -261,6 +260,18 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- 题目预览对话框 -->
+    <q-dialog v-model="questionViewDig">
+      <QuestionViewCard
+        ref="questionViewCard"
+        :questionId="currClickedQuestion.id"
+        :in-question-car="currClickedQuestion.inQuestionCar"
+        @removeQuestionFromCar="handleRemoveQuestionFromCarReq"
+        @prevQuestion="handlePrevQuestionReq"
+        @nextQuestion="handleNextQuestionReq"
+      />
+    </q-dialog>
   </q-card>
 </template>
 
@@ -269,12 +280,17 @@ import { mapGetters } from "vuex";
 import { apiCreateQuestionSet } from "src/api/teacher/questionSet";
 import draggable from "vuedraggable";
 import QuestionChip from "src/components/common/QuestionChip.vue";
+import QuestionViewCard from "src/components/teacher/questionBank/QuestionViewCard.vue";
 export default {
   name: "QuestionCarCard",
   data() {
     return {
       // 基于题车创建试题集对话框
       createQuestionSetDig: false,
+      // 题目预览对话框
+      questionViewDig: false,
+      // 当前点击的题目
+      currClickedQuestion: {},
       // 试题集名称
       questionSetName: "",
       // 是否共享试题集
@@ -318,6 +334,7 @@ export default {
   components: {
     draggable,
     QuestionChip,
+    QuestionViewCard,
     CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
@@ -430,11 +447,17 @@ export default {
       }
     },
 
-    // 题车锁定分数
+    // 点击题车中的题目
+    handleQuestionListItemClick(question) {
+      this.currClickedQuestion = question;
+      this.questionViewDig = true;
+    },
+
+    // 题车平均化分数
     handleQuestionCarLockScoreToggleClick(qType) {
-      // 判断是否已经锁定分数
+      // 判断是否已经平均化分数
       if (qType.lockScore) {
-        // 如果锁定分数，则将分数平均分给同类型的每一个题目
+        // 如果平均化分数，则将分数平均分给同类型的每一个题目
         this.$store.commit("questionCar/averagingQuestionsScore", {
           qType,
           questionsCountInfo: this.questionsCountInfo,
@@ -449,8 +472,11 @@ export default {
     },
 
     // 设置题目分数, 第一个参数勿动
-    handleSetQuestionPresetscore(scope, qType) {
-      scope.set(); // 固定写法
+    handleSetQuestionPresetscore(scope, qType, questionId) {
+      this.$store.commit("questionCar/setQuestionPresetScore", {
+        questionId,
+        presetScore: scope.value * 1,
+      });
 
       // 重新计算题目总分
       let totalScore = 0;
@@ -506,6 +532,56 @@ export default {
 
       // 创建试题集
       this.createQuestionSet();
+    },
+
+    // 处理子组件传递过来的题目从题车中移除的请求
+    handleRemoveQuestionFromCarReq(questionId) {
+      // 从题车移除
+      this.$store.commit("questionCar/removeQuestion", questionId);
+      // 关闭题目预览对话框
+      this.questionViewDig = false;
+    },
+
+    // 处理子组件切换上一题的请求
+    handlePrevQuestionReq(currQuestionId) {
+      // 获取当前题目的索引
+      const currQuestionIndex = this.questions.findIndex(
+        (question) => question.id === currQuestionId
+      );
+      // 获取上一题的索引
+      const prevQuestionIndex = currQuestionIndex - 1;
+      // 如果上一题的索引小于0，说明已经是第一题了，直接返回
+      if (prevQuestionIndex < 0) {
+        this.$q.notify({
+          message: "已经是第一题了",
+          type: "warning",
+        });
+        return;
+      }
+
+      // 切换到上一题
+      this.currClickedQuestion = this.questions[prevQuestionIndex];
+    },
+
+    // 处理子组件切换下一题的请求
+    handleNextQuestionReq(currQuestionId) {
+      // 获取当前题目的索引
+      const currQuestionIndex = this.questions.findIndex(
+        (question) => question.id === currQuestionId
+      );
+      // 获取下一题的索引
+      const nextQuestionIndex = currQuestionIndex + 1;
+      // 如果下一题的索引大于题目列表的长度，说明已经是最后一题了，直接返回
+      if (nextQuestionIndex >= this.questions.length) {
+        this.$q.notify({
+          message: "已经是最后一题了",
+          type: "warning",
+        });
+        return;
+      }
+
+      // 切换到下一题
+      this.currClickedQuestion = this.questions[nextQuestionIndex];
     },
   },
 };

@@ -269,7 +269,7 @@
 
     <!-- 题目预览对话框 -->
     <q-dialog v-model="questionViewDig">
-      <QuestionViewCardVue
+      <QuestionViewCard
         ref="questionViewCard"
         :questionId="currClickedRowQuestion.id"
         :in-question-car="currClickedRowQuestion.inQuestionCar"
@@ -287,7 +287,7 @@ import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
 import QuestionCar from "src/components/teacher/questionBank/QuestionCarCard.vue";
-import QuestionViewCardVue from "src/components/teacher/questionBank/QuestionViewCard.vue";
+import QuestionViewCard from "src/components/teacher/questionBank/QuestionViewCard.vue";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 
 export default {
@@ -383,7 +383,7 @@ export default {
 
   components: {
     QuestionCar,
-    QuestionViewCardVue,
+    QuestionViewCard,
     QuestionChip,
   },
 

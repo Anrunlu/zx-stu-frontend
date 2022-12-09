@@ -94,6 +94,14 @@ export function sortQuestions(state) {
   state.questions.sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
+// 设置题目的分数
+export function setQuestionPresetScore(state, payload) {
+  const question = state.questions.find(
+    (question) => question.id === payload.questionId
+  );
+  question.presetScore = payload.presetScore;
+}
+
 // 将分数平均分给同类型的每一个题目
 export function averagingQuestionsScore(state, payload) {
   state.questions.forEach((question) => {
