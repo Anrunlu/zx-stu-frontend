@@ -90,11 +90,17 @@ export function setQuestions(state, questions) {
   state.questions = questions;
 }
 
+// 执行默认题目排序
 export function sortQuestions(state) {
   state.questions.sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-// 设置题目的分数
+/*
+ * 为题目设置分数
+ * @param {Object} payload
+ * @param {String} payload.questionId 题目id
+ * @param {Number} payload.presetScore 题目分数
+ * */
 export function setQuestionPresetScore(state, payload) {
   const question = state.questions.find(
     (question) => question.id === payload.questionId

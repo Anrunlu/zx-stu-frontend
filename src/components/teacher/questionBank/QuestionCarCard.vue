@@ -61,15 +61,18 @@
               </q-item-section>
             </template>
 
-            <q-list bordered class="rounded-borders cursor-move" dense>
+            <q-list bordered>
               <draggable
-                :list="questions"
-                v-bind="dragOptions"
-                @start="drag = true"
-                @end="drag = false"
+                v-model="questions"
+                v-bind="{
+                  animation: 200,
+                  disabled: false,
+                  ghostClass: 'ghost',
+                  group: qType.label,
+                }"
               >
                 <q-item
-                  class="bg-white"
+                  class="bg-white rounded-borders"
                   v-for="(question, index) in questions.filter(
                     (question) => question.type === qType.label
                   )"
@@ -79,7 +82,10 @@
                   dense
                 >
                   <q-item-section avatar>
-                    <QuestionChip :questionType="question.type" />
+                    <QuestionChip
+                      :questionType="question.type"
+                      style="cursor: move"
+                    />
                   </q-item-section>
 
                   <q-item-section style="font-size: 18px" class="text-grey-9">
@@ -357,16 +363,6 @@ export default {
       },
     },
 
-    // 拖拽组件设置
-    dragOptions() {
-      return {
-        animation: 200,
-        group: "description",
-        disabled: false,
-        ghostClass: "ghost",
-      };
-    },
-
     // 题目信息统计
     questionsCountInfo() {
       return {
@@ -432,7 +428,7 @@ export default {
       // 发送请求
 
       try {
-        const { data } = await apiCreateQuestionSet(createQuestionSetDto);
+        await apiCreateQuestionSet(createQuestionSetDto);
         // 提示创建成功
         this.$q.notify({
           message: "创建成功",
