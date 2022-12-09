@@ -12,6 +12,9 @@
       content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover <% } %>"
     />
 
+    <!-- 设置所有的 a 标签在新窗口打开 -->
+    <base target="_blank" />
+
     <link
       rel="icon"
       type="image/png"
@@ -37,6 +40,7 @@
       href="icons/favicon-16x16.png"
     />
     <link rel="icon" type="image/ico" href="favicon.ico" />
+    <!-- katex 公式样式 -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css"
