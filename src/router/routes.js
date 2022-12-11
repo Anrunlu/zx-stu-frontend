@@ -4,6 +4,14 @@ const defaultLayout = "TeacherLayout";
 
 const routes = [
   {
+    path: "/index",
+    component: () => import("pages/Index.vue"),
+    meta: {
+      isPublic: true,
+      title: "登录",
+    },
+  },
+  {
     path: "/login",
     component: () => import("pages/Login.vue"),
     meta: {

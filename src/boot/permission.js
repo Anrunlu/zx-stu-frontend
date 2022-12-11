@@ -10,6 +10,15 @@ export default ({ router, store, Vue }) => {
     const userType = store.getters["user/type"]; // 获取用户类型，如果没有登录，返回空字符串
     document.title = getPageTitle(to.meta.title, userType); // 设置页面标题
 
+    if (to.meta.isPublic) {
+      // 如果路由元信息中的 isPublic 为 true
+      next({
+        replace: true,
+      }); // 则放行
+      LoadingBar.stop();
+      return;
+    }
+
     const hasToken = getToken();
 
     if (hasToken) {
@@ -48,20 +57,13 @@ export default ({ router, store, Vue }) => {
       }
     } else {
       // 如果本地没有 token
-      if (!to.meta.isPublic) {
-        // 如果路由元信息中的 isPublic 为 false
-        next({
-          path: "/login",
-          query: {
-            redirect: to.fullPath,
-          },
-        }); // 则跳转到登录页
-        LoadingBar.stop();
-      } else {
-        // 如果路由元信息中的 isPublic 为 true
-        next(); // 则放行
-        LoadingBar.stop();
-      }
+      next({
+        path: "/login",
+        query: {
+          redirect: to.fullPath,
+        },
+      }); // 则跳转到登录页
+      LoadingBar.stop();
     }
   });
 

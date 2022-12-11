@@ -81,7 +81,12 @@
                 v-for="(option, index) in questionDetails.answer"
                 :key="index"
               >
-                <q-item-section avatar v-if="questionDetails.type != '填空'">
+                <q-item-section
+                  class="cursor-pointer"
+                  avatar
+                  v-if="questionDetails.type != '填空'"
+                  @click="handleOptionMarkClick(option)"
+                >
                   <q-icon :color="option.isRight ? 'positive' : 'primary'">{{
                     option.mark
                   }}</q-icon>
@@ -116,7 +121,7 @@
               <q-item v-if="questionDetails.type != '判断'">
                 <q-item-section>
                   <q-btn
-                    style="width: 30%; margin: 0 auto"
+                    style="width: 18%; margin: 0 auto"
                     dense
                     flat
                     color="green-4"
@@ -215,7 +220,7 @@ export default {
         const { data } = await apiGetQuestionDetail(questionId);
         this.questionDetails = data.data;
         // 格式化题目内容
-        this.questionDetails.content = marked(this.questionDetails.content);
+        this.questionDetails.content = marked(data.data.content);
         // 格式化客观题选项内容
         if (this.questionDetails.type != "解答") {
           this.questionDetails.answer.forEach((option) => {
@@ -230,6 +235,24 @@ export default {
           message: "获取题目详细信息失败",
           type: "negative",
         });
+      }
+    },
+
+    // 点击选项标记
+    handleOptionMarkClick(option) {
+      // 切换选项正确性
+      if (
+        this.questionDetails.type === "单选" ||
+        this.questionDetails.type === "判断"
+      ) {
+        // 单选题：只有一个正确选项
+        this.questionDetails.answer.forEach((option) => {
+          option.isRight = false;
+        });
+        option.isRight = true;
+      } else if (this.questionDetails.type === "多选") {
+        // 多选题：有多个正确选项
+        option.isRight = !option.isRight;
       }
     },
   },
