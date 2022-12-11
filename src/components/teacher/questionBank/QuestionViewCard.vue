@@ -82,20 +82,6 @@
         @click="handleEditQuestionBtnClick"
       />
     </q-card-actions>
-
-    <!-- 题目编辑对话框 -->
-    <q-dialog
-      v-model="questionEditDig"
-      persistent
-      maximized
-      transition-show="slide-up"
-      transition-hide="slide-down"
-    >
-      <QuestionEditCard
-        :questionId="questionId"
-        @close="questionEditDig = false"
-      />
-    </q-dialog>
   </q-card>
 </template>
 
@@ -117,8 +103,6 @@ export default {
   components: {
     QuestionChip,
     CardBar: () => import("src/components/common/CardBar.vue"),
-    QuestionEditCard: () =>
-      import("src/components/teacher/questionBank/QuestionEditCard.vue"),
   },
 
   watch: {
@@ -168,7 +152,11 @@ export default {
 
     // 编辑题目按钮点击事件
     handleEditQuestionBtnClick() {
-      this.questionEditDig = true;
+      const routeData = this.$router.resolve(
+        `/teacher/question/${this.questionDetails.id}`
+      );
+      window.open(routeData.href, "_blank");
+      return;
     },
   },
 

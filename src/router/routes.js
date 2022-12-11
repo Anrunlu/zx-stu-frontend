@@ -81,6 +81,15 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/teacher/question/:questionId",
+    component: () => import(`pages/teacher/QuestionEdit.vue`),
+    props: true,
+    meta: {
+      type: "teacher",
+      title: "题目详情",
+    },
+  },
 ];
 
 // Always leave this as last one

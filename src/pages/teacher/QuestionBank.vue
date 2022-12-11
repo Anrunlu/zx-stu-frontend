@@ -279,20 +279,6 @@
         @nextQuestion="handleNextQuestionReq"
       />
     </q-dialog>
-
-    <!-- 题目编辑对话框 -->
-    <q-dialog
-      v-model="questionEditDig"
-      persistent
-      maximized
-      transition-show="slide-up"
-      transition-hide="slide-down"
-    >
-      <QuestionEditCard
-        :questionId="currClickedRowQuestion.id"
-        @close="questionEditDig = false"
-      />
-    </q-dialog>
   </q-page>
 </template>
 
@@ -401,8 +387,6 @@ export default {
     QuestionCar,
     QuestionViewCard,
     QuestionChip,
-    QuestionEditCard: () =>
-      import("src/components/teacher/questionBank/QuestionEditCard.vue"),
   },
 
   computed: {
@@ -528,7 +512,10 @@ export default {
     // 点击题目列表的编辑按钮
     handleTableCellEditBtnClick(row) {
       this.currClickedRowQuestion = row;
-      this.questionEditDig = true;
+      // 新标签页打开
+      const routeData = this.$router.resolve(`/teacher/question/${row.id}`);
+      window.open(routeData.href, "_blank");
+      return;
     },
 
     // 点击表格上的高级筛选按钮
