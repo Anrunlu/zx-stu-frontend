@@ -15,7 +15,7 @@
       <q-page class="q-my-md">
         <!-- 题目元信息 -->
         <div class="row justify-center">
-          <q-card class="col-8 q-mb-sm">
+          <q-card class="col-12 col-md-8 q-mb-sm">
             <q-card-section>
               <div class="q-gutter-md">
                 <QuestionChip
@@ -52,7 +52,7 @@
 
         <!-- 题目主体区域 -->
         <div class="row justify-center">
-          <q-card class="col-8">
+          <q-card class="col-12 col-md-8">
             <q-card-section>
               <div class="q-gutter-md">
                 <!-- 题干区域 -->
@@ -76,6 +76,7 @@
 
                 <!-- 客观题选项区域 -->
                 <q-list v-if="questionDetails.type != '解答'">
+                  <!-- 切换选项和解析显示 -->
                   <div>
                     <q-chip
                       clickable
@@ -103,11 +104,13 @@
                     />
                   </div>
 
+                  <!-- 题目选项 -->
                   <div v-if="optionAreaShowContent === '选项'">
                     <q-item
                       v-for="(option, index) in questionDetails.answer"
                       :key="index"
                     >
+                      <!-- 选项标记 -->
                       <q-item-section
                         class="cursor-pointer"
                         avatar
@@ -125,6 +128,8 @@
                           >{{ option.mark.slice(1, 2) }}</q-icon
                         >
                       </q-item-section>
+
+                      <!-- 选项内容 -->
                       <q-item-section>
                         <q-editor
                           v-model="option.content"
@@ -150,6 +155,7 @@
                           v-else
                         ></div>
                       </q-item-section>
+
                       <!-- 右侧按钮 -->
                       <q-item-section
                         side
@@ -162,10 +168,11 @@
                           outline
                           color="red-4"
                           icon="remove"
-                          @click.stop=""
+                          @click.stop="handleRemoveOptionClick(option)"
                         />
                       </q-item-section>
                     </q-item>
+
                     <q-item v-if="questionDetails.type != '判断'">
                       <q-item-section>
                         <q-btn
@@ -175,6 +182,7 @@
                           color="green-4"
                           icon="add"
                           label="添加选项"
+                          @click="handleAddOptionClick"
                         />
                       </q-item-section>
                     </q-item>
@@ -216,7 +224,7 @@
     </q-page-container>
     <q-footer bordered class="bg-white text-primary">
       <div class="float-right q-mr-sm">
-        <q-btn flat square label="保存" icon="save" />
+        <q-btn flat square label="保存" icon="save" @click="handleSaveClick" />
       </div>
     </q-footer>
   </q-layout>
@@ -320,6 +328,72 @@ export default {
       console.log(event);
       console.log(object);
       // 打开 Markdown 编辑器
+    },
+
+    // 点击删除选项按钮
+    handleRemoveOptionClick(option) {
+      // 删除选项
+      this.questionDetails.answer = this.questionDetails.answer.filter(
+        (item) => item !== option
+      );
+      // 重新生成选项标记
+      this.questionDetails.answer.forEach((option, index) => {
+        option.mark = String.fromCharCode(65 + index);
+      });
+    },
+
+    // 点击添加选项按钮
+    handleAddOptionClick() {
+      // 获取最后一个选项的标记
+      const lastOptionMark =
+        this.questionDetails.answer[this.questionDetails.answer.length - 1]
+          .mark;
+
+      // 根据最后一个选项的标记生成新的选项标记
+      const newOptionMark = String.fromCharCode(
+        lastOptionMark.charCodeAt(0) + 1
+      );
+
+      // 添加选项
+      this.questionDetails.answer.push({
+        content: "",
+        isRight: false,
+        mark: newOptionMark,
+      });
+    },
+
+    // 点击保存按钮
+    handleSaveClick() {
+      // 检查正确选项是否为空
+      if (
+        this.questionDetails.type != "解答" &&
+        this.questionDetails.type != "填空"
+      ) {
+        const rightOptions = this.questionDetails.answer.filter(
+          (option) => option.isRight
+        );
+
+        if (this.questionDetails.type == "多选") {
+          if (rightOptions.length < 2) {
+            this.$q.notify({
+              message: "正确选项数量不能少于2个",
+              type: "warning",
+            });
+            return;
+          }
+        } else {
+          if (rightOptions.length !== 1) {
+            this.$q.notify({
+              message: "请设置一个正确选项",
+              type: "warning",
+            });
+            return;
+          }
+        }
+      }
+
+      // 保存题目
+      console.log(this.questionDetails);
     },
 
     // 关闭页面
