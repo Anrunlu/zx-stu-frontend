@@ -263,9 +263,6 @@ export default {
     return {
       // 编辑器配置
       editor: Editor,
-      editorConfig: {
-        extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
-      },
       // 题目详细信息
       questionDetails: {
         type: "",
@@ -283,6 +280,14 @@ export default {
         "green-10",
       ],
     };
+  },
+
+  computed: {
+    editorConfig() {
+      return {
+        extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
+      };
+    },
   },
 
   components: {
@@ -465,4 +470,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.ck-math-form {
+  padding: 10px !important;
+}
+</style>

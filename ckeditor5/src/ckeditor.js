@@ -34,8 +34,6 @@ import List from "@ckeditor/ckeditor5-list/src/list.js";
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph.js";
 import PasteFromOffice from "@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js";
 import RemoveFormat from "@ckeditor/ckeditor5-remove-format/src/removeformat.js";
-import SpecialCharacters from "@ckeditor/ckeditor5-special-characters/src/specialcharacters.js";
-import SpecialCharactersMathematical from "@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical.js";
 import Table from "@ckeditor/ckeditor5-table/src/table.js";
 import TableCaption from "@ckeditor/ckeditor5-table/src/tablecaption.js";
 import TableCellProperties from "@ckeditor/ckeditor5-table/src/tablecellproperties";
@@ -45,6 +43,7 @@ import TableToolbar from "@ckeditor/ckeditor5-table/src/tabletoolbar.js";
 import Underline from "@ckeditor/ckeditor5-basic-styles/src/underline.js";
 import WordCount from "@ckeditor/ckeditor5-word-count/src/wordcount.js";
 import { FileUploadBtn } from "./MyFileUploadBtn.js";
+import Mathematics from "ckeditor5-math/src/math";
 
 class Editor extends ClassicEditor {}
 
@@ -81,8 +80,6 @@ Editor.builtinPlugins = [
   Paragraph,
   PasteFromOffice,
   RemoveFormat,
-  SpecialCharacters,
-  SpecialCharactersMathematical,
   Table,
   TableCaption,
   TableCellProperties,
@@ -92,6 +89,7 @@ Editor.builtinPlugins = [
   Underline,
   WordCount,
   FileUploadBtn,
+  Mathematics,
 ];
 
 // Editor configuration.
@@ -114,7 +112,7 @@ Editor.defaultConfig = {
       "|",
       "alignment",
       "|",
-      "specialCharacters",
+      "math",
       "codeBlock",
       "imageUpload",
       "uploadFile",
@@ -145,6 +143,12 @@ Editor.defaultConfig = {
       "tableCellProperties",
       "tableProperties",
     ],
+  },
+  math: {
+    engine: "katex",
+    outputType: "span",
+    forceOutputType: false,
+    enablePreview: true,
   },
 };
 
