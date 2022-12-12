@@ -131,24 +131,6 @@
 
                       <!-- 选项内容 -->
                       <q-item-section>
-                        <!-- <q-editor
-                          v-model="option.content"
-                          min-height="2rem"
-                          square
-                          :definitions="{
-                            advanced: {
-                              tip: '高级编辑',
-                              icon: 'text_fields',
-                              label: '高级编辑',
-                              handler: handleQEditorAdvancedEditClick,
-                            },
-                          }"
-                          :toolbar="[
-                            ['bold', 'italic', 'strike', 'underline'],
-                            ['advanced'],
-                          ]"
-                          v-if="questionDetails.type != '判断'"
-                        /> -->
                         <ckeditor
                           :editor="editor"
                           v-model="option.content"
@@ -156,7 +138,7 @@
                           v-if="questionDetails.type != '判断'"
                         ></ckeditor>
                         <div
-                          class="text-body2"
+                          class="text-body2 option"
                           v-html="option.content"
                           v-else
                         ></div>
@@ -505,5 +487,8 @@ export default {
 <style>
 .ck-math-form {
   padding: 10px !important;
+}
+.option p {
+  margin: 0;
 }
 </style>
