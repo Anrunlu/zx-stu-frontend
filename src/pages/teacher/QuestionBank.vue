@@ -487,8 +487,8 @@ export default {
               : question.type === "填空"
               ? 3
               : 4,
-          // 截取一部分内容
-          content: question.content.slice(0, 20),
+          // 截取一部分文本内容，去掉html标签
+          content: question.content.slice(0, 20).replace(/<[^>]+>/g, ""),
           difficulty: question.difficulty,
           updatedAt: formatTimeWithWeekDay(question.updatedAt),
         };
