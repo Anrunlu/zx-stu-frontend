@@ -223,6 +223,20 @@
       </q-page>
     </q-page-container>
     <q-footer bordered class="bg-white text-primary">
+      <div class="float-left q-ml-sm">
+        <div class="q-py-sm">
+          <span style="font-size: 0.5rem; color: #9e9e9e"
+            >出题：{{
+              `${questionDetails.creator.nickname}|${questionDetails.createdAt}`
+            }}</span
+          >
+          <span style="font-size: 0.5rem; color: #9e9e9e" class="q-ml-md"
+            >上次更新：{{
+              `${questionDetails.lastModifyBy.nickname}|${questionDetails.updatedAt}`
+            }}</span
+          >
+        </div>
+      </div>
       <div class="float-right q-mr-sm">
         <q-btn flat square label="保存" icon="save" @click="handleSaveClick" />
       </div>
@@ -240,6 +254,7 @@ import {
   apiModifyQuestion,
 } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
+import { formatTimeWithWeekDay } from "src/utils/time";
 
 export default {
   name: "QuestionEdit",
@@ -291,6 +306,19 @@ export default {
         this.questionDetails = data.data;
         // 格式化题目内容
         this.questionDetails.content = marked(data.data.content);
+        // 格式化时间
+        this.questionDetails.createdAt = formatTimeWithWeekDay(
+          data.data.createdAt
+        );
+        this.questionDetails.updatedAt = formatTimeWithWeekDay(
+          data.data.updatedAt
+        );
+        // 处理上次更新人等信息
+        if (!this.questionDetails.lastModifyBy) {
+          this.questionDetails.lastModifyBy = {
+            nickname: this.questionDetails.creator.nickname,
+          };
+        }
         // 格式化客观题选项内容
         if (this.questionDetails.type != "解答") {
           this.questionDetails.answer.forEach((option) => {

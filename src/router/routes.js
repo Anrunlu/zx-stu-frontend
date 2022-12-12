@@ -87,7 +87,7 @@ const routes = [
     props: true,
     meta: {
       type: "teacher",
-      title: "题目详情",
+      title: "题目编辑",
     },
   },
 ];
