@@ -5872,6 +5872,13 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
+katex@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.npmmirror.com/katex/-/katex-0.11.1.tgz#df30ca40c565c9df01a466a00d53e079e84ffaa2"
+  integrity sha512-5oANDICCTX0NqYIyAiFCCwjQ7ERu3DQG2JFHLbYOf+fXaMoH8eg/zOq5WSYJsKMi/QebW+Eh3gSM+oss1H/bww==
+  dependencies:
+    commander "^2.19.0"
+
 katex@^0.16.3:
   version "0.16.4"
   resolved "https://registry.npmmirror.com/katex/-/katex-0.16.4.tgz#87021bc3bbd80586ef715aeb476794cba6a49ad4"
@@ -9365,6 +9372,13 @@ vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.npmmirror.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
+
+vue-katex-auto-render@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.npmmirror.com/vue-katex-auto-render/-/vue-katex-auto-render-0.1.3.tgz#6b64585fd6a25fa3c3b70cb13a223adb9d42c194"
+  integrity sha512-r1TPyAgDDMCHZtb8EZcXkNmSL9xHmgGpTt5y3kDKWRc7SFZNU+ThUXPCnpqOtUdXV7qdbIbgVXclJYgBJwqxhw==
+  dependencies:
+    katex "^0.11.1"
 
 vue-loader@^15.10.0:
   version "15.10.0"
