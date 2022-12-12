@@ -123,11 +123,6 @@ export default {
         this.questionDetails = data.data;
         // 格式化题目内容
         this.questionDetails.content = marked(this.questionDetails.content);
-        // 如果检测到 katex 标签，则解析 katex 公式
-        if (this.questionDetails.content.includes("math-tex")) {
-          console.log(111111);
-        }
-
         // 格式化客观题选项内容
         if (this.questionDetails.type != "解答") {
           this.questionDetails.answer.forEach((option) => {
