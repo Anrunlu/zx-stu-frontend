@@ -198,21 +198,21 @@
                   </div>
                 </q-list>
 
-                <!-- 解答题答案区域 -->
+                <!-- 解答题解析区域 -->
                 <div v-else>
                   <q-chip
                     size="sm"
                     class="q-mx-none q-mb-sm"
                     square
                     outline
-                    icon="fact_check"
+                    icon="feed"
                     color="primary"
                     text-color="white"
-                    label="答案"
+                    label="解析"
                   />
                   <ckeditor
                     :editor="editor"
-                    v-model="questionDetails.answer.content"
+                    v-model="questionDetails.explain"
                     :config="editorConfig"
                   ></ckeditor>
                 </div>
@@ -235,7 +235,10 @@ import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 import { marked } from "marked";
-import { apiGetQuestionDetail } from "src/api/teacher/questionBank";
+import {
+  apiGetQuestionDetail,
+  apiModifyQuestion,
+} from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 
 export default {
@@ -305,6 +308,60 @@ export default {
       }
     },
 
+    // 修改题目信息
+    async modifyQuestion() {
+      // 检查是否存在正确选项
+      if (
+        this.questionDetails.type != "解答" &&
+        this.questionDetails.type != "填空"
+      ) {
+        const rightOptions = this.questionDetails.answer.filter(
+          (option) => option.isRight
+        );
+
+        if (this.questionDetails.type == "多选") {
+          if (rightOptions.length < 2) {
+            this.$q.notify({
+              message: "正确选项数量不能少于2个",
+              type: "warning",
+            });
+            return;
+          }
+        } else {
+          if (rightOptions.length !== 1) {
+            this.$q.notify({
+              message: "请设置一个正确选项",
+              type: "warning",
+            });
+            return;
+          }
+        }
+      }
+
+      // 构造请求参数
+      const modifyQuestionDto = {
+        content: this.questionDetails.content,
+        difficulty: this.questionDetails.difficulty,
+        answer: this.questionDetails.answer,
+        explain: this.questionDetails.explain,
+      };
+
+      try {
+        await apiModifyQuestion(this.questionId, modifyQuestionDto);
+        // 提示修改成功
+        this.$q.notify({
+          message: "修改成功",
+          type: "positive",
+        });
+      } catch (error) {
+        // 提示修改失败
+        this.$q.notify({
+          message: "修改失败",
+          type: "negative",
+        });
+      }
+    },
+
     // 点击选项标记
     handleOptionMarkClick(option) {
       // 切换选项正确性
@@ -364,36 +421,8 @@ export default {
 
     // 点击保存按钮
     handleSaveClick() {
-      // 检查正确选项是否为空
-      if (
-        this.questionDetails.type != "解答" &&
-        this.questionDetails.type != "填空"
-      ) {
-        const rightOptions = this.questionDetails.answer.filter(
-          (option) => option.isRight
-        );
-
-        if (this.questionDetails.type == "多选") {
-          if (rightOptions.length < 2) {
-            this.$q.notify({
-              message: "正确选项数量不能少于2个",
-              type: "warning",
-            });
-            return;
-          }
-        } else {
-          if (rightOptions.length !== 1) {
-            this.$q.notify({
-              message: "请设置一个正确选项",
-              type: "warning",
-            });
-            return;
-          }
-        }
-      }
-
       // 保存题目
-      console.log(this.questionDetails);
+      this.modifyQuestion();
     },
 
     // 关闭页面
