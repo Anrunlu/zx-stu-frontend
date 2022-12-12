@@ -54,7 +54,11 @@
             }}</q-icon>
           </q-item-section>
           <q-item-section>
-            <div class="text-body2" v-html="option.content"></div>
+            <div
+              class="text-body2 option"
+              v-katex
+              v-html="option.content"
+            ></div>
           </q-item-section>
         </q-item>
       </q-list>
@@ -127,8 +131,6 @@ export default {
         if (this.questionDetails.type != "解答") {
           this.questionDetails.answer.forEach((option) => {
             option.content = marked(option.content);
-            // 过滤掉首尾的p标签
-            option.content = option.content.slice(3, -5);
           });
         }
       } catch (error) {
@@ -167,4 +169,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.option p {
+  margin: 0;
+}
+</style>

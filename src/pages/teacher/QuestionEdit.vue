@@ -131,7 +131,7 @@
 
                       <!-- 选项内容 -->
                       <q-item-section>
-                        <q-editor
+                        <!-- <q-editor
                           v-model="option.content"
                           min-height="2rem"
                           square
@@ -148,7 +148,13 @@
                             ['advanced'],
                           ]"
                           v-if="questionDetails.type != '判断'"
-                        />
+                        /> -->
+                        <ckeditor
+                          :editor="editor"
+                          v-model="option.content"
+                          :config="questionOptionEditorConfig"
+                          v-if="questionDetails.type != '判断'"
+                        ></ckeditor>
                         <div
                           class="text-body2"
                           v-html="option.content"
@@ -288,6 +294,34 @@ export default {
         extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
       };
     },
+    questionOptionEditorConfig() {
+      return {
+        extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
+        toolbar: {
+          items: [
+            "bold",
+            "italic",
+            "link",
+            "|",
+            "math",
+            "codeBlock",
+            "imageUpload",
+            "uploadFile",
+          ],
+        },
+        image: {
+          toolbar: [
+            "imageTextAlternative",
+            "toggleImageCaption",
+            "imageStyle:inline",
+            "imageStyle:block",
+            "imageStyle:side",
+            "imager",
+          ],
+        },
+        language: "zh-cn",
+      };
+    },
   },
 
   components: {
@@ -328,8 +362,6 @@ export default {
         if (this.questionDetails.type != "解答") {
           this.questionDetails.answer.forEach((option) => {
             option.content = marked(option.content);
-            // 过滤掉首尾的p标签
-            option.content = option.content.slice(3, -5);
           });
         }
       } catch (error) {
