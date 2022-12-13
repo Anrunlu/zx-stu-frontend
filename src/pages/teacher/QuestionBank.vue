@@ -78,6 +78,17 @@
         </q-btn>
       </template>
 
+      <template v-slot:body-cell-shortId="props">
+        <q-td
+          :props="props"
+          @click.stop="handleTableCellIdClick(props.row)"
+          class="cursor-pointer"
+        >
+          {{ props.row.shortId }}
+          <q-tooltip> {{ props.row.id }} 点击复制到剪贴板 </q-tooltip>
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-type="props">
         <q-td :props="props">
           <QuestionChip :questionType="props.row.type" :size="'xs'" />
@@ -292,11 +303,12 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { formatTimeWithWeekDay } from "src/utils/time";
+import { copyToClipboard } from "quasar";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
 import QuestionCar from "src/components/teacher/questionBank/QuestionCarCard.vue";
 import QuestionViewCard from "src/components/teacher/questionBank/QuestionViewCard.vue";
 import QuestionChip from "src/components/common/QuestionChip.vue";
+import { preProcessQuestionList } from "src/utils/question";
 
 export default {
   name: "QuestionBank",
@@ -307,10 +319,9 @@ export default {
       // 题目列表表头
       questionColumns: [
         {
-          name: "index",
-          label: "序号",
+          name: "shortId",
+          label: "题目编号",
           align: "left",
-          field: "questionTableIndex",
           sortable: true,
         },
         {
@@ -477,30 +488,7 @@ export default {
 
       const questions = data.data;
 
-      this.questionList = questions.map((question, index) => {
-        return {
-          id: question._id,
-          questionTableIndex: index + 1,
-          creator: question.creator.nickname,
-          presetScore: 0,
-          type: question.type,
-          // 用于排序
-          sortOrder:
-            question.type === "单选"
-              ? 0
-              : question.type === "多选"
-              ? 1
-              : question.type === "判断"
-              ? 2
-              : question.type === "填空"
-              ? 3
-              : 4,
-          // 截取一部分文本内容，去掉html标签
-          content: question.content.slice(0, 20).replace(/<[^>]+>/g, ""),
-          difficulty: question.difficulty,
-          updatedAt: formatTimeWithWeekDay(question.updatedAt),
-        };
-      });
+      this.questionList = preProcessQuestionList(questions);
     },
 
     // 设置当前选中的教学课程
@@ -515,6 +503,17 @@ export default {
     handleQuestionTableRowClick(evt, row) {
       this.currClickedRowQuestion = row;
       this.questionViewDig = true;
+    },
+
+    // 点击题目列表的id(题目编号)
+    handleTableCellIdClick(row) {
+      // 复制id到剪贴板
+      copyToClipboard(row.id).then(() => {
+        this.$q.notify({
+          message: "题目编号已复制到剪贴板",
+          type: "positive",
+        });
+      });
     },
 
     // 点击题目列表的编辑按钮

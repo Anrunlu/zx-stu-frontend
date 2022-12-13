@@ -269,14 +269,12 @@
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
-import { marked } from "marked";
 import {
   apiGetQuestionDetail,
   apiModifyQuestion,
 } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
-import { formatTimeWithWeekDay } from "src/utils/time";
-import { checkQuestion, checkQuestionOption } from "src/utils/question";
+import { checkQuestion, preProcessQuestionDetails } from "src/utils/question";
 
 export default {
   name: "QuestionEdit",
@@ -392,30 +390,8 @@ export default {
       try {
         const { data } = await apiGetQuestionDetail(questionId);
         this.questionDetails = data.data;
-        // 格式化题目内容
-        this.questionDetails.content = marked(data.data.content);
-        // 格式化时间
-        this.questionDetails.createdAt = formatTimeWithWeekDay(
-          data.data.createdAt
-        );
-        this.questionDetails.updatedAt = formatTimeWithWeekDay(
-          data.data.updatedAt
-        );
-        // 处理上次更新人等信息
-        if (!this.questionDetails.lastModifyBy) {
-          this.questionDetails.lastModifyBy = {
-            nickname: this.questionDetails.creator.nickname,
-          };
-        }
-        // 格式化客观题选项内容
-        if (
-          this.questionDetails.subjective == false &&
-          this.questionDetails.type != "填空"
-        ) {
-          this.questionDetails.answer.forEach((option) => {
-            option.content = marked(option.content);
-          });
-        }
+        // 预处理题目详细信息
+        preProcessQuestionDetails(this.questionDetails);
       } catch (error) {
         // 提示获取失败
         this.$q.notify({

@@ -449,6 +449,7 @@ export default {
       // 构造请求参数
       const addQuestionDto = {
         course_id: this.courseId,
+        type: this.questionDetails.type,
         content: this.questionDetails.content,
         difficulty: this.questionDetails.difficulty,
         answer: this.questionDetails.answer,

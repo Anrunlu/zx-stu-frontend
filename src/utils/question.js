@@ -221,6 +221,8 @@ export function assembleSub(eachSub) {
 // ==== 以下是题目工具 ====
 
 import { Notify } from "quasar";
+import { marked } from "marked";
+import { formatTimeWithWeekDay } from "./time";
 // 检查客观题选项是否正确
 export function checkQuestionOption(questionDetails) {
   // 检查是否存在正确选项
@@ -292,4 +294,56 @@ export function checkQuestion(questionDetails) {
     return false;
   }
   return true;
+}
+
+// 预处理题目列表
+export function preProcessQuestionList(questionList) {
+  const res = questionList.map((question, index) => {
+    return {
+      id: question._id,
+      shortId: question._id.slice(-5).toUpperCase(),
+      creator: question.creator.nickname,
+      presetScore: 0,
+      type: question.type,
+      // 用于排序
+      sortOrder:
+        question.type === "单选"
+          ? 0
+          : question.type === "多选"
+          ? 1
+          : question.type === "判断"
+          ? 2
+          : question.type === "填空"
+          ? 3
+          : 4,
+      // 截取一部分文本内容，去掉html标签，如果长度大于20则截取前20个字符，后面加上...
+      content: question.content.slice(0, 20).replace(/<[^>]+>/g, "") + "...",
+      difficulty: question.difficulty,
+      updatedAt: formatTimeWithWeekDay(question.updatedAt),
+    };
+  });
+  return res;
+}
+
+// 预处理题目详情
+export function preProcessQuestionDetails(questionDetails) {
+  // 添加题目shortId
+  questionDetails.shortId = questionDetails._id.slice(-5).toUpperCase();
+  // 格式化题目内容
+  questionDetails.content = marked(questionDetails.content);
+  // 格式化时间
+  questionDetails.createdAt = formatTimeWithWeekDay(questionDetails.createdAt);
+  questionDetails.updatedAt = formatTimeWithWeekDay(questionDetails.updatedAt);
+  // 处理上次更新人等信息
+  if (!questionDetails.lastModifyBy) {
+    questionDetails.lastModifyBy = {
+      nickname: questionDetails.creator.nickname,
+    };
+  }
+  // 格式化客观题选项内容
+  if (questionDetails.subjective == false && questionDetails.type != "填空") {
+    questionDetails.answer.forEach((option) => {
+      option.content = marked(option.content);
+    });
+  }
 }

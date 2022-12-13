@@ -91,9 +91,9 @@
 </template>
 
 <script>
-import { marked } from "marked";
 import { apiGetQuestionDetail } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
+import { preProcessQuestionDetails } from "src/utils/question";
 
 export default {
   name: "QuestionViewCard",
@@ -125,14 +125,8 @@ export default {
       try {
         const { data } = await apiGetQuestionDetail(questionId);
         this.questionDetails = data.data;
-        // 格式化题目内容
-        this.questionDetails.content = marked(this.questionDetails.content);
-        // 格式化客观题选项内容
-        if (this.questionDetails.type != "解答") {
-          this.questionDetails.answer.forEach((option) => {
-            option.content = marked(option.content);
-          });
-        }
+        // 预处理题目详细信息
+        preProcessQuestionDetails(this.questionDetails);
       } catch (error) {
         // 提示获取失败
         this.$q.notify({

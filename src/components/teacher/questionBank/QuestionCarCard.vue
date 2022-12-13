@@ -93,7 +93,7 @@
                   </q-item-section>
 
                   <q-item-section class="col-1">
-                    <span>SFFX001</span>
+                    <span>{{ question.id.slice(-5).toUpperCase() }}</span>
                   </q-item-section>
 
                   <q-item-section class="col-1">
