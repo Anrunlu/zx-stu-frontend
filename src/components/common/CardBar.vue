@@ -6,6 +6,11 @@
         {{ title }}
       </q-toolbar-title>
 
+      <!-- 定义左侧功能插槽 -->
+      <slot name="left"> </slot>
+
+      <q-space />
+
       <!-- 定义右侧功能插槽 -->
       <slot name="right"> </slot>
 
@@ -17,6 +22,9 @@
     <q-bar v-else class="bg-primary text-white shadow-1">
       <q-icon :name="icon" />
       <div>{{ title }}</div>
+
+      <!-- 定义左侧功能插槽 -->
+      <slot name="left"> </slot>
 
       <q-space />
 

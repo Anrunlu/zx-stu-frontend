@@ -84,8 +84,9 @@
           @click.stop="handleTableCellIdClick(props.row)"
           class="cursor-pointer"
         >
-          {{ props.row.shortId }}
-          <q-tooltip> {{ props.row.id }} 点击复制到剪贴板 </q-tooltip>
+          <q-icon name="fingerprint" size="xs" color="grey-6" />{{
+            props.row.shortId
+          }}
         </q-td>
       </template>
 

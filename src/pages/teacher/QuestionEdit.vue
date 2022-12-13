@@ -4,6 +4,7 @@
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit" />
         <div>题目编辑</div>
+        <QuestionShortId :id="questionId" :shortId="questionDetails.shortId" />
         <q-space />
         <!-- 关闭按钮 -->
         <q-btn dense flat icon="close" @click="handleClosePageClick">
@@ -285,6 +286,7 @@ export default {
       editor: Editor,
       // 题目详细信息
       questionDetails: {
+        shortId: "",
         type: "",
         content: "",
         difficulty: 0,
@@ -373,6 +375,7 @@ export default {
 
   components: {
     QuestionChip,
+    QuestionShortId: () => import("src/components/common/QuestionShortId.vue"),
   },
 
   watch: {

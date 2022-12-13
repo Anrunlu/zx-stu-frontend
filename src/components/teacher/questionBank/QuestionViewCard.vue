@@ -2,6 +2,10 @@
   <q-card style="width: 800px; max-width: 80vw">
     <!-- 标题栏 -->
     <CardBar title="题目预览" icon="visibility">
+      <template v-slot:left>
+        <QuestionShortId :id="questionId" :shortId="questionDetails.shortId" />
+      </template>
+
       <template v-slot:right>
         <q-btn
           round
@@ -108,6 +112,7 @@ export default {
   components: {
     QuestionChip,
     CardBar: () => import("src/components/common/CardBar.vue"),
+    QuestionShortId: () => import("src/components/common/QuestionShortId.vue"),
   },
 
   watch: {
