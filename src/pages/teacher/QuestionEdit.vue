@@ -501,13 +501,6 @@ export default {
       }
     },
 
-    // 点击qeditor的高级编辑按钮
-    handleQEditorAdvancedEditClick(event, object) {
-      console.log(event);
-      console.log(object);
-      // 打开 Markdown 编辑器
-    },
-
     // 点击删除选项按钮
     handleRemoveOptionClick(option) {
       // 删除选项
