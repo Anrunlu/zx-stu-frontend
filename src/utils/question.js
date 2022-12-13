@@ -246,6 +246,50 @@ export function checkQuestionOption(questionDetails) {
         return false;
       }
     }
-    return true;
   }
+  return true;
+}
+
+// 检查题目内容和选项是否为空
+export function checkQuestionEmptyContentAndOption(questionDetails) {
+  if (questionDetails.content.trim() === "") {
+    Notify.create({
+      message: "题目内容不能为空",
+      type: "warning",
+    });
+    return false;
+  }
+
+  if (questionDetails.type != "解答") {
+    const options = questionDetails.answer.filter(
+      (option) => option.content.trim() !== ""
+    );
+
+    if (questionDetails.type != "填空" && options.length < 2) {
+      Notify.create({
+        message: "有效选项数量不能少于2个，有效选项内容不可为空",
+        type: "warning",
+      });
+      return false;
+    } else if (questionDetails.type == "填空" && options.length < 1) {
+      Notify.create({
+        message: "有效选项数量不能少于1个，有效选项内容不可为空",
+        type: "warning",
+      });
+      return false;
+    }
+  }
+  return true;
+}
+
+// 检查题目
+export function checkQuestion(questionDetails) {
+  if (!checkQuestionEmptyContentAndOption(questionDetails)) {
+    return false;
+  }
+
+  if (!checkQuestionOption(questionDetails)) {
+    return false;
+  }
+  return true;
 }

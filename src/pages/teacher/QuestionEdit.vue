@@ -276,7 +276,7 @@ import {
 } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import { formatTimeWithWeekDay } from "src/utils/time";
-import { checkQuestionOption } from "src/utils/question";
+import { checkQuestion, checkQuestionOption } from "src/utils/question";
 
 export default {
   name: "QuestionEdit",
@@ -427,9 +427,9 @@ export default {
 
     // 修改题目信息
     async modifyQuestion() {
-      // 检查是否存在正确选项
-      const res = checkQuestionOption(this.questionDetails);
-      if (!res) {
+      // 检查题目
+      const checked = checkQuestion(this.questionDetails);
+      if (!checked) {
         return;
       }
 

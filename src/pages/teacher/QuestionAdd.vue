@@ -283,7 +283,11 @@ import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 import { apiModifyQuestion } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import { mapGetters } from "vuex";
-import { checkQuestionOption } from "src/utils/question";
+import {
+  checkQuestion,
+  checkQuestionEmptyContentAndOption,
+  checkQuestionOption,
+} from "src/utils/question";
 
 export default {
   name: "QuestionEdit",
@@ -436,32 +440,28 @@ export default {
   methods: {
     // 修改题目信息
     async createQuestion() {
-      // 检查是否存在正确选项
-      const res = checkQuestionOption(this.questionDetails);
-
-      if (!res) {
+      // 检查题目
+      const checked = checkQuestion(this.questionDetails);
+      if (!checked) {
         return;
       }
 
-      console.log(this.questionDetails);
-
-      return;
-
       // 构造请求参数
-      const modifyQuestionDto = {
+      const addQuestionDto = {
+        course_id: this.courseId,
         content: this.questionDetails.content,
         difficulty: this.questionDetails.difficulty,
         answer: this.questionDetails.answer,
         explain: this.questionDetails.explain,
+        subjective: this.questionDetails.subjective,
       };
 
-      // 如果是主观填空题，需要传入subjective
-      if (this.questionDetails.type == "填空") {
-        modifyQuestionDto.subjective = this.questionDetails.subjective;
-      }
+      console.log(addQuestionDto);
+
+      return;
 
       try {
-        await apiModifyQuestion(this.questionId, modifyQuestionDto);
+        await apiModifyQuestion(addQuestionDto);
         // 提示修改成功
         this.$q.notify({
           message: "修改成功",
