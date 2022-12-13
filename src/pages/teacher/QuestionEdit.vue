@@ -309,6 +309,33 @@ export default {
   computed: {
     editorConfig() {
       return {
+        toolbar: {
+          items: [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "fontColor",
+            "highlight",
+            "removeFormat",
+            "underline",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "alignment",
+            "|",
+            "math",
+            "codeBlock",
+            "imageUpload",
+            "uploadFile",
+            "blockQuote",
+            "insertTable",
+            "|",
+            "findAndReplace",
+            "undo",
+            "redo",
+          ],
+        },
         extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
       };
     },
