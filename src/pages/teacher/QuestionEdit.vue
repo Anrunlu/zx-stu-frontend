@@ -45,6 +45,15 @@
                     <q-tooltip>很困难</q-tooltip>
                   </template>
                 </q-rating>
+                <q-checkbox
+                  v-if="questionDetails.type === '填空'"
+                  dense
+                  size="sm"
+                  v-model="questionDetails.subjective"
+                  label="主观填空题"
+                >
+                  <q-tooltip> 主观填空题需要手动批改 </q-tooltip>
+                </q-checkbox>
               </div>
             </q-card-section>
           </q-card>
@@ -131,17 +140,35 @@
 
                       <!-- 选项内容 -->
                       <q-item-section>
-                        <ckeditor
-                          :editor="editor"
-                          v-model="option.content"
-                          :config="questionOptionEditorConfig"
-                          v-if="questionDetails.type != '判断'"
-                        ></ckeditor>
-                        <div
-                          class="text-body2 option"
-                          v-html="option.content"
-                          v-else
-                        ></div>
+                        <div v-if="questionDetails.type != '填空'">
+                          <ckeditor
+                            :editor="editor"
+                            v-model="option.content"
+                            :config="questionOptionEditorConfig"
+                            v-if="questionDetails.type != '判断'"
+                          ></ckeditor>
+                          <div
+                            class="text-body2 option"
+                            v-html="option.content"
+                            v-else
+                          ></div>
+                        </div>
+                        <div v-else>
+                          <q-input
+                            v-if="!questionDetails.subjective"
+                            v-model="option.content"
+                            square
+                            dense
+                            outlined
+                            placeholder="请输入答案，多个答案请用竖线`|`隔开"
+                          />
+                          <ckeditor
+                            :editor="editor"
+                            v-model="option.content"
+                            :config="questionOptionEditorConfig"
+                            v-else
+                          ></ckeditor>
+                        </div>
                       </q-item-section>
 
                       <!-- 右侧按钮 -->
@@ -149,6 +176,7 @@
                         side
                         v-if="questionDetails.type != '判断'"
                       >
+                        <!-- 移除选项 -->
                         <q-btn
                           size="sm"
                           dense
@@ -163,6 +191,7 @@
 
                     <q-item v-if="questionDetails.type != '判断'">
                       <q-item-section>
+                        <!-- 添加选项 -->
                         <q-btn
                           style="width: 18%; margin: 0 auto"
                           dense
@@ -262,6 +291,7 @@ export default {
         lastModifyBy: {
           nickname: "",
         },
+        subjective: false,
       },
       // 题目下方显示内容
       optionAreaShowContent: "选项",
@@ -346,7 +376,10 @@ export default {
           };
         }
         // 格式化客观题选项内容
-        if (this.questionDetails.type != "解答") {
+        if (
+          this.questionDetails.subjective == false &&
+          this.questionDetails.type != "填空"
+        ) {
           this.questionDetails.answer.forEach((option) => {
             option.content = marked(option.content);
           });
@@ -397,6 +430,11 @@ export default {
         answer: this.questionDetails.answer,
         explain: this.questionDetails.explain,
       };
+
+      // 如果是主观填空题，需要传入subjective
+      if (this.questionDetails.type == "填空") {
+        modifyQuestionDto.subjective = this.questionDetails.subjective;
+      }
 
       try {
         await apiModifyQuestion(this.questionId, modifyQuestionDto);
