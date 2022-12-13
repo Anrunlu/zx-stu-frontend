@@ -132,7 +132,6 @@ Editor.defaultConfig = {
       "imageStyle:inline",
       "imageStyle:block",
       "imageStyle:side",
-      "imager",
     ],
   },
   table: {

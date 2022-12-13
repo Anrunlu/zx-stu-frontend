@@ -256,6 +256,12 @@ export default {
         type: "",
         content: "",
         difficulty: 0,
+        creator: {
+          nickname: "",
+        },
+        lastModifyBy: {
+          nickname: "",
+        },
       },
       // 题目下方显示内容
       optionAreaShowContent: "选项",
@@ -298,7 +304,6 @@ export default {
             "imageStyle:inline",
             "imageStyle:block",
             "imageStyle:side",
-            "imager",
           ],
         },
         language: "zh-cn",
@@ -440,10 +445,19 @@ export default {
       this.questionDetails.answer = this.questionDetails.answer.filter(
         (item) => item !== option
       );
-      // 重新生成选项标记
-      this.questionDetails.answer.forEach((option, index) => {
-        option.mark = String.fromCharCode(65 + index);
-      });
+
+      // 如果是填空题
+      if (this.questionDetails.type === "填空") {
+        // 重新生成填空标记
+        this.questionDetails.answer.forEach((option, index) => {
+          option.mark = `第${String.fromCharCode(49 + index)}空答案`;
+        });
+      } else {
+        // 重新生成选项标记
+        this.questionDetails.answer.forEach((option, index) => {
+          option.mark = String.fromCharCode(65 + index);
+        });
+      }
     },
 
     // 点击添加选项按钮
@@ -454,14 +468,21 @@ export default {
           .mark;
 
       // 根据最后一个选项的标记生成新的选项标记
-      const newOptionMark = String.fromCharCode(
-        lastOptionMark.charCodeAt(0) + 1
-      );
+      let newOptionMark = String.fromCharCode(lastOptionMark.charCodeAt(0) + 1);
+
+      // 如果是填空题
+      if (this.questionDetails.type === "填空") {
+        const lastOptionMark = this.questionDetails.answer[
+          this.questionDetails.answer.length - 1
+        ].mark.slice(1, 2);
+        newOptionMark = String.fromCharCode(lastOptionMark.charCodeAt(0) + 1);
+        newOptionMark = `第${newOptionMark}空答案`;
+      }
 
       // 添加选项
       this.questionDetails.answer.push({
         content: "",
-        isRight: false,
+        isRight: this.questionDetails.type === "填空" ? true : false,
         mark: newOptionMark,
       });
     },
