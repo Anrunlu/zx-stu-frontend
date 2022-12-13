@@ -276,6 +276,7 @@ import {
 } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import { formatTimeWithWeekDay } from "src/utils/time";
+import { checkQuestionOption } from "src/utils/question";
 
 export default {
   name: "QuestionEdit",
@@ -427,31 +428,9 @@ export default {
     // 修改题目信息
     async modifyQuestion() {
       // 检查是否存在正确选项
-      if (
-        this.questionDetails.type != "解答" &&
-        this.questionDetails.type != "填空"
-      ) {
-        const rightOptions = this.questionDetails.answer.filter(
-          (option) => option.isRight
-        );
-
-        if (this.questionDetails.type == "多选") {
-          if (rightOptions.length < 2) {
-            this.$q.notify({
-              message: "正确选项数量不能少于2个",
-              type: "warning",
-            });
-            return;
-          }
-        } else {
-          if (rightOptions.length !== 1) {
-            this.$q.notify({
-              message: "请设置一个正确选项",
-              type: "warning",
-            });
-            return;
-          }
-        }
+      const res = checkQuestionOption(this.questionDetails);
+      if (!res) {
+        return;
       }
 
       // 构造请求参数
