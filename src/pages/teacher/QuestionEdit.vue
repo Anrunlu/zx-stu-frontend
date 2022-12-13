@@ -198,7 +198,11 @@
                           flat
                           color="green-4"
                           icon="add"
-                          label="添加选项"
+                          :label="
+                            questionDetails.type != '填空'
+                              ? '添加选项'
+                              : '添加填空'
+                          "
                           @click="handleAddOptionClick"
                         />
                       </q-item-section>
@@ -527,6 +531,25 @@ export default {
 
     // 点击添加选项按钮
     handleAddOptionClick() {
+      // 判断选项或填空数量是否为空
+      if (this.questionDetails.answer.length === 0) {
+        // 如果是填空题
+        if (this.questionDetails.type === "填空") {
+          this.questionDetails.answer.push({
+            mark: "第1空答案",
+            content: "",
+            isRight: true,
+          });
+        } else {
+          this.questionDetails.answer.push({
+            mark: "A",
+            content: "",
+            isRight: false,
+          });
+        }
+        return;
+      }
+
       // 获取最后一个选项的标记
       const lastOptionMark =
         this.questionDetails.answer[this.questionDetails.answer.length - 1]
