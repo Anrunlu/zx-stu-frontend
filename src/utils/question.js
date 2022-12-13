@@ -215,3 +215,37 @@ export function assembleSub(eachSub) {
 
   return subObj;
 }
+
+// ==== 以上是题目解析函数 ====
+
+// ==== 以下是题目工具 ====
+
+import { Notify } from "quasar";
+// 检查客观题选项是否正确
+export function checkQuestionOption(questionDetails) {
+  // 检查是否存在正确选项
+  if (questionDetails.type != "解答" && questionDetails.type != "填空") {
+    const rightOptions = questionDetails.answer.filter(
+      (option) => option.isRight
+    );
+
+    if (questionDetails.type == "多选") {
+      if (rightOptions.length < 2) {
+        Notify.create({
+          message: "正确选项数量不能少于2个",
+          type: "warning",
+        });
+        return false;
+      }
+    } else {
+      if (rightOptions.length !== 1) {
+        Notify.create({
+          message: "请设置一个正确选项",
+          type: "warning",
+        });
+        return false;
+      }
+    }
+    return true;
+  }
+}

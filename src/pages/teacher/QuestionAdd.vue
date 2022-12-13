@@ -2,8 +2,8 @@
   <q-layout view="hHr LpR lFf">
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
-        <q-icon name="edit" />
-        <div>题目编辑</div>
+        <q-icon name="add" />
+        <div>添加题目</div>
         <q-space />
         <!-- 关闭按钮 -->
         <q-btn dense flat icon="close" @click="handleClosePageClick">
@@ -17,12 +17,23 @@
         <div class="row justify-center">
           <q-card class="col-12 col-md-8 q-mb-sm">
             <q-card-section>
-              <div class="q-gutter-md">
-                <QuestionChip
-                  :questionType="questionDetails.type"
-                  v-if="questionDetails.type"
-                />
-                <q-badge v-else>*none*</q-badge>
+              <div class="q-gutter-md row">
+                <q-select
+                  v-model="questionDetails.type"
+                  :options="questionTypeOptions"
+                  outlined
+                  square
+                  dense
+                >
+                  <template v-slot:selected>
+                    题目类型：
+                    <QuestionChip
+                      :questionType="questionDetails.type"
+                      v-if="questionDetails.type"
+                    />
+                    <q-badge v-else>*none*</q-badge>
+                  </template>
+                </q-select>
                 <q-rating
                   v-model="questionDetails.difficulty"
                   size="xs"
@@ -247,19 +258,19 @@
       <div class="float-left q-ml-sm">
         <div class="q-py-sm">
           <span style="font-size: 0.5rem; color: #9e9e9e"
-            >出题：{{
-              `${questionDetails.creator.nickname}|${questionDetails.createdAt}`
-            }}</span
-          >
-          <span style="font-size: 0.5rem; color: #9e9e9e" class="q-ml-md"
-            >上次更新：{{
-              `${questionDetails.lastModifyBy.nickname}|${questionDetails.updatedAt}`
-            }}</span
+            >出题：{{ nickname }}</span
           >
         </div>
       </div>
       <div class="float-right q-mr-sm">
-        <q-btn flat square label="保存" icon="save" @click="handleSaveClick" />
+        <q-btn flat square label="预览" icon="visibility" />
+        <q-btn
+          flat
+          square
+          label="保存并录入下一题"
+          icon="save"
+          @click="handleSaveClick"
+        />
       </div>
     </q-footer>
   </q-layout>
@@ -269,32 +280,27 @@
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
-import { marked } from "marked";
-import {
-  apiGetQuestionDetail,
-  apiModifyQuestion,
-} from "src/api/teacher/questionBank";
+import { apiModifyQuestion } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
-import { formatTimeWithWeekDay } from "src/utils/time";
+import { mapGetters } from "vuex";
+import { checkQuestionOption } from "src/utils/question";
 
 export default {
   name: "QuestionEdit",
-  props: ["questionId"],
+  props: ["courseId"],
   data() {
     return {
       // 编辑器配置
       editor: Editor,
+      // 题目类型
+      questionTypeOptions: ["单选", "多选", "判断", "填空", "解答"],
       // 题目详细信息
       questionDetails: {
-        type: "",
+        type: "单选",
         content: "",
         difficulty: 0,
-        creator: {
-          nickname: "",
-        },
-        lastModifyBy: {
-          nickname: "",
-        },
+        answer: [],
+        explain: "",
         subjective: false,
       },
       // 题目下方显示内容
@@ -370,6 +376,10 @@ export default {
         language: "zh-cn",
       };
     },
+    ...mapGetters("user", {
+      username: "username",
+      nickname: "nickname",
+    }),
   },
 
   components: {
@@ -377,82 +387,65 @@ export default {
   },
 
   watch: {
-    questionId: {
-      immediate: true,
-      handler(newQuestionId) {
-        this.getQuestionDetail(newQuestionId);
+    "questionDetails.type": {
+      handler: function (newVal, oldVal) {
+        if (newVal == "解答" || newVal == "填空") {
+          this.questionDetails.answer = [];
+        } else if (newVal == "判断") {
+          this.questionDetails.answer = [
+            {
+              mark: "T",
+              content: "正确",
+              isRight: false,
+            },
+            {
+              mark: "F",
+              content: "错误",
+              isRight: false,
+            },
+          ];
+        } else {
+          this.questionDetails.answer = [
+            {
+              mark: "A",
+              content: "",
+              isRight: false,
+            },
+            {
+              mark: "B",
+              content: "",
+              isRight: false,
+            },
+            {
+              mark: "C",
+              content: "",
+              isRight: false,
+            },
+            {
+              mark: "D",
+              content: "",
+              isRight: false,
+            },
+          ];
+        }
       },
+      immediate: true,
     },
   },
 
   methods: {
-    // 获取题目详细信息
-    async getQuestionDetail(questionId) {
-      try {
-        const { data } = await apiGetQuestionDetail(questionId);
-        this.questionDetails = data.data;
-        // 格式化题目内容
-        this.questionDetails.content = marked(data.data.content);
-        // 格式化时间
-        this.questionDetails.createdAt = formatTimeWithWeekDay(
-          data.data.createdAt
-        );
-        this.questionDetails.updatedAt = formatTimeWithWeekDay(
-          data.data.updatedAt
-        );
-        // 处理上次更新人等信息
-        if (!this.questionDetails.lastModifyBy) {
-          this.questionDetails.lastModifyBy = {
-            nickname: this.questionDetails.creator.nickname,
-          };
-        }
-        // 格式化客观题选项内容
-        if (
-          this.questionDetails.subjective == false &&
-          this.questionDetails.type != "填空"
-        ) {
-          this.questionDetails.answer.forEach((option) => {
-            option.content = marked(option.content);
-          });
-        }
-      } catch (error) {
-        // 提示获取失败
-        this.$q.notify({
-          message: "获取题目详细信息失败",
-          type: "negative",
-        });
-      }
-    },
-
     // 修改题目信息
-    async modifyQuestion() {
+    async createQuestion() {
       // 检查是否存在正确选项
-      if (
-        this.questionDetails.type != "解答" &&
-        this.questionDetails.type != "填空"
-      ) {
-        const rightOptions = this.questionDetails.answer.filter(
-          (option) => option.isRight
-        );
+      const res = checkQuestionOption(this.questionDetails);
 
-        if (this.questionDetails.type == "多选") {
-          if (rightOptions.length < 2) {
-            this.$q.notify({
-              message: "正确选项数量不能少于2个",
-              type: "warning",
-            });
-            return;
-          }
-        } else {
-          if (rightOptions.length !== 1) {
-            this.$q.notify({
-              message: "请设置一个正确选项",
-              type: "warning",
-            });
-            return;
-          }
-        }
+      if (!res) {
+        return;
       }
+
+      console.log(this.questionDetails);
+
+      return;
 
       // 构造请求参数
       const modifyQuestionDto = {
@@ -571,7 +564,7 @@ export default {
     // 点击保存按钮
     handleSaveClick() {
       // 保存题目
-      this.modifyQuestion();
+      this.createQuestion();
     },
 
     // 关闭页面
@@ -580,9 +573,7 @@ export default {
     },
   },
 
-  created() {
-    this.getQuestionDetail(this.questionId);
-  },
+  created() {},
 };
 </script>
 

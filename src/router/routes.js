@@ -90,6 +90,15 @@ const routes = [
       title: "题目编辑",
     },
   },
+  {
+    path: "/teacher/question_add/:courseId",
+    component: () => import(`pages/teacher/QuestionAdd.vue`),
+    props: true,
+    meta: {
+      type: "teacher",
+      title: "添加题目",
+    },
+  },
 ];
 
 // Always leave this as last one

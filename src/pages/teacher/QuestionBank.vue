@@ -42,6 +42,14 @@
             label="高级筛选"
             @click="handleQuestionTableFilterBtnClick"
           />
+          <!-- 添加题目 -->
+          <q-btn
+            color="accent"
+            outline
+            icon="add"
+            label="添加题目"
+            @click="handleQuestionTableAddQuestionBtnClick"
+          />
         </div>
       </template>
 
@@ -531,6 +539,24 @@ export default {
 
       // 打开高级筛选对话框
       this.questionTableFilterDig = true;
+    },
+
+    // 点击表格上的添加题目按钮
+    handleQuestionTableAddQuestionBtnClick() {
+      // 校验是否选择了课程
+      if (!this.currSelectedTeaCourse) {
+        this.$q.notify({
+          message: "请先选择课程",
+          type: "negative",
+        });
+        return;
+      }
+
+      // 新标签页打开
+      const routeData = this.$router.resolve(
+        `/teacher/question_add/${this.currSelectedTeaCourse.courseId}`
+      );
+      window.open(routeData.href, "_blank");
     },
 
     // 点击高级筛选对话框的确定按钮
