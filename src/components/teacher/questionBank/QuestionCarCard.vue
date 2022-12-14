@@ -93,7 +93,11 @@
                   </q-item-section>
 
                   <q-item-section class="col-1">
-                    <span>{{ question.id.slice(-5).toUpperCase() }}</span>
+                    <span
+                      ><q-icon name="fingerprint" size="xs" color="grey-6" />{{
+                        question.shortId
+                      }}</span
+                    >
                   </q-item-section>
 
                   <q-item-section class="col-1">
