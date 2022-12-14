@@ -26,3 +26,11 @@ export function apiModifyQuestion(questionId, data) {
     data,
   });
 }
+
+// 删除题目
+export function apiRemoveQuestion(questionId) {
+  return loadingFn(request)({
+    url: `/tea/question/${questionId}`,
+    method: "DELETE",
+  });
+}

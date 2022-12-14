@@ -128,7 +128,7 @@
               size="sm"
               color="red"
               icon="delete_outline"
-              @click.stop=""
+              @click.stop="handleTableCellRemoveBtnClick(props.row)"
             >
               <q-tooltip> 删除题目 </q-tooltip>
             </q-btn>
@@ -323,6 +323,7 @@ import QuestionCar from "src/components/teacher/questionBank/QuestionCarCard.vue
 import QuestionViewCard from "src/components/teacher/questionBank/QuestionViewCard.vue";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import { preProcessQuestionList } from "src/utils/question";
+import { apiRemoveQuestion } from "src/api/teacher/question";
 
 export default {
   name: "QuestionBank",
@@ -537,6 +538,42 @@ export default {
       const routeData = this.$router.resolve(`/teacher/question/${row.id}`);
       window.open(routeData.href, "_blank");
       return;
+    },
+
+    // 点击题目列表的删除按钮
+    handleTableCellRemoveBtnClick(row) {
+      this.$q
+        .dialog({
+          title: "请确认",
+          message: `移除题目【${row.shortId}】，操作不可恢复！`,
+          ok: {
+            label: "移除",
+            push: true,
+            color: "negative",
+          },
+          cancel: {
+            label: "取消",
+            push: true,
+          },
+          persistent: true,
+        })
+
+        .onOk(async () => {
+          try {
+            await apiRemoveQuestion(row.id);
+            this.$q.notify({
+              message: "移除成功",
+              type: "positive",
+            });
+            // 重新获取题目列表
+            this.getQuestionList();
+          } catch (error) {
+            this.$q.notify({
+              message: "移除失败",
+              type: "negative",
+            });
+          }
+        });
     },
 
     // 点击表格上的高级筛选按钮
