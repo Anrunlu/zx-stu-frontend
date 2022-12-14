@@ -54,28 +54,41 @@
       </template>
 
       <template v-slot:top-right="props">
-        <q-input
-          dense
-          debounce="300"
-          v-model="questionFilter"
-          placeholder="搜索题目"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        <div class="row q-gutter-sm">
+          <q-input
+            dense
+            debounce="300"
+            v-model="questionFilter"
+            placeholder="搜索题目"
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
 
-        <q-btn
-          flat
-          round
-          dense
-          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-          @click="props.toggleFullscreen"
-        >
-          <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>{{
-            props.inFullscreen ? "退出全屏" : "全屏"
-          }}</q-tooltip>
-        </q-btn>
+          <!-- 刷新按钮 -->
+          <q-btn
+            flat
+            round
+            dense
+            icon="refresh"
+            @click="handleQuestionTableRefreshBtnClick"
+          >
+            <q-tooltip> 刷新 </q-tooltip>
+          </q-btn>
+
+          <q-btn
+            flat
+            round
+            dense
+            :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+            @click="props.toggleFullscreen"
+          >
+            <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>{{
+              props.inFullscreen ? "退出全屏" : "全屏"
+            }}</q-tooltip>
+          </q-btn>
+        </div>
       </template>
 
       <template v-slot:body-cell-shortId="props">
@@ -557,6 +570,12 @@ export default {
         `/teacher/question_add/${this.currSelectedTeaCourse.courseId}`
       );
       window.open(routeData.href, "_blank");
+    },
+
+    // 点击表格上的刷新按钮
+    handleQuestionTableRefreshBtnClick() {
+      // 获取题目列表
+      this.getQuestionList();
     },
 
     // 点击高级筛选对话框的确定按钮

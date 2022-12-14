@@ -270,12 +270,12 @@
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
+import QuestionChip from "src/components/common/QuestionChip.vue";
+import { checkQuestion, preProcessQuestionDetails } from "src/utils/question";
 import {
   apiGetQuestionDetail,
   apiModifyQuestion,
-} from "src/api/teacher/questionBank";
-import QuestionChip from "src/components/common/QuestionChip.vue";
-import { checkQuestion, preProcessQuestionDetails } from "src/utils/question";
+} from "src/api/teacher/question";
 
 export default {
   name: "QuestionEdit",

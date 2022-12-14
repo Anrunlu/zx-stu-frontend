@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { apiGetQuestionDetail } from "src/api/teacher/questionBank";
+import { apiGetQuestionDetail } from "src/api/teacher/question";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import { preProcessQuestionDetails } from "src/utils/question";
 

@@ -280,14 +280,10 @@
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
-import { apiModifyQuestion } from "src/api/teacher/questionBank";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import { mapGetters } from "vuex";
-import {
-  checkQuestion,
-  checkQuestionEmptyContentAndOption,
-  checkQuestionOption,
-} from "src/utils/question";
+import { checkQuestion } from "src/utils/question";
+import { apiCreateQuestion } from "src/api/teacher/question";
 
 export default {
   name: "QuestionEdit",
@@ -457,21 +453,17 @@ export default {
         subjective: this.questionDetails.subjective,
       };
 
-      console.log(addQuestionDto);
-
-      return;
-
       try {
-        await apiModifyQuestion(addQuestionDto);
-        // 提示修改成功
+        await apiCreateQuestion(addQuestionDto);
+        // 提示添加成功
         this.$q.notify({
-          message: "修改成功",
+          message: "添加成功",
           type: "positive",
         });
       } catch (error) {
         // 提示修改失败
         this.$q.notify({
-          message: "修改失败",
+          message: "添加失败",
           type: "negative",
         });
       }
