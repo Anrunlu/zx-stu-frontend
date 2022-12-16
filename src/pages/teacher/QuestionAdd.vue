@@ -460,12 +460,14 @@ export default {
           message: "添加成功",
           type: "positive",
         });
+        return true;
       } catch (error) {
         // 提示修改失败
         this.$q.notify({
           message: "添加失败",
           type: "negative",
         });
+        return false;
       }
     },
 
@@ -555,9 +557,28 @@ export default {
     },
 
     // 点击保存按钮
-    handleSaveClick() {
+    async handleSaveClick() {
       // 保存题目
-      this.createQuestion();
+      const created = await this.createQuestion();
+      // 录入下一题
+      if (created) {
+        this.questionDetails = {
+          type: this.questionDetails.type,
+          content: "",
+          difficulty: this.questionDetails.difficulty,
+          answer: this.questionDetails.answer.map((option) => {
+            return {
+              content:
+                this.questionDetails.type === "判断" ? option.content : "",
+              isRight:
+                this.questionDetails.type === "填空" ? option.isRight : false,
+              mark: option.mark,
+            };
+          }),
+          explain: "",
+          subjective: this.questionDetails.subjective,
+        };
+      }
     },
 
     // 关闭页面
