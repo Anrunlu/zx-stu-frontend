@@ -4,11 +4,11 @@
       flat
       :data="teaResourceList"
       :columns="teaResourceColumns"
-      row-key="index"
+      row-key="_id"
       @row-click="handleTeaResourceClick"
-      :pagination="teaResourceListTablePagination"
+      :pagination="tablePagination"
+      :dense="tableDense"
       :filter="teaResourceFilter"
-      :dense="teaResourceListTableDense"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -246,16 +246,10 @@ export default {
           label: "操作",
         },
       ],
-      // 教学资源列表表格紧凑模式
-      teaResourceListTableDense: true,
       // 当前选中的教学资源分类
       currSelectedCategory: "",
       // 教学资源过滤
       teaResourceFilter: "",
-      // 教学资源列表分页设置
-      teaResourceListTablePagination: {
-        rowsPerPage: 30,
-      },
       // 当前点击的那一会教学资源
       currClickedRowTeaResource: {},
       // 教学资源类型选项
@@ -282,6 +276,11 @@ export default {
     ...mapGetters("teaCourse", {
       teaCourseList: "teaCourseList",
       currSelectedTeaCourse: "currSelectedTeaCourse",
+    }),
+
+    ...mapGetters("settings", {
+      tableDense: "tableDense",
+      tablePagination: "tablePagination",
     }),
   },
 

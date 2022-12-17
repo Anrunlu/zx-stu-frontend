@@ -5,10 +5,10 @@
       :data="questionSetList"
       :columns="questionSetListColumns"
       row-key="id"
-      :pagination="questionSetListTablePagination"
       :filter="questionSetFilter"
-      :dense="questionSetListTableDense"
       @row-click="handleQuestionTableRowClick"
+      :pagination="tablePagination"
+      :dense="tableDense"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -343,6 +343,11 @@ export default {
     ...mapGetters("teaCourse", {
       teaCourseList: "teaCourseList",
       currSelectedTeaCourse: "currSelectedTeaCourse",
+    }),
+
+    ...mapGetters("settings", {
+      tableDense: "tableDense",
+      tablePagination: "tablePagination",
     }),
 
     // 高级筛选起止时间

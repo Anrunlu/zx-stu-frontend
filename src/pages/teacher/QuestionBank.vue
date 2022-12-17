@@ -5,12 +5,12 @@
       :data="questionList"
       :columns="questionColumns"
       row-key="id"
-      :pagination="questionListTablePagination"
       :filter="questionFilter"
-      :dense="questionListTableDense"
       :selected.sync="questionCar"
       selection="multiple"
       @row-click="handleQuestionTableRowClick"
+      :pagination="tablePagination"
+      :dense="tableDense"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -380,16 +380,10 @@ export default {
           label: "操作",
         },
       ],
-      // 题目列表表格紧凑模式
-      questionListTableDense: true,
       // 当前选中的题目分类
       currSelectedQuestionType: "",
       // 题目过滤
       questionFilter: "",
-      // 题目列表分页设置
-      questionListTablePagination: {
-        rowsPerPage: 30,
-      },
       // 当前点击的题目
       currClickedRowQuestion: {},
       // 筛选条件
@@ -432,6 +426,11 @@ export default {
     ...mapGetters("questionCar", {
       questionCarCountInfo: "questionsCountInfo",
       questionTypes: "questionTypes",
+    }),
+
+    ...mapGetters("settings", {
+      tableDense: "tableDense",
+      tablePagination: "tablePagination",
     }),
 
     questionCar: {

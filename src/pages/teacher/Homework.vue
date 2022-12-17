@@ -6,9 +6,9 @@
       :columns="homeworkColumns"
       row-key="index"
       @row-click="handleHomeworkClick"
-      :pagination="homeworkListTablePagination"
       :filter="homeworkFilter"
-      :dense="homeworkListTableDense"
+      :pagination="tablePagination"
+      :dense="tableDense"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -280,16 +280,10 @@ export default {
           label: "操作",
         },
       ],
-      // 作业列表表格紧凑模式
-      homeworkListTableDense: true,
       // 当前选中的作业分类
       currSelectedCategory: "",
       // 作业过滤
       homeworkFilter: "",
-      // 作业列表分页设置
-      homeworkListTablePagination: {
-        rowsPerPage: 30,
-      },
       // 当前点击的那一会作业
       currClickedRowHomework: {},
       // 作业类型选项
@@ -317,6 +311,11 @@ export default {
     ...mapGetters("teaCourse", {
       teaCourseList: "teaCourseList",
       currSelectedTeaCourse: "currSelectedTeaCourse",
+    }),
+
+    ...mapGetters("settings", {
+      tableDense: "tableDense",
+      tablePagination: "tablePagination",
     }),
   },
 
