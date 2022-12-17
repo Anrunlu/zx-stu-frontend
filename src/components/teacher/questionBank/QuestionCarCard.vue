@@ -134,7 +134,7 @@
                             handleSetQuestionPresetscore(
                               scope,
                               qType,
-                              question.id
+                              question._id
                             )
                           "
                         >
@@ -157,7 +157,7 @@
                                 handleSetQuestionPresetscore(
                                   scope,
                                   qType,
-                                  question.id
+                                  question._id
                                 )
                               "
                               :disable="
@@ -181,7 +181,7 @@
                         round
                         icon="delete_sweep"
                         @click.stop="
-                          handleQuestionCarQuestionRemoveBtnClick(question.id)
+                          handleQuestionCarQuestionRemoveBtnClick(question._id)
                         "
                         ><q-tooltip> 从题车移除 </q-tooltip></q-btn
                       >
@@ -275,7 +275,7 @@
     <q-dialog v-model="questionViewDig">
       <QuestionViewCard
         ref="questionViewCard"
-        :questionId="currClickedQuestion.id"
+        :questionId="currClickedQuestion._id"
         :in-question-car="currClickedQuestion.inQuestionCar"
         @removeQuestionFromCar="handleRemoveQuestionFromCarReq"
         @prevQuestion="handlePrevQuestionReq"
@@ -417,12 +417,12 @@ export default {
       const createQuestionSetDto = {
         title: this.questionSetName,
         course_id: this.currSelectedTeaCourse.courseId,
-        question_ids: this.questions.map((question) => question.id),
+        question_ids: this.questions.map((question) => question._id),
         questionsMeta: this.questions.map((question, index) => {
           return {
             index: index + 1,
             presetScore: question.presetScore,
-            question_id: question.id,
+            question_id: question._id,
             groupName: question.type,
           };
         }),
@@ -546,7 +546,7 @@ export default {
     handlePrevQuestionReq(currQuestionId) {
       // 获取当前题目的索引
       const currQuestionIndex = this.questions.findIndex(
-        (question) => question.id === currQuestionId
+        (question) => question._id === currQuestionId
       );
       // 获取上一题的索引
       const prevQuestionIndex = currQuestionIndex - 1;
@@ -567,7 +567,7 @@ export default {
     handleNextQuestionReq(currQuestionId) {
       // 获取当前题目的索引
       const currQuestionIndex = this.questions.findIndex(
-        (question) => question.id === currQuestionId
+        (question) => question._id === currQuestionId
       );
       // 获取下一题的索引
       const nextQuestionIndex = currQuestionIndex + 1;

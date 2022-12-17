@@ -76,7 +76,7 @@ export function addQuestion(state, question) {
 export function removeQuestion(state, questionId) {
   // 为题目添加一个已离开题车的标识
   const question = state.questions.find(
-    (question) => question.id === questionId
+    (question) => question._id === questionId
   );
   question.inQuestionCar = false;
   state.questions.splice(state.questions.indexOf(question), 1);
@@ -103,7 +103,7 @@ export function sortQuestions(state) {
  * */
 export function setQuestionPresetScore(state, payload) {
   const question = state.questions.find(
-    (question) => question.id === payload.questionId
+    (question) => question._id === payload.questionId
   );
   question.presetScore = payload.presetScore;
 }

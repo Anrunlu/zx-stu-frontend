@@ -145,17 +145,17 @@ export default {
     handleAddQuestionToCarBtnClick() {
       if (this.inQuestionCar) {
         // 告知题库组件，从题车移除题目
-        this.$emit("removeQuestionFromCar", this.questionDetails.id);
+        this.$emit("removeQuestionFromCar", this.questionDetails._id);
         return;
       }
       // 告知题库组件，添加题目到题车
-      this.$emit("addQuestionToCar", this.questionDetails.id);
+      this.$emit("addQuestionToCar", this.questionDetails._id);
     },
 
     // 编辑题目按钮点击事件
     handleEditQuestionBtnClick() {
       const routeData = this.$router.resolve(
-        `/teacher/question/${this.questionDetails.id}`
+        `/teacher/question/${this.questionDetails._id}`
       );
       window.open(routeData.href, "_blank");
       return;

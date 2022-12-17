@@ -301,7 +301,7 @@ export function checkQuestion(questionDetails) {
 export function preProcessQuestionList(questionList) {
   const res = questionList.map((question, index) => {
     return {
-      id: question._id,
+      _id: question._id,
       shortId: question._id.slice(-5).toUpperCase(),
       creator: question.creator.nickname,
       presetScore: 0,
@@ -328,6 +328,7 @@ export function preProcessQuestionList(questionList) {
 
 // 预处理题目详情
 export function preProcessQuestionDetails(questionDetails) {
+  questionDetails._id = questionDetails._id;
   // 添加题目shortId
   questionDetails.shortId = getObjectShortId(questionDetails);
   // 格式化题目内容

@@ -136,7 +136,7 @@
               size="sm"
               color="red"
               icon="delete_outline"
-              @click.stop=""
+              @click.stop="handleTableCellRemoveBtnClick(props.row)"
             >
               <q-tooltip> 删除题集 </q-tooltip>
             </q-btn>
@@ -258,7 +258,10 @@
 import { mapGetters } from "vuex";
 import { copyToClipboard } from "quasar";
 import { formatTimeWithWeekDay } from "src/utils/time";
-import { apiFilterQuestionSets } from "src/api/teacher/questionSet";
+import {
+  apiFilterQuestionSets,
+  apiRemoveQuestionSet,
+} from "src/api/teacher/questionSet";
 import { getObjectShortId } from "src/utils/common";
 
 export default {
@@ -429,6 +432,42 @@ export default {
     // 点击题集列表的行
     handleQuestionTableRowClick(evt, row) {
       this.currClickedRowQuestionSet = row;
+    },
+
+    // 点击题集列表的删除按钮
+    handleTableCellRemoveBtnClick(row) {
+      this.$q
+        .dialog({
+          title: "请确认",
+          message: `移除题集【${row.shortId}】，操作不可恢复！`,
+          ok: {
+            label: "移除",
+            push: true,
+            color: "negative",
+          },
+          cancel: {
+            label: "取消",
+            push: true,
+          },
+          persistent: true,
+        })
+
+        .onOk(async () => {
+          try {
+            await apiRemoveQuestionSet(row._id);
+            this.$q.notify({
+              message: "移除成功",
+              type: "positive",
+            });
+            // 重新获取题集列表
+            this.getQuestionSetList();
+          } catch (error) {
+            this.$q.notify({
+              message: "移除失败",
+              type: "negative",
+            });
+          }
+        });
     },
 
     // 点击试题集编号

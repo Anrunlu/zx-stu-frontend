@@ -18,3 +18,11 @@ export function apiFilterQuestionSets(data) {
     data,
   });
 }
+
+// 删除试题集
+export function apiRemoveQuestionSet(questionSetId) {
+  return loadingFn(request)({
+    url: `/tea/question-set/${questionSetId}`,
+    method: "DELETE",
+  });
+}

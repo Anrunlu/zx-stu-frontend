@@ -307,7 +307,7 @@
     <q-dialog v-model="questionViewDig">
       <QuestionViewCard
         ref="questionViewCard"
-        :questionId="currClickedRowQuestion.id"
+        :questionId="currClickedRowQuestion._id"
         :in-question-car="currClickedRowQuestion.inQuestionCar"
         @addQuestionToCar="handleAddQuestionToCarReq"
         @removeQuestionFromCar="handleRemoveQuestionFromCarReq"
