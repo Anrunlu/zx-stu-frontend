@@ -251,6 +251,44 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- 删除试题集对话框 -->
+    <q-dialog v-model="removeQuestionSetDig">
+      <q-card>
+        <CardBar title="删除试题集" icon="poll" bgColor="negative" />
+        <q-card-section>
+          移除题集【{{ currClickedRowQuestionSet.shortId }}】将<span
+            style="color: red"
+            >同时删除引用本试题集的作业</span
+          >，操作不可恢复！
+          <ol>
+            <li
+              v-for="(homework, index) in currClickedRowQuestionSet.homeworks"
+              :key="index"
+            >
+              【{{ homework.receiver.name }}】{{ homework.title }}
+            </li>
+          </ol>
+
+          <q-input
+            v-model="removeQuestionSetConfirmText"
+            type="text"
+            outlined
+            square
+            dense
+            :label="`请输入“${currClickedRowQuestionSet.shortId}”以确认删除`"
+          />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            color="negative"
+            icon="delete"
+            label="确认删除"
+            @click="handleRemoveQuestionSetDigConfirmBtnClick"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -317,10 +355,6 @@ export default {
       questionSetListTableDense: true,
       // 题集过滤
       questionSetFilter: "",
-      // 题集列表分页设置
-      questionSetListTablePagination: {
-        rowsPerPage: 30,
-      },
       // 当前点击的题集
       currClickedRowQuestionSet: {},
       // 筛选条件
@@ -335,6 +369,10 @@ export default {
       },
       // 高级筛选对话框
       questionSetTableFilterDig: false,
+      // 删除题集对话框
+      removeQuestionSetDig: false,
+      // 删除题集确认文本
+      removeQuestionSetConfirmText: "",
     };
   },
 
@@ -436,38 +474,8 @@ export default {
 
     // 点击题集列表的删除按钮
     handleTableCellRemoveBtnClick(row) {
-      this.$q
-        .dialog({
-          title: "请确认",
-          message: `移除题集【${row.shortId}】，操作不可恢复！`,
-          ok: {
-            label: "移除",
-            push: true,
-            color: "negative",
-          },
-          cancel: {
-            label: "取消",
-            push: true,
-          },
-          persistent: true,
-        })
-
-        .onOk(async () => {
-          try {
-            await apiRemoveQuestionSet(row._id);
-            this.$q.notify({
-              message: "移除成功",
-              type: "positive",
-            });
-            // 重新获取题集列表
-            this.getQuestionSetList();
-          } catch (error) {
-            this.$q.notify({
-              message: "移除失败",
-              type: "negative",
-            });
-          }
-        });
+      this.currClickedRowQuestionSet = row;
+      this.removeQuestionSetDig = true;
     },
 
     // 点击试题集编号
@@ -516,6 +524,38 @@ export default {
       this.getQuestionSetList();
       // 关闭高级筛选对话框
       this.questionSetTableFilterDig = false;
+    },
+
+    // 点击删除题集对话框的确定按钮
+    async handleRemoveQuestionSetDigConfirmBtnClick() {
+      // 校验
+      if (
+        this.removeQuestionSetConfirmText !==
+        this.currClickedRowQuestionSet.shortId
+      ) {
+        this.$q.notify({
+          message: "输入的确认文本不匹配",
+          type: "negative",
+        });
+        return;
+      }
+
+      // 移除题集
+      try {
+        await apiRemoveQuestionSet(this.currClickedRowQuestionSet._id);
+        this.$q.notify({
+          message: "移除成功",
+          type: "positive",
+        });
+        // 重新获取题集列表
+        this.getQuestionSetList();
+        this.removeQuestionSetDig = false;
+      } catch (error) {
+        this.$q.notify({
+          message: "移除失败",
+          type: "negative",
+        });
+      }
     },
   },
 

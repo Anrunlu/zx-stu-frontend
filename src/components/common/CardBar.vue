@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-toolbar v-if="toolbar" class="bg-primary text-white shadow-1">
+    <q-toolbar v-if="toolbar" :class="`bg-${bgColor} text-white shadow-1`">
       <q-btn flat round dense :icon="icon" />
       <q-toolbar-title>
         {{ title }}
@@ -19,7 +19,7 @@
       </q-btn>
     </q-toolbar>
 
-    <q-bar v-else class="bg-primary text-white shadow-1">
+    <q-bar v-else :class="`bg-${bgColor} text-white shadow-1`">
       <q-icon :name="icon" />
       <div>{{ title }}</div>
 
@@ -52,6 +52,10 @@ export default {
     },
     title: {
       type: String,
+    },
+    bgColor: {
+      type: String,
+      default: "primary",
     },
   },
 };
