@@ -68,6 +68,18 @@
         </q-btn>
       </template>
 
+      <template v-slot:body-cell-shortId="props">
+        <q-td
+          :props="props"
+          @click.stop="handleTableCellIdClick(props.row)"
+          class="cursor-pointer"
+        >
+          <q-icon name="fingerprint" size="xs" color="grey-6" />{{
+            props.row.shortId
+          }}
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-citationTimes="props">
         <q-td :props="props">
           <q-chip
@@ -244,8 +256,10 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { copyToClipboard } from "quasar";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiFilterQuestionSets } from "src/api/teacher/questionSet";
+import { getObjectShortId } from "src/utils/common";
 
 export default {
   name: "QuestionSet",
@@ -256,10 +270,10 @@ export default {
       // 题集列表表头
       questionSetListColumns: [
         {
-          name: "index",
-          label: "序号",
-          align: "center",
-          field: "questionTableIndex",
+          name: "shortId",
+          label: "试题集编号",
+          align: "left",
+          field: "shortId",
           sortable: true,
         },
         {
@@ -388,6 +402,7 @@ export default {
       this.questionSetList = questions.map((questionSet, index) => {
         return {
           id: questionSet._id,
+          shortId: getObjectShortId(questionSet),
           questionTableIndex: index + 1,
           creator: questionSet.creator.nickname,
           title: questionSet.title,
@@ -409,6 +424,17 @@ export default {
     // 点击题集列表的行
     handleQuestionTableRowClick(evt, row) {
       this.currClickedRowQuestionSet = row;
+    },
+
+    // 点击试题集编号
+    handleTableCellIdClick(row) {
+      // 复制id到剪贴板
+      copyToClipboard(row.id).then(() => {
+        this.$q.notify({
+          message: "试题集编号已复制到剪贴板",
+          type: "positive",
+        });
+      });
     },
 
     // 点击表格上的高级筛选按钮

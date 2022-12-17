@@ -738,21 +738,6 @@ export default {
     // 获取题目列表
     this.getQuestionList();
   },
-
-  mounted() {
-    // 监听页面切换到前台的事件
-    window.addEventListener("focus", (e) => {
-      // 获取题目列表
-      this.getQuestionList();
-    });
-  },
-
-  destroyed() {
-    // 移除页面切换到前台的事件
-    window.removeEventListener("focus", (e) => {
-      this.getQuestionList();
-    });
-  },
 };
 </script>
 

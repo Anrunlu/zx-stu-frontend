@@ -35,9 +35,7 @@
           </q-btn-dropdown>
           <!-- 选择教学资源类型 -->
           <q-btn-dropdown
-            :label="
-              !currSelectedCategory ? '选择教学资源类型' : currSelectedCategory
-            "
+            :label="!currSelectedCategory ? '资源类型' : currSelectedCategory"
             color="positive"
           >
             <q-list>
@@ -80,6 +78,18 @@
             props.inFullscreen ? "退出全屏" : "全屏"
           }}</q-tooltip>
         </q-btn>
+      </template>
+
+      <template v-slot:body-cell-shortId="props">
+        <q-td
+          :props="props"
+          @click.stop="handleTableCellIdClick(props.row)"
+          class="cursor-pointer"
+        >
+          <q-icon name="fingerprint" size="xs" color="grey-6" />{{
+            props.row.shortId
+          }}
+        </q-td>
       </template>
 
       <template v-slot:body-cell-status="props">
@@ -191,7 +201,9 @@ import {
   apiModifyTeaResource,
 } from "src/api/teacher/teaResource";
 import { mapGetters } from "vuex";
+import { copyToClipboard } from "quasar";
 import { formatTimeWithWeekDay } from "src/utils/time";
+import { getObjectShortId } from "src/utils/common";
 export default {
   name: "TeaResource",
   data() {
@@ -201,10 +213,10 @@ export default {
       // 教学资源列表表头
       teaResourceColumns: [
         {
-          name: "index",
-          label: "序号",
-          field: "index",
-          align: "center",
+          name: "shortId",
+          label: "资源编号",
+          align: "left",
+          field: "shortId",
           sortable: true,
         },
         {
@@ -274,6 +286,7 @@ export default {
   },
 
   methods: {
+    // 获取资源列表
     async handleGetTeaResourceList(category) {
       // 校验是否选择了课程
       if (!this.currSelectedTeaCourse) {
@@ -295,11 +308,11 @@ export default {
       // 发送请求
       try {
         const { data } = await apiGetTeaResources(payload);
-        this.teaResourceList = data.data.map((teaResource, index) => {
+        this.teaResourceList = data.data.map((teaResource) => {
           teaResource.createdAt = formatTimeWithWeekDay(teaResource.createdAt);
           return {
             ...teaResource,
-            index: index + 1,
+            shortId: getObjectShortId(teaResource),
           };
         });
       } catch (error) {
@@ -387,6 +400,17 @@ export default {
       if (this.currSelectedCategory) {
         this.handleGetTeaResourceList(this.currSelectedCategory);
       }
+    },
+
+    // 点击集=资源编号
+    handleTableCellIdClick(row) {
+      // 复制id到剪贴板
+      copyToClipboard(row.id).then(() => {
+        this.$q.notify({
+          message: "资源编号已复制到剪贴板",
+          type: "positive",
+        });
+      });
     },
 
     // 处理点击教学资源列表中的某一行

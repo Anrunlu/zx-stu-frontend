@@ -82,6 +82,18 @@
         </q-btn>
       </template>
 
+      <template v-slot:body-cell-shortId="props">
+        <q-td
+          :props="props"
+          @click.stop="handleTableCellIdClick(props.row)"
+          class="cursor-pointer"
+        >
+          <q-icon name="fingerprint" size="xs" color="grey-6" />{{
+            props.row.shortId
+          }}
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-status="props">
         <q-td :props="props">
           <q-chip
@@ -211,6 +223,7 @@ import {
   formatTimeWithWeekDay,
 } from "src/utils/time";
 import EditingHomeworkCard from "src/components/teacher/homework/EditingHomeworkCard.vue";
+import { getObjectShortId } from "src/utils/common";
 
 export default {
   name: "Homework",
@@ -221,10 +234,10 @@ export default {
       // 作业列表表头
       homeworkColumns: [
         {
-          name: "index",
-          label: "序号",
-          field: "index",
-          align: "center",
+          name: "shortId",
+          label: "作业编号",
+          align: "left",
+          field: "shortId",
           sortable: true,
         },
         {
@@ -333,7 +346,7 @@ export default {
         this.homeworkList = data.data.map((homework, index) => {
           return {
             ...homework,
-            index: index + 1,
+            shortId: getObjectShortId(homework),
             endtimeFormatted: formatTimeWithWeekDay(homework.endtime),
             statusByTime: computeHomeworkStatusByTime(homework),
           };

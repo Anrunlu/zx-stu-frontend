@@ -223,6 +223,7 @@ export function assembleSub(eachSub) {
 import { Notify } from "quasar";
 import { marked } from "marked";
 import { formatTimeWithWeekDay } from "./time";
+import { getObjectShortId } from "./common";
 // 检查客观题选项是否正确
 export function checkQuestionOption(questionDetails) {
   // 检查是否存在正确选项
@@ -328,7 +329,7 @@ export function preProcessQuestionList(questionList) {
 // 预处理题目详情
 export function preProcessQuestionDetails(questionDetails) {
   // 添加题目shortId
-  questionDetails.shortId = questionDetails._id.slice(-5).toUpperCase();
+  questionDetails.shortId = getObjectShortId(questionDetails);
   // 格式化题目内容
   questionDetails.content = marked(questionDetails.content);
   // 格式化时间
