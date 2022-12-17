@@ -524,7 +524,7 @@ export default {
     // 点击题目列表的id(题目编号)
     handleTableCellIdClick(row) {
       // 复制id到剪贴板
-      copyToClipboard(row.id).then(() => {
+      copyToClipboard(row._id).then(() => {
         this.$q.notify({
           message: "题目编号已复制到剪贴板",
           type: "positive",
@@ -677,7 +677,7 @@ export default {
     handleAddQuestionToCarReq(questionId) {
       // 根据题目id获取题目信息
       const question = this.questionList.find(
-        (question) => question.id === questionId
+        (question) => question._id === questionId
       );
       // 添加到题车
       this.$store.commit("questionCar/addQuestion", question);
@@ -693,7 +693,7 @@ export default {
     handlePrevQuestionReq(currQuestionId) {
       // 获取当前题目的索引
       const currQuestionIndex = this.questionList.findIndex(
-        (question) => question.id === currQuestionId
+        (question) => question._id === currQuestionId
       );
       // 获取上一题的索引
       const prevQuestionIndex = currQuestionIndex - 1;
@@ -714,7 +714,7 @@ export default {
     handleNextQuestionReq(currQuestionId) {
       // 获取当前题目的索引
       const currQuestionIndex = this.questionList.findIndex(
-        (question) => question.id === currQuestionId
+        (question) => question._id === currQuestionId
       );
       // 获取下一题的索引
       const nextQuestionIndex = currQuestionIndex + 1;
