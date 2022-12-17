@@ -4,7 +4,7 @@
       flat
       :data="homeworkList"
       :columns="homeworkColumns"
-      row-key="index"
+      row-key="_id"
       @row-click="handleHomeworkClick"
       :filter="homeworkFilter"
       :pagination="tablePagination"

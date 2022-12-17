@@ -4,7 +4,7 @@
       flat
       :data="questionSetList"
       :columns="questionSetListColumns"
-      row-key="id"
+      row-key="_id"
       :filter="questionSetFilter"
       @row-click="handleQuestionTableRowClick"
       :pagination="tablePagination"
@@ -406,7 +406,7 @@ export default {
 
       this.questionSetList = questions.map((questionSet, index) => {
         return {
-          id: questionSet._id,
+          _id: questionSet._id,
           shortId: getObjectShortId(questionSet),
           questionTableIndex: index + 1,
           creator: questionSet.creator.nickname,

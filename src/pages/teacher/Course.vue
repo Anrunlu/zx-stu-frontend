@@ -11,7 +11,7 @@
         <q-table
           :data="teaCourse.classrooms"
           :columns="teaCourseClassroomColumns"
-          row-key="id"
+          row-key="_id"
           hide-pagination
           @row-click="handleTeaClassroomClick"
         >

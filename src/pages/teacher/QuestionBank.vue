@@ -4,7 +4,7 @@
       flat
       :data="questionList"
       :columns="questionColumns"
-      row-key="id"
+      row-key="_id"
       :filter="questionFilter"
       :selected.sync="questionCar"
       selection="multiple"
