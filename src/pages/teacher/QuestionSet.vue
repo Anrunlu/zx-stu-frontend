@@ -255,7 +255,7 @@
     <!-- 删除试题集对话框 -->
     <q-dialog v-model="removeQuestionSetDig">
       <q-card>
-        <CardBar title="删除试题集" icon="poll" bgColor="negative" />
+        <CardBar title="删除试题集" icon="warning" bgColor="negative" />
         <q-card-section>
           移除题集【{{ currClickedRowQuestionSet.shortId }}】将<span
             style="color: red"
