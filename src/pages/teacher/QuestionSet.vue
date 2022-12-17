@@ -271,7 +271,7 @@ export default {
       questionSetListColumns: [
         {
           name: "shortId",
-          label: "试题集编号",
+          label: "题集编号",
           align: "left",
           field: "shortId",
           sortable: true,
