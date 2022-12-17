@@ -35,8 +35,15 @@
           </q-btn-dropdown>
           <!-- 选择作业类型 -->
           <q-btn-dropdown
+            :icon="
+              currSelectedCategory.icon
+                ? currSelectedCategory.icon
+                : 'touch_app'
+            "
             :label="
-              !currSelectedCategory ? '选择作业类型' : currSelectedCategory
+              !currSelectedCategory.value
+                ? '作业类型'
+                : currSelectedCategory.label
             "
             color="positive"
           >
@@ -44,12 +51,15 @@
               <q-item
                 clickable
                 v-close-popup
-                @click="handleGetHomeworkList(category)"
+                @click="handleChangeHomeworkCategory(category)"
                 :key="index"
                 v-for="(category, index) in homeworkCategoryOptions"
               >
+                <q-item-section avatar>
+                  <q-icon :name="category.icon" />
+                </q-item-section>
                 <q-item-section>
-                  <q-item-label>{{ category }}</q-item-label>
+                  {{ category.label }}
                 </q-item-section>
               </q-item>
             </q-list>
@@ -281,22 +291,19 @@ export default {
         },
       ],
       // 当前选中的作业分类
-      currSelectedCategory: "",
+      currSelectedCategory: { value: "", label: "", icon: "" },
       // 作业过滤
       homeworkFilter: "",
       // 当前点击的那一会作业
       currClickedRowHomework: {},
       // 作业类型选项
       homeworkCategoryOptions: [
-        "课前预习",
-        "课堂作业",
-        "课后作业",
-        "课程实验",
-        "课程论文",
-        "课程设计",
-        "毕业设计",
-        "期中考试",
-        "期末考试",
+        { value: "课前预习", label: "课前预习", icon: "auto_stories" },
+        { value: "课堂作业", label: "互动课堂", icon: "cast" },
+        { value: "课后作业", label: "课后作业", icon: "home_work" },
+        { value: "课程实验", label: "课程实验", icon: "science" },
+        { value: "期中考试", label: "期中考试", icon: "assignment" },
+        { value: "期末考试", label: "期末考试", icon: "assignment" },
       ],
       // 作业编辑对话框
       homeworkEditingDig: false,
@@ -330,8 +337,6 @@ export default {
         return;
       }
 
-      this.currSelectedCategory = category;
-
       // 构造请求参数
       const payload = {
         status: "正常",
@@ -363,9 +368,15 @@ export default {
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
 
       // 如果当前选中的作业分类不为空，则重新获取作业列表
-      if (this.currSelectedCategory) {
-        this.handleGetHomeworkList(this.currSelectedCategory);
+      if (this.currSelectedCategory.value) {
+        this.handleGetHomeworkList(this.currSelectedCategory.value);
       }
+    },
+
+    // 处理作业分类选项改变
+    handleChangeHomeworkCategory(category) {
+      this.currSelectedCategory = category;
+      this.handleGetHomeworkList(category.value);
     },
 
     // 处理点击作业列表中的某一行
@@ -389,13 +400,16 @@ export default {
     handleCloseEditingHomeworkDialog() {
       this.homeworkEditingDig = false;
       // 刷新作业列表
-      this.handleGetHomeworkList(this.currSelectedCategory);
+      this.handleGetHomeworkList(this.currSelectedCategory.value);
     },
   },
 
   created() {
     // 获取教师课程列表，store 事件
     this.$store.dispatch("teaCourse/getTeaCourseInfo");
+
+    // 获取作业列表
+    this.handleGetHomeworkList("课后作业");
   },
 };
 </script>
