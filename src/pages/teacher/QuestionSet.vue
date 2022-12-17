@@ -547,6 +547,8 @@ export default {
           message: "移除成功",
           type: "positive",
         });
+        // 重置确认文本
+        this.removeQuestionSetConfirmText = "";
         // 重新获取题集列表
         this.getQuestionSetList();
         this.removeQuestionSetDig = false;
