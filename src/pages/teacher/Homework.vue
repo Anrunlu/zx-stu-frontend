@@ -296,15 +296,6 @@ export default {
       homeworkFilter: "",
       // 当前点击的那一会作业
       currClickedRowHomework: {},
-      // 作业类型选项
-      homeworkCategoryOptions: [
-        { value: "课前预习", label: "课前预习", icon: "auto_stories" },
-        { value: "课堂作业", label: "互动课堂", icon: "cast" },
-        { value: "课后作业", label: "课后作业", icon: "home_work" },
-        { value: "课程实验", label: "课程实验", icon: "science" },
-        { value: "期中考试", label: "期中考试", icon: "assignment" },
-        { value: "期末考试", label: "期末考试", icon: "assignment" },
-      ],
       // 作业编辑对话框
       homeworkEditingDig: false,
     };
@@ -323,6 +314,7 @@ export default {
     ...mapGetters("settings", {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
+      homeworkCategoryOptions: "homeworkCategoryOptions",
     }),
   },
 

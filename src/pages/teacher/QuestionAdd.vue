@@ -21,6 +21,9 @@
                 <q-select
                   v-model="questionDetails.type"
                   :options="questionTypeOptions"
+                  option-label="label"
+                  option-value="value"
+                  emit-value
                   outlined
                   square
                   dense
@@ -293,8 +296,6 @@ export default {
     return {
       // 编辑器配置
       editor: Editor,
-      // 题目类型
-      questionTypeOptions: ["单选", "多选", "判断", "填空", "解答"],
       // 题目详细信息
       questionDetails: {
         type: "单选",
@@ -380,6 +381,9 @@ export default {
     ...mapGetters("user", {
       username: "username",
       nickname: "nickname",
+    }),
+    ...mapGetters("settings", {
+      questionTypeOptions: "questionTypeOptions",
     }),
   },
 

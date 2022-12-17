@@ -170,8 +170,11 @@
                   clearable
                   multiple
                   use-chips
-                  :options="questionTableFilterOptions.typeOptions"
+                  :options="questionTypeOptions"
                   v-model="questionTableFilterOptions.type"
+                  option-label="label"
+                  option-value="value"
+                  emit-value
                   label="按题目类型"
                   dense
                 >
@@ -388,8 +391,6 @@ export default {
       currClickedRowQuestion: {},
       // 筛选条件
       questionTableFilterOptions: {
-        // 题目类型
-        typeOptions: ["单选", "多选", "判断", "填空", "解答"],
         // 已筛选题目类型
         type: [],
         // 创建时间起止
@@ -431,6 +432,7 @@ export default {
     ...mapGetters("settings", {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
+      questionTypeOptions: "questionTypeOptions",
     }),
 
     questionCar: {

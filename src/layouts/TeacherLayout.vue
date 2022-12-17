@@ -83,7 +83,7 @@
           icon="topic"
           label="题库管理"
           class="q-ml-sm q-px-md"
-          to="/collections/myTasks"
+          to="questionBank"
         />
 
         <q-space />
@@ -254,47 +254,6 @@ export default {
       miniState: false,
       leftDrawerOpen: true,
       search: "",
-      links1: [
-        { icon: "dashboard", text: "Dashboard", to: "dashboard" },
-        {
-          icon: "folder_shared",
-          text: "课程管理",
-          to: "course",
-        },
-        {
-          icon: "bubble_chart",
-          text: "课程图谱",
-          to: "",
-        },
-        {
-          icon: "cast_for_education",
-          text: "课堂互动",
-          to: "classwork",
-        },
-        {
-          icon: "flutter_dash",
-          text: "知识画像",
-          to: "",
-        },
-        {
-          icon: "cloud_circle",
-          text: "教学资源",
-          to: "teaResource",
-        },
-      ],
-      links2: [
-        { icon: "forum", text: "题库管理", to: "questionBank" },
-        { icon: "topic", text: "题集管理", to: "questionSet" },
-        { icon: "work", text: "作业管理", to: "homework" },
-        { icon: "assignment", text: "考试系统", to: "" },
-        { icon: "leaderboard", text: "成绩管理", to: "grade" },
-      ],
-      links3: [
-        { icon: "notifications", text: "消息中心", to: "announcement" },
-        { icon: "settings", text: "个人设置", to: "profile" },
-        { icon: "help", text: "问题反馈", to: "feedback" },
-        // { icon: 'get_app', text: '客户端下载', to: '/' }
-      ],
       createMenu: [
         { icon: "topic", text: "试题集", to: "questionSet/create" },
         { icon: "work", text: "作业" },
@@ -310,6 +269,12 @@ export default {
       nickname: "nickname",
       avatar: "avatar",
       officeName: "officeName",
+    }),
+
+    ...mapGetters("settings", {
+      links1: "layoutLeftDrawerLinks1",
+      links2: "layoutLeftDrawerLinks2",
+      links3: "layoutLeftDrawerLinks3",
     }),
   },
 
