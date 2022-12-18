@@ -1,14 +1,9 @@
 <template>
-  <!-- 编辑作业 -->
-  <!-- 当 mode = publish 为发布作业; mode = modify 为修改作业  -->
+  <!-- 创建作业 -->
   <q-card style="width: 700px; max-width: 80vw">
     <q-form @submit="handleEditingHomeworkFormSubmit">
       <!-- 标题栏 -->
-      <CardBar title="编辑作业" icon="edit">
-        <template v-slot:left>
-          <ObjectShortId :id="homeworkId" objectName="作业" />
-        </template>
-      </CardBar>
+      <CardBar title="发布作业" icon="add" />
 
       <q-card-section class="q-pa-sm">
         <q-list class="row">
@@ -16,7 +11,6 @@
           <q-item class="col-12">
             <q-item-section>
               <q-select
-                v-if="mode === 'publish'"
                 outlined
                 square
                 clearable
@@ -31,22 +25,6 @@
                   <q-icon name="topic" />
                 </template>
               </q-select>
-              <q-input
-                v-else
-                outlined
-                square
-                color="black"
-                v-model="currHomeworkDetails.questionSet.title"
-                label="使用的试题集(作业发布后不可修改)"
-                disable
-                :rules="[(val) => !!val || '请选择试题集']"
-                hide-bottom-space
-                dense
-              >
-                <template v-slot:prepend>
-                  <q-icon name="topic" />
-                </template>
-              </q-input>
             </q-item-section>
           </q-item>
 
@@ -78,6 +56,10 @@
                 square
                 use-chips
                 color="black"
+                :options="currSelectedTeaCourse.classrooms"
+                option-label="name"
+                option-value="_id"
+                emit-value
                 v-model="currHomeworkDetails.receiver.name"
                 label="发布到的教学班"
                 :disable="mode === 'modify'"
@@ -127,7 +109,7 @@
                 v-model="currHomeworkDetails.starttime"
                 :rules="[(val) => val.length > 0 || '请输入开始时间']"
                 hide-bottom-space
-                label="开始日期"
+                label="开始时间"
               >
                 <template v-slot:prepend>
                   <q-icon name="event" class="cursor-pointer">
@@ -193,7 +175,7 @@
                 v-model="currHomeworkDetails.endtime"
                 :rules="[(val) => val.length > 0 || '请输入截止时间']"
                 hide-bottom-space
-                label="截至日期"
+                label="截止时间"
               >
                 <template v-slot:prepend>
                   <q-icon name="event" class="cursor-pointer">
@@ -279,9 +261,9 @@
           type="submit"
           color="primary"
           class="q-px-sm"
-          :icon="mode === 'publish' ? 'cloud_upload' : 'cached'"
+          icon="cloud_upload"
         >
-          {{ mode === "publish" ? "发布" : "更新" }}
+          发布
         </q-btn>
       </q-card-actions>
     </q-form>
@@ -290,31 +272,14 @@
 
 <script>
 import { mapGetters } from "vuex";
-import {
-  apiGetHomeworkDetails,
-  apiModifyHomework,
-} from "src/api/teacher/homework";
-import { date } from "quasar";
 export default {
-  name: "EditingHomeworkCard",
-  props: {
-    // 作业id
-    homeworkId: {
-      type: String,
-      default: "",
-    },
-    // 编辑模式，publish 为新发布，modify 为更新
-    mode: {
-      type: String,
-      default: "publish",
-    },
-  },
+  name: "HomeworkAddCard",
+  props: {},
 
   data() {
     return {
       // 当前作业详情
       currHomeworkDetails: {
-        _id: "",
         title: "",
         category: "",
         starttime: "",
@@ -342,12 +307,11 @@ export default {
 
   components: {
     CardBar: () => import("src/components/common/CardBar.vue"),
-    ObjectShortId: () => import("src/components/common/ObjectShortId.vue"),
   },
 
   computed: {
     ...mapGetters("teaCourse", {
-      teaCourseList: "teaCourseList",
+      currSelectedTeaCourse: "currSelectedTeaCourse",
     }),
 
     ...mapGetters("settings", {
@@ -356,93 +320,16 @@ export default {
   },
 
   methods: {
-    // 获取作业详情
-    async getHomeworkDetails() {
-      try {
-        const { data } = await apiGetHomeworkDetails(this.homeworkId);
-        const resHomework = data.data;
-        this.currHomeworkDetails._id = resHomework._id;
-        this.currHomeworkDetails.title = resHomework.title;
-        this.currHomeworkDetails.category = resHomework.category;
-        this.currHomeworkDetails.starttime = date.formatDate(
-          resHomework.starttime,
-          "YYYY-MM-DD HH:mm"
-        );
-        this.currHomeworkDetails.endtime = date.formatDate(
-          resHomework.endtime,
-          "YYYY-MM-DD HH:mm"
-        );
-        this.currHomeworkDetails.isShowScores = resHomework.isShowScores;
-        this.currHomeworkDetails.questionSet._id =
-          resHomework.questionSets[0]._id;
-        this.currHomeworkDetails.questionSet.title =
-          resHomework.questionSets[0].title;
-        this.currHomeworkDetails.receiver._id = resHomework.receiver._id;
-        this.currHomeworkDetails.receiver.name = resHomework.receiver.name;
-        this.currHomeworkDetails.isShowKnowledge = resHomework.isShowKnowledge;
-        this.currHomeworkDetails.isShowAnswerAfterEndtime =
-          resHomework.isShowAnswerAfterEndtime;
-        this.currHomeworkDetails.isShowScoreAfterEndtime =
-          resHomework.isShowScoreAfterEndtime;
-      } catch (error) {
-        // 提示获取失败
-        this.$q.notify({
-          message: "获取作业详情失败",
-          type: "negative",
-        });
-      }
-    },
+    // 获取题集列表
 
     // 发布作业
-
-    // 更新作业
-    async modifyHomework() {
-      // 构造请求参数
-      const payload = {
-        title: this.currHomeworkDetails.title,
-        category: this.currHomeworkDetails.category,
-        starttime: new Date(this.currHomeworkDetails.starttime),
-        endtime: new Date(this.currHomeworkDetails.endtime),
-        isShowScoreAfterEndtime:
-          this.currHomeworkDetails.isShowScoreAfterEndtime,
-        isShowAnswerAfterEndtime:
-          this.currHomeworkDetails.isShowAnswerAfterEndtime,
-        isShowKnowledge: this.currHomeworkDetails.isShowKnowledge,
-      };
-
-      // 发送请求
-      try {
-        await apiModifyHomework(this.homeworkId, payload);
-        // 提示更新成功
-        this.$q.notify({
-          message: "更新成功",
-          type: "positive",
-        });
-        // 通知父组件关闭对话框
-        this.$emit("closeEditingHomeworkDialog");
-      } catch (error) {
-        // 提示更新失败
-        this.$q.notify({
-          message: "更新失败",
-          type: "negative",
-        });
-      }
-    },
 
     // 处理表单提交
     handleEditingHomeworkFormSubmit() {
       // 发布作业
-      if (this.mode === "publish") {
-      }
-      // 更新作业
-      else if (this.mode === "modify") {
-        this.modifyHomework();
-      }
     },
   },
 
-  created() {
-    this.getHomeworkDetails();
-  },
+  created() {},
 };
 </script>

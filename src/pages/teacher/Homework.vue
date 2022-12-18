@@ -223,11 +223,17 @@
     </q-table>
 
     <!-- 作业编辑对话框 -->
-    <q-dialog v-model="homeworkEditingDig" persistent>
-      <EditingHomeworkCard
-        :homeworkId="currClickedRowHomework.id"
-        :mode="`modify`"
+    <q-dialog v-model="homeworkEditDig" persistent>
+      <HomeworkEditCard
+        :homeworkId="currClickedRowHomework._id"
         @closeEditingHomeworkDialog="handleCloseEditingHomeworkDialog"
+      />
+    </q-dialog>
+
+    <!-- 发布作业对话框 -->
+    <q-dialog v-model="homeworkAddDig" persistent>
+      <HomeworkAddCard
+        @closePublishingHomeworkDialog="handleClosePublishingHomeworkDialog"
       />
     </q-dialog>
   </q-page>
@@ -240,7 +246,6 @@ import {
   computeHomeworkStatusByTime,
   formatTimeWithWeekDay,
 } from "src/utils/time";
-import EditingHomeworkCard from "src/components/teacher/homework/EditingHomeworkCard.vue";
 import { getObjectShortId } from "src/utils/common";
 
 export default {
@@ -305,12 +310,17 @@ export default {
       // 当前点击的那一会作业
       currClickedRowHomework: {},
       // 作业编辑对话框
-      homeworkEditingDig: false,
+      homeworkEditDig: false,
+      // 发布作业对话框
+      homeworkAddDig: false,
     };
   },
 
   components: {
-    EditingHomeworkCard,
+    HomeworkEditCard: () =>
+      import("src/components/teacher/homework/HomeworkEditCard.vue"),
+    HomeworkAddCard: () =>
+      import("src/components/teacher/homework/HomeworkAddCard.vue"),
   },
 
   computed: {
@@ -381,7 +391,15 @@ export default {
 
     // 处理点击发布作业按钮
     handlePublishHomeworkBtnClick() {
-      this.homeworkEditingDig = true;
+      // 校验是否选择了课程
+      if (!this.currSelectedTeaCourse) {
+        this.$q.notify({
+          message: "请先选择课程",
+          type: "negative",
+        });
+        return;
+      }
+      this.homeworkAddDig = true;
     },
 
     // 处理点击作业列表中的某一行
@@ -398,12 +416,12 @@ export default {
     // 表格上修改作业按钮点击事件
     handleModifyHomeworkClickClick(row) {
       this.currClickedRowHomework = row;
-      this.homeworkEditingDig = true;
+      this.homeworkEditDig = true;
     },
 
     // 处理作业编辑对话框关闭事件
     handleCloseEditingHomeworkDialog() {
-      this.homeworkEditingDig = false;
+      this.homeworkEditDig = false;
       // 刷新作业列表
       this.handleGetHomeworkList(this.currSelectedCategory.value);
     },
