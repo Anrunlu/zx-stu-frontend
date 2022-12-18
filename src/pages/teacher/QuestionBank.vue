@@ -536,7 +536,7 @@ export default {
     handleTableCellEditBtnClick(row) {
       this.currClickedRowQuestion = row;
       // 新标签页打开
-      const routeData = this.$router.resolve(`/teacher/question/${row.id}`);
+      const routeData = this.$router.resolve(`/teacher/question/${row._id}`);
       window.open(routeData.href, "_blank");
       return;
     },

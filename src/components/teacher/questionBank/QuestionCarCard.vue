@@ -198,13 +198,13 @@
       <q-btn
         class="q-ml-sm"
         color="primary"
-        label="创建试题集"
+        label="创建题集"
         icon="topic"
         @click="handleQuestionCarCreateQuestionSetBtnClick"
       />
     </q-card-actions>
 
-    <!-- 基于题车创建试题集对话框 -->
+    <!-- 基于题车创建题集对话框 -->
     <q-dialog
       v-model="createQuestionSetDig"
       persistent
@@ -214,7 +214,7 @@
       <q-card style="width: 600px">
         <q-card-section>
           <div class="text-h5 q-ml-sm">
-            创建试题集
+            创建题集
             <q-btn
               round
               flat
@@ -295,7 +295,7 @@ export default {
   name: "QuestionCarCard",
   data() {
     return {
-      // 基于题车创建试题集对话框
+      // 基于题车创建题集对话框
       createQuestionSetDig: false,
       // 题目预览对话框
       questionViewDig: false,
@@ -411,7 +411,7 @@ export default {
   },
 
   methods: {
-    // 创建试题集
+    // 创建题集
     async createQuestionSet() {
       // 构造请求体
       const createQuestionSetDto = {
@@ -488,7 +488,7 @@ export default {
       qType.currSettingScore = Math.floor(totalScore * 100) / 100;
     },
 
-    // 点击题车中的创建试题集
+    // 点击题车中的创建题集
     handleQuestionCarCreateQuestionSetBtnClick() {
       // 校验是否有题目未设置分数
       let hasQuestionWithoutScore = false;
@@ -515,11 +515,11 @@ export default {
         return;
       }
 
-      // 打开创建试题集对话框
+      // 打开创建题集对话框
       this.createQuestionSetDig = true;
     },
 
-    // 点击创建试题集对话框的确定按钮
+    // 点击创建题集对话框的确定按钮
     handleConfirmCreateQuestionSetBtnClick() {
       // 校验试题集名称
       if (!this.questionSetName) {
@@ -530,7 +530,7 @@ export default {
         return;
       }
 
-      // 创建试题集
+      // 创建题集
       this.createQuestionSet();
     },
 

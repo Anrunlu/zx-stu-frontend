@@ -40,6 +40,46 @@
             label="高级筛选"
             @click="handleQuestionTableFilterBtnClick"
           />
+          <!-- 创建题集 -->
+          <q-btn color="accent" outline icon="add" label="创建题集">
+            <q-menu anchor="bottom right" self="top right">
+              <q-list style="min-width: 100px">
+                <q-item
+                  to="questionBank"
+                  clickable
+                  v-close-popup
+                  aria-hidden="true"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="forum" />
+                  </q-item-section>
+                  <q-item-section>题库创建</q-item-section>
+                </q-item>
+                <q-item
+                  to="questionBank"
+                  clickable
+                  v-close-popup
+                  aria-hidden="true"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="title" />
+                  </q-item-section>
+                  <q-item-section>题号导入</q-item-section>
+                </q-item>
+                <q-item
+                  to="questionBank"
+                  clickable
+                  v-close-popup
+                  aria-hidden="true"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="auto_mode" />
+                  </q-item-section>
+                  <q-item-section>自动组题</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
         </div>
       </template>
 
@@ -467,6 +507,9 @@ export default {
       this.getQuestionSetList();
     },
 
+    // 点击创建题集按钮
+    handleQuestionSetTableAddQuestionSetBtnClick() {},
+
     // 点击题集列表的行
     handleQuestionTableRowClick(evt, row) {
       this.currClickedRowQuestionSet = row;
@@ -481,7 +524,7 @@ export default {
     // 点击试题集编号
     handleTableCellIdClick(row) {
       // 复制id到剪贴板
-      copyToClipboard(row.id).then(() => {
+      copyToClipboard(row._id).then(() => {
         this.$q.notify({
           message: "试题集编号已复制到剪贴板",
           type: "positive",
