@@ -471,6 +471,7 @@ export default {
     // 获取教师课程列表，store 事件
     this.$store.dispatch("teaCourse/getTeaCourseInfo");
 
+    // 默认先获取课后作业
     this.currSelectedCategory = this.homeworkCategoryOptions[2];
     // 获取作业列表
     this.handleGetHomeworkList();
