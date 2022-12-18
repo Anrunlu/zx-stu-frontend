@@ -194,20 +194,8 @@
     <!-- 高级筛选对话框 -->
     <q-dialog v-model="questionSetTableFilterDig">
       <q-card style="width: 600px; max-width: 80vw">
+        <CardBar title="筛选题集" icon="filter_list" />
         <q-card-section>
-          <q-btn
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="grey-8"
-            v-close-popup
-          ></q-btn>
-          <div class="text-h5">筛选题集</div>
-          <q-separator class="q-mt-md" />
-        </q-card-section>
-        <q-card-section class="q-pa-sm">
           <q-list class="row">
             <!-- 按创建起止时间 -->
             <q-item class="col-12">

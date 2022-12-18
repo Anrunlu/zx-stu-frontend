@@ -146,20 +146,8 @@
     <!-- 高级筛选对话框 -->
     <q-dialog v-model="questionTableFilterDig">
       <q-card style="width: 600px; max-width: 80vw">
+        <CardBar title="筛选题目" icon="filter_list" />
         <q-card-section>
-          <q-btn
-            round
-            flat
-            dense
-            icon="close"
-            class="float-right"
-            color="grey-8"
-            v-close-popup
-          ></q-btn>
-          <div class="text-h5">筛选题目</div>
-          <q-separator class="q-mt-md" />
-        </q-card-section>
-        <q-card-section class="q-pa-sm">
           <q-list class="row">
             <!-- 按题目类型 -->
             <q-item class="col-12">
@@ -416,6 +404,7 @@ export default {
     QuestionCar,
     QuestionViewCard,
     QuestionChip,
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {
