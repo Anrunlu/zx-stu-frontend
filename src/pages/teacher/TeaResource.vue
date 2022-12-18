@@ -140,21 +140,9 @@
 
     <!-- 教学资源编辑对话框 -->
     <q-dialog v-model="teaResourceEditingDig">
-      <q-card style="width: 700px; max-width: 80vw">
+      <q-card style="width: 600px; max-width: 80vw">
         <q-form @submit="handleEditingTeaResourceFormSubmit">
-          <q-card-section>
-            <q-btn
-              round
-              flat
-              dense
-              icon="close"
-              class="float-right"
-              color="grey-8"
-              v-close-popup
-            ></q-btn>
-            <div class="text-h5">编辑教学资源</div>
-            <q-separator class="q-mt-md" />
-          </q-card-section>
+          <CardBar title="编辑资源" icon="edit" />
           <q-card-section class="q-pa-sm">
             <q-list class="row">
               <!-- 文件名 -->
@@ -270,7 +258,9 @@ export default {
     };
   },
 
-  components: {},
+  components: {
+    CardBar: () => import("src/components/common/CardBar.vue"),
+  },
 
   computed: {
     ...mapGetters("teaCourse", {

@@ -93,12 +93,12 @@
     </q-page-sticky>
 
     <!-- 教学班学生列表对话框 -->
-    <q-dialog v-model="showTeaClsroomStuListDig">
+    <q-dialog v-model="showTeaClsroomStuListDig" persistent>
       <TeaClassroomStuTable />
     </q-dialog>
 
     <!-- 添加课程对话框 -->
-    <q-dialog v-model="showAddTeaCourseDig">
+    <q-dialog v-model="showAddTeaCourseDig" persistent>
       <AddTeaCourseCard />
     </q-dialog>
 
@@ -207,7 +207,15 @@ export default {
             model: "",
             type: "text", // optional
           },
-          cancel: true,
+          ok: {
+            label: "确定",
+            push: true,
+            color: "positive",
+          },
+          cancel: {
+            label: "取消",
+            push: true,
+          },
           persistent: true,
         })
         .onOk(async (val) => {

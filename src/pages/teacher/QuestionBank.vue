@@ -550,7 +550,7 @@ export default {
 
         .onOk(async () => {
           try {
-            await apiRemoveQuestion(row.id);
+            await apiRemoveQuestion(row._id);
             this.$q.notify({
               message: "移除成功",
               type: "positive",
