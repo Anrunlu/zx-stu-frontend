@@ -39,6 +39,7 @@
       />
       <q-btn
         v-close-popup
+        icon="done"
         label="确定"
         color="primary"
         @click="handleConfirmChangeTermBtnClick"

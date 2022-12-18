@@ -108,6 +108,7 @@
       />
       <q-btn
         color="primary"
+        icon="done"
         label="确定"
         @click="handleClickCreateCombinedClassroom"
       />

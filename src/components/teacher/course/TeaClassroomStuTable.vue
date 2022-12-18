@@ -117,6 +117,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
+            icon="done"
             label="确定"
             color="primary"
             @click="handleAddStudentToCombinedClassroomWithUsername"
