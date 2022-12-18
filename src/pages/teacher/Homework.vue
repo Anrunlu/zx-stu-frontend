@@ -177,7 +177,7 @@
               size="sm"
               color="primary"
               icon="edit"
-              @click.stop="handleModifyHomeworkClickClick(props.row)"
+              @click.stop="handleModifyHomeworkClick(props.row)"
             >
               <q-tooltip> 修改作业 </q-tooltip>
             </q-btn>
@@ -207,7 +207,7 @@
               size="sm"
               color="red"
               icon="delete_outline"
-              @click.stop=""
+              @click.stop="handleRemoveHomeworkClick(props.row)"
             >
               <q-tooltip> 删除作业 </q-tooltip>
             </q-btn>
@@ -232,15 +232,23 @@
 
     <!-- 发布作业对话框 -->
     <q-dialog v-model="homeworkAddDig" persistent>
-      <HomeworkAddCard
-        @closePublishingHomeworkDialog="handleClosePublishingHomeworkDialog"
-      />
+      <HomeworkAddCard />
+    </q-dialog>
+
+    <!-- 删除作业对话框 -->
+    <q-dialog v-model="removeHomeworkDig">
+      <ObjectConfirmRemoveCard
+        :shortId="currClickedRowHomework.shortId"
+        objectName="作业"
+        @confirmRemove="removeHomework"
+      >
+      </ObjectConfirmRemoveCard>
     </q-dialog>
   </q-page>
 </template>
 
 <script>
-import { apiGetHomeworks } from "src/api/teacher/homework";
+import { apiGetHomeworks, apiRemoveHomework } from "src/api/teacher/homework";
 import { mapGetters } from "vuex";
 import {
   computeHomeworkStatusByTime,
@@ -307,12 +315,14 @@ export default {
       currSelectedCategory: { value: "", label: "", icon: "" },
       // 作业过滤
       homeworkFilter: "",
-      // 当前点击的那一会作业
+      // 当前点击的作业
       currClickedRowHomework: {},
       // 作业编辑对话框
       homeworkEditDig: false,
       // 发布作业对话框
       homeworkAddDig: false,
+      // 删除作业对话框
+      removeHomeworkDig: false,
     };
   },
 
@@ -321,6 +331,8 @@ export default {
       import("src/components/teacher/homework/HomeworkEditCard.vue"),
     HomeworkAddCard: () =>
       import("src/components/teacher/homework/HomeworkAddCard.vue"),
+    ObjectConfirmRemoveCard: () =>
+      import("src/components/common/ObjectConfirmRemoveCard.vue"),
   },
 
   computed: {
@@ -337,7 +349,8 @@ export default {
   },
 
   methods: {
-    async handleGetHomeworkList(category) {
+    // 获取作业列表
+    async handleGetHomeworkList() {
       // 校验是否选择了课程
       if (!this.currSelectedTeaCourse) {
         this.$q.notify({
@@ -351,7 +364,7 @@ export default {
       const payload = {
         status: "正常",
         teacourse_id: this.currSelectedTeaCourse.id,
-        category,
+        category: this.currSelectedCategory.value,
       };
 
       // 发送请求
@@ -373,6 +386,27 @@ export default {
       }
     },
 
+    // 删除作业
+    async removeHomework() {
+      // 移除作业
+      try {
+        await apiRemoveHomework(this.currClickedRowHomework._id);
+        this.$q.notify({
+          message: "移除成功",
+          type: "positive",
+        });
+        // 重新获取作业列表
+        this.handleGetHomeworkList();
+        this.removeHomeworkDig = false;
+        this.currClickedRowHomework = {};
+      } catch (error) {
+        this.$q.notify({
+          message: "移除失败",
+          type: "negative",
+        });
+      }
+    },
+
     // 设置当前选中的教学课程
     handleChangeTeaCourse(teaCourse) {
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
@@ -386,7 +420,7 @@ export default {
     // 处理作业分类选项改变
     handleChangeHomeworkCategory(category) {
       this.currSelectedCategory = category;
-      this.handleGetHomeworkList(category.value);
+      this.handleGetHomeworkList();
     },
 
     // 处理点击发布作业按钮
@@ -414,16 +448,22 @@ export default {
     },
 
     // 表格上修改作业按钮点击事件
-    handleModifyHomeworkClickClick(row) {
+    handleModifyHomeworkClick(row) {
       this.currClickedRowHomework = row;
       this.homeworkEditDig = true;
+    },
+
+    // 表格上的删除作业按钮点击事件
+    handleRemoveHomeworkClick(row) {
+      this.currClickedRowHomework = row;
+      this.removeHomeworkDig = true;
     },
 
     // 处理作业编辑对话框关闭事件
     handleCloseEditingHomeworkDialog() {
       this.homeworkEditDig = false;
       // 刷新作业列表
-      this.handleGetHomeworkList(this.currSelectedCategory.value);
+      this.handleGetHomeworkList();
     },
   },
 
@@ -433,7 +473,7 @@ export default {
 
     this.currSelectedCategory = this.homeworkCategoryOptions[2];
     // 获取作业列表
-    this.handleGetHomeworkList(this.currSelectedCategory.value);
+    this.handleGetHomeworkList();
   },
 };
 </script>

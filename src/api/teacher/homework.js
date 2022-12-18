@@ -26,3 +26,11 @@ export function apiModifyHomework(homeworkId, data) {
     data,
   });
 }
+
+// 删除作业
+export function apiRemoveHomework(homeworkId) {
+  return loadingFn(request)({
+    url: `/tea/homework/${homeworkId}`,
+    method: "DELETE",
+  });
+}

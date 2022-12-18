@@ -395,8 +395,6 @@ export default {
       questionSetTableFilterDig: false,
       // 删除题集对话框
       removeQuestionSetDig: false,
-      // 删除题集确认文本
-      removeQuestionSetConfirmText: "",
     };
   },
 
@@ -485,6 +483,26 @@ export default {
       });
     },
 
+    // 删除题集
+    async removeQuestionSet() {
+      // 移除题集
+      try {
+        await apiRemoveQuestionSet(this.currClickedRowQuestionSet._id);
+        this.$q.notify({
+          message: "移除成功",
+          type: "positive",
+        });
+        // 重新获取题集列表
+        this.getQuestionSetList();
+        this.removeQuestionSetDig = false;
+      } catch (error) {
+        this.$q.notify({
+          message: "移除失败",
+          type: "negative",
+        });
+      }
+    },
+
     // 设置当前选中的教学课程
     handleChangeTeaCourse(teaCourse) {
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
@@ -553,28 +571,6 @@ export default {
       this.getQuestionSetList();
       // 关闭高级筛选对话框
       this.questionSetTableFilterDig = false;
-    },
-
-    // 删除题集
-    async removeQuestionSet() {
-      // 移除题集
-      try {
-        await apiRemoveQuestionSet(this.currClickedRowQuestionSet._id);
-        this.$q.notify({
-          message: "移除成功",
-          type: "positive",
-        });
-        // 重置确认文本
-        this.removeQuestionSetConfirmText = "";
-        // 重新获取题集列表
-        this.getQuestionSetList();
-        this.removeQuestionSetDig = false;
-      } catch (error) {
-        this.$q.notify({
-          message: "移除失败",
-          type: "negative",
-        });
-      }
     },
   },
 
