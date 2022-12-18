@@ -35,7 +35,7 @@
         label="同步为行政学期"
         color="positive"
         flat
-        @click="handleConfirmChangeTermBtnClick"
+        @click="handleSyncTermBtnClick"
       />
       <q-btn
         v-close-popup
@@ -87,6 +87,24 @@ export default {
       } catch (error) {
         this.$q.notify({
           message: "切换学期失败",
+          type: "negative",
+        });
+      }
+    },
+
+    // 同步为行政学期
+    handleSyncTermBtnClick() {
+      try {
+        this.$store.dispatch("user/changeTerm", this.collegeCurrTermId);
+        // 提示切换成功
+        this.$q.notify({
+          message: "同步学期成功",
+          type: "positive",
+        });
+        // 关闭对话框
+      } catch (error) {
+        this.$q.notify({
+          message: "同步学期失败",
           type: "negative",
         });
       }
