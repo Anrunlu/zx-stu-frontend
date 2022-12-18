@@ -212,20 +212,7 @@
       transition-hide="scale"
     >
       <q-card style="width: 600px">
-        <q-card-section>
-          <div class="text-h5 q-ml-sm">
-            创建题集
-            <q-btn
-              round
-              flat
-              dense
-              icon="close"
-              class="float-right"
-              color="grey-8"
-              v-close-popup
-            ></q-btn>
-          </div>
-        </q-card-section>
+        <CardBar title="创建题集" icon="add" />
         <q-card-section>
           <q-input
             class="q-mb-sm"
@@ -430,7 +417,6 @@ export default {
       };
 
       // 发送请求
-
       try {
         await apiCreateQuestionSet(createQuestionSetDto);
         // 提示创建成功
@@ -438,6 +424,8 @@ export default {
           message: "创建成功",
           type: "positive",
         });
+        // 关闭对话框
+        this.createQuestionSetDig = false;
       } catch (e) {
         // 提示创建失败
         this.$q.notify({

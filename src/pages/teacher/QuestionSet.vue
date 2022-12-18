@@ -280,15 +280,18 @@
       </q-card>
     </q-dialog>
 
-    <!-- 删除试题集对话框 -->
+    <!-- 删除题集对话框 -->
     <q-dialog v-model="removeQuestionSetDig">
-      <q-card>
-        <CardBar title="删除试题集" icon="warning" bgColor="negative" />
-        <q-card-section>
-          移除题集【{{ currClickedRowQuestionSet.shortId }}】将<span
-            style="color: red"
-            >同时删除引用本试题集的作业</span
-          >，操作不可恢复！
+      <ObjectConfirmRemoveCard
+        :shortId="currClickedRowQuestionSet.shortId"
+        objectName="题集"
+        @confirmRemove="removeQuestionSet"
+      >
+        <!-- 补充说明插槽 -->
+        <template
+          v-slot:addition
+          v-if="currClickedRowQuestionSet.homeworks.length > 0"
+        >
           <ol>
             <li
               v-for="(homework, index) in currClickedRowQuestionSet.homeworks"
@@ -297,25 +300,11 @@
               【{{ homework.receiver.name }}】{{ homework.title }}
             </li>
           </ol>
-
-          <q-input
-            v-model="removeQuestionSetConfirmText"
-            type="text"
-            outlined
-            square
-            dense
-            :label="`请输入“${currClickedRowQuestionSet.shortId}”以确认删除`"
-          />
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            color="negative"
-            icon="delete"
-            label="确认删除"
-            @click="handleRemoveQuestionSetDigConfirmBtnClick"
-          />
-        </q-card-actions>
-      </q-card>
+          <div class="q-my-md" style="font-weight: 500; color: red">
+            以上作业将同时被删除！
+          </div>
+        </template>
+      </ObjectConfirmRemoveCard>
     </q-dialog>
   </q-page>
 </template>
@@ -384,7 +373,14 @@ export default {
       // 题集过滤
       questionSetFilter: "",
       // 当前点击的题集
-      currClickedRowQuestionSet: {},
+      currClickedRowQuestionSet: {
+        shortId: "",
+        title: "",
+        citationTimes: 0,
+        creator: "",
+        updatedAt: "",
+        homeworks: [],
+      },
       // 筛选条件
       questionSetTableFilterOptions: {
         // 创建时间起止
@@ -406,6 +402,8 @@ export default {
 
   components: {
     CardBar: () => import("src/components/common/CardBar.vue"),
+    ObjectConfirmRemoveCard: () =>
+      import("src/components/common/ObjectConfirmRemoveCard.vue"),
   },
 
   computed: {
@@ -557,20 +555,8 @@ export default {
       this.questionSetTableFilterDig = false;
     },
 
-    // 点击删除题集对话框的确定按钮
-    async handleRemoveQuestionSetDigConfirmBtnClick() {
-      // 校验
-      if (
-        this.removeQuestionSetConfirmText !==
-        this.currClickedRowQuestionSet.shortId
-      ) {
-        this.$q.notify({
-          message: "输入的确认文本不匹配",
-          type: "negative",
-        });
-        return;
-      }
-
+    // 删除题集
+    async removeQuestionSet() {
       // 移除题集
       try {
         await apiRemoveQuestionSet(this.currClickedRowQuestionSet._id);
