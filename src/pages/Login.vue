@@ -164,7 +164,7 @@ export default {
       };
 
       // // 执行用户登录动作
-      await this.$store.dispatch("user/userLogin", userInfo);
+      await this.$store.dispatch("user/login", userInfo);
 
       // 延时等待 store 里面存入信息，然后显示
       setTimeout(() => {

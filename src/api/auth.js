@@ -2,7 +2,7 @@ import { request } from "src/boot/axios";
 import { loadingFn } from "src/utils/loadingTools";
 
 // 获取当前学院的学期列表
-export function getTermList() {
+export function apiGetTermList() {
   return request({
     url: "/admin/term",
     method: "get",
@@ -10,7 +10,7 @@ export function getTermList() {
 }
 
 // 用户登录
-export function login(userLoginDto) {
+export function apiLogin(userLoginDto) {
   return request({
     url: "/auth/login",
     method: "post",
@@ -27,7 +27,7 @@ export function userPasswordStrength() {
 }
 
 // 获取APP2.0信息
-export function getAppInfo() {
+export function apiGetAppInfo() {
   return request({
     url: "/auth/app/getCurrentApp2Info",
     method: "get",

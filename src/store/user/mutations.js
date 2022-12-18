@@ -69,6 +69,18 @@ export function setCollegeId(state, collegeId) {
   state.collegeId = collegeId;
 }
 
+export function setCollegeName(state, collegeName) {
+  state.collegeName = collegeName;
+}
+
+export function setCollegeCurrTermName(state, collegeCurrTermName) {
+  state.collegeCurrTermName = collegeCurrTermName;
+}
+
+export function setCollegeCurrTermId(state, collegeCurrTermId) {
+  state.collegeCurrTermId = collegeCurrTermId;
+}
+
 // 教师信息
 export function setTeacherId(state, teacherId) {
   state.teacherId = teacherId;

@@ -21,8 +21,15 @@
         >
           <img src="~assets/teacherLogo.png" width="130" />
           <span class="q-ml-sm"
-            ><q-btn color="gray" flat label="工作台" to="/"
-          /></span>
+            ><q-btn
+              color="gray"
+              flat
+              :label="termName"
+              @click="handleChangeTermBtnClick"
+            >
+              <q-tooltip> 切换学期 </q-tooltip>
+            </q-btn></span
+          >
         </q-toolbar-title>
 
         <q-space />
@@ -238,6 +245,11 @@
       </q-page> -->
     </q-page-container>
 
+    <!-- 切换学期对话框 -->
+    <q-dialog v-model="changeTermDig">
+      <ChangeTermCard />
+    </q-dialog>
+
     <!-- 实时通知组件 -->
     <ImmediatelyAncmt />
   </q-layout>
@@ -253,6 +265,7 @@ export default {
     return {
       miniState: false,
       leftDrawerOpen: true,
+      changeTermDig: false,
       search: "",
       createMenu: [
         { icon: "topic", text: "试题集", to: "questionSet/create" },
@@ -261,7 +274,10 @@ export default {
     };
   },
 
-  components: { ImmediatelyAncmt },
+  components: {
+    ImmediatelyAncmt,
+    ChangeTermCard: () => import("src/components/common/ChangeTermCard.vue"),
+  },
 
   computed: {
     ...mapGetters("user", {
@@ -269,6 +285,7 @@ export default {
       nickname: "nickname",
       avatar: "avatar",
       officeName: "officeName",
+      termName: "termName",
     }),
 
     ...mapGetters("settings", {
@@ -281,7 +298,7 @@ export default {
   methods: {
     // 退出登录
     async logout() {
-      await this.$store.dispatch("user/userLogout");
+      await this.$store.dispatch("user/logout");
       // 退出登录后，关闭socket连接
       this.$socket.close();
       // 跳转到登录页面
@@ -294,6 +311,11 @@ export default {
         this.miniState = false;
         e.stopPropagation();
       }
+    },
+
+    // 点击切换学期
+    handleChangeTermBtnClick() {
+      this.changeTermDig = true;
     },
 
     // 点击切换布局

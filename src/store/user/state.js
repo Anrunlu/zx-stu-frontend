@@ -12,6 +12,9 @@ export default function () {
     termId: "",
     termList: [],
     collegeId: "",
+    collegeName: "",
+    collegeCurrTermName: "",
+    collegeCurrTermId: "",
     // 教师信息
     teacherId: "",
     officeName: "",

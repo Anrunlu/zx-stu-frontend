@@ -31,8 +31,24 @@ export function termId(state) {
   return state.termId;
 }
 
+export function termList(state) {
+  return state.termList;
+}
+
 export function collegeId(state) {
   return state.collegeId;
+}
+
+export function collegeName(state) {
+  return state.collegeName;
+}
+
+export function collegeCurrTermName(state) {
+  return state.collegeCurrTermName;
+}
+
+export function collegeCurrTermId(state) {
+  return state.collegeCurrTermId;
 }
 
 // 教师信息

@@ -1,11 +1,16 @@
-import { apiGetProfile, getTermList, login } from "src/api/auth";
+import {
+  apiGetProfile,
+  apiGetTermList,
+  apiLogin,
+  apiModifyProfile,
+} from "src/api/auth";
 import { removeToken, setToken } from "src/utils/auth";
 
 // 用户登录
-export function userLogin({ commit }, userInfo) {
+export function login({ commit }, userInfo) {
   const { username, password } = userInfo;
   return new Promise((resolve, reject) => {
-    login({ username, password })
+    apiLogin({ username, password })
       .then((response) => {
         const { data } = response;
         commit("setToken", data.data.token);
@@ -19,19 +24,33 @@ export function userLogin({ commit }, userInfo) {
 }
 
 // 获取学期列表
-export function termList({ commit }) {
+export function termList({ commit, state }) {
   return new Promise((resolve, reject) => {
-    getTermList()
+    apiGetTermList()
       .then((response) => {
         const { data } = response;
         // 过滤学期名和id
         const termList = data.data.map((term) => {
           return {
             name: term.name,
-            id: term.id,
+            _id: term._id,
           };
         });
         commit("setTermList", termList);
+
+        // 设置学院当前学期名
+        const collegeCurrTermName = termList.find(
+          (term) => term._id === state.collegeCurrTermId
+        ).name;
+
+        commit("setCollegeCurrTermName", collegeCurrTermName);
+
+        // 设置用户当前学期名
+        const termName = termList.find(
+          (term) => term._id === state.termId
+        ).name;
+        commit("setTermName", termName);
+
         resolve();
       })
       .catch((error) => {
@@ -51,6 +70,7 @@ export function getUserInfo({ commit, dispatch }) {
         commit("setNickname", data.data.nickname);
         commit("setCollegeId", data.data.college._id);
         commit("setTermId", data.data.currTerm);
+        commit("setCollegeCurrTermId", data.data.college.currTerm);
         commit("setStudentId", data.data.student);
         commit("setAvatar", data.data.avatar);
         commit("setType", data.data.userType);
@@ -64,22 +84,18 @@ export function getUserInfo({ commit, dispatch }) {
 }
 
 // 切换学期
-export function userChangeTerm({ commit, dispatch }, termId) {
+export function changeTerm({ commit, dispatch }, termId) {
   return new Promise((resolve, reject) => {
-    putProfile({ currTerm: termId })
+    apiModifyProfile({ currTerm: termId })
       .then((response) => {
         const { data } = response;
         if (data.code === 2000) {
           commit("setTermId", termId);
 
-          // 提示修改学期成功
-          // Swal.mixin({
-          //   toast: true,
-          //   title: "修改学期成功",
-          //   icon: "success",
-          //   timer: 1500,
-          //   showConfirmButton: false,
-          // }).fire();
+          // 重新获取用户数据
+          dispatch("getUserInfo");
+          // 重新获取 teaCourse 数据
+          dispatch("teaCourse/getTeaCourseInfo", null, { root: true });
 
           resolve();
         } else {
@@ -93,7 +109,7 @@ export function userChangeTerm({ commit, dispatch }, termId) {
 }
 
 // 用户登出
-export function userLogout({ commit }) {
+export function logout({ commit }) {
   return new Promise((resolve) => {
     commit("resetState");
     removeToken();
