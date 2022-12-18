@@ -4,7 +4,11 @@
   <q-card style="width: 700px; max-width: 80vw">
     <q-form @submit="handleEditingHomeworkFormSubmit">
       <!-- 标题栏 -->
-      <CardBar title="编辑作业" icon="edit" />
+      <CardBar title="编辑作业" icon="edit">
+        <template v-slot:left>
+          <ObjectShortId :id="homeworkId" objectName="作业" />
+        </template>
+      </CardBar>
 
       <q-card-section class="q-pa-sm">
         <q-list class="row">
@@ -95,6 +99,9 @@
                 outlined
                 square
                 :options="homeworkCategoryOptions"
+                option-label="label"
+                option-value="value"
+                emit-value
                 color="black"
                 v-model="currHomeworkDetails.category"
                 label="作业类别"
@@ -307,7 +314,7 @@ export default {
     return {
       // 当前作业详情
       currHomeworkDetails: {
-        id: "",
+        _id: "",
         title: "",
         category: "",
         starttime: "",
@@ -316,11 +323,11 @@ export default {
         isShowAnswer: "",
         isShowScores: "",
         questionSet: {
-          id: "",
+          _id: "",
           title: "",
         },
         receiver: {
-          id: "",
+          _id: "",
           name: "",
         },
         // 是否显示知识点
@@ -330,29 +337,21 @@ export default {
         // 作业截止后显示成绩
         isShowScoreAfterEndtime: false,
       },
-
-      // 作业类型选项
-      homeworkCategoryOptions: [
-        "课前预习",
-        "课堂作业",
-        "课后作业",
-        "课程实验",
-        "课程论文",
-        "课程设计",
-        "毕业设计",
-        "期中考试",
-        "期末考试",
-      ],
     };
   },
 
   components: {
     CardBar: () => import("src/components/common/CardBar.vue"),
+    ObjectShortId: () => import("src/components/common/ObjectShortId.vue"),
   },
 
   computed: {
     ...mapGetters("teaCourse", {
       teaCourseList: "teaCourseList",
+    }),
+
+    ...mapGetters("settings", {
+      homeworkCategoryOptions: "homeworkCategoryOptions",
     }),
   },
 
@@ -362,7 +361,7 @@ export default {
       try {
         const { data } = await apiGetHomeworkDetails(this.homeworkId);
         const resHomework = data.data;
-        this.currHomeworkDetails.id = resHomework.id;
+        this.currHomeworkDetails._id = resHomework._id;
         this.currHomeworkDetails.title = resHomework.title;
         this.currHomeworkDetails.category = resHomework.category;
         this.currHomeworkDetails.starttime = date.formatDate(
@@ -374,11 +373,11 @@ export default {
           "YYYY-MM-DD HH:mm"
         );
         this.currHomeworkDetails.isShowScores = resHomework.isShowScores;
-        this.currHomeworkDetails.questionSet.id =
-          resHomework.questionSets[0].id;
+        this.currHomeworkDetails.questionSet._id =
+          resHomework.questionSets[0]._id;
         this.currHomeworkDetails.questionSet.title =
           resHomework.questionSets[0].title;
-        this.currHomeworkDetails.receiver.id = resHomework.receiver.id;
+        this.currHomeworkDetails.receiver._id = resHomework.receiver._id;
         this.currHomeworkDetails.receiver.name = resHomework.receiver.name;
         this.currHomeworkDetails.isShowKnowledge = resHomework.isShowKnowledge;
         this.currHomeworkDetails.isShowAnswerAfterEndtime =

@@ -3,7 +3,11 @@
     <!-- 标题栏 -->
     <CardBar title="题目预览" icon="visibility">
       <template v-slot:left>
-        <QuestionShortId :id="questionId" :shortId="questionDetails.shortId" />
+        <ObjectShortId
+          :id="questionId"
+          :shortId="questionDetails.shortId"
+          objectName="题目"
+        />
       </template>
 
       <template v-slot:right>
@@ -112,7 +116,7 @@ export default {
   components: {
     QuestionChip,
     CardBar: () => import("src/components/common/CardBar.vue"),
-    QuestionShortId: () => import("src/components/common/QuestionShortId.vue"),
+    ObjectShortId: () => import("src/components/common/ObjectShortId.vue"),
   },
 
   watch: {

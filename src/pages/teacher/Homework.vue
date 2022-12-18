@@ -64,6 +64,14 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
+          <!-- 发布作业 -->
+          <q-btn
+            color="accent"
+            outline
+            icon="add"
+            label="发布作业"
+            @click="handlePublishHomeworkBtnClick"
+          />
         </div>
       </template>
 
@@ -371,6 +379,11 @@ export default {
       this.handleGetHomeworkList(category.value);
     },
 
+    // 处理点击发布作业按钮
+    handlePublishHomeworkBtnClick() {
+      this.homeworkEditingDig = true;
+    },
+
     // 处理点击作业列表中的某一行
     handleHomeworkClick(row) {
       this.currClickedRowHomework = row;
@@ -400,8 +413,9 @@ export default {
     // 获取教师课程列表，store 事件
     this.$store.dispatch("teaCourse/getTeaCourseInfo");
 
+    this.currSelectedCategory = this.homeworkCategoryOptions[2];
     // 获取作业列表
-    this.handleGetHomeworkList("课后作业");
+    this.handleGetHomeworkList(this.currSelectedCategory.value);
   },
 };
 </script>

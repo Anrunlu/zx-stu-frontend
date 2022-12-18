@@ -5,7 +5,7 @@
     icon="fingerprint"
     color="white"
     outline
-    :label="shortId"
+    :label="shortIdToShow"
     clickable
     @click="handleQuestionIdClick"
   >
@@ -17,13 +17,23 @@
 import { copyToClipboard } from "quasar";
 
 export default {
-  name: "QuestionShortId",
+  name: "ObjectShortId",
   props: {
     id: {
       type: String,
     },
     shortId: {
       type: String,
+    },
+    objectName: {
+      type: String,
+      default: "",
+    },
+  },
+
+  computed: {
+    shortIdToShow() {
+      return this.shortId || this.id.slice(-5).toUpperCase();
     },
   },
 
@@ -32,7 +42,7 @@ export default {
       // 复制id到剪贴板
       copyToClipboard(this.id).then(() => {
         this.$q.notify({
-          message: "题目编号已复制到剪贴板",
+          message: `${this.objectName}编号已复制到剪贴板`,
           type: "positive",
         });
       });
