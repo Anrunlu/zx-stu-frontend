@@ -36,7 +36,7 @@
                 icon="o_delete"
                 size="xs"
                 label="移除课程"
-                @click="handleRemoveTeaCourese(teaCourse)"
+                @click="handleRemoveTeaCoureseBtnClick(teaCourse)"
               ></q-btn>
             </div>
           </template>
@@ -108,6 +108,16 @@
         @closeAddTeaClassroomDialog="showAddClassroomDig = false"
       />
     </q-dialog>
+
+    <!-- 移除教学课程对话框 -->
+    <q-dialog v-model="showRemoveTeaCourseDig" persistent>
+      <ObjectConfirmRemoveCard
+        :shortId="currClickedTeaCourse.shortId"
+        objectName="教学课程"
+        @confirmRemove="removeTeaCourese"
+      >
+      </ObjectConfirmRemoveCard>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -141,12 +151,17 @@ export default {
         },
       ],
 
+      // 当前点击的教学课程
+      currClickedTeaCourse: {},
+
       // 添加教学班对话框
       showAddClassroomDig: false,
       // 教学班学生列表对话框
       showTeaClsroomStuListDig: false,
       // 添加teaCourse对话框
       showAddTeaCourseDig: false,
+      // 移除teaCourse对话框
+      showRemoveTeaCourseDig: false,
     };
   },
 
@@ -154,6 +169,8 @@ export default {
     AddTeaCourseCard,
     AddTeaClassroomCard,
     TeaClassroomStuTable,
+    ObjectConfirmRemoveCard: () =>
+      import("src/components/common/ObjectConfirmRemoveCard.vue"),
   },
 
   computed: {
@@ -166,35 +183,24 @@ export default {
     /* ====== NOTICE: 以下为对接API完成异步请求相关方法 ====== */
 
     // 移除 teaCourse
-    async handleRemoveTeaCourese(teaCourse) {
-      this.$q
-        .dialog({
-          title: "请确认",
-          message: `移除教学课程【${teaCourse.name}】，操作不可恢复！`,
-          ok: {
-            label: "移除",
-            push: true,
-            color: "negative",
-          },
-          cancel: {
-            label: "取消",
-            push: true,
-          },
-          persistent: true,
-        })
-        .onOk(async () => {
-          await apiRemoveTeaCourse(teaCourse.id);
-          // 提示移除成功
-          this.$q.notify({
-            message: "移除成功",
-            type: "positive",
-          });
-          // 刷新页面
-          this.$store.dispatch("teaCourse/getTeaCourseInfo");
-        })
-        .onCancel(() => {
-          return;
+    async removeTeaCourese() {
+      try {
+        await apiRemoveTeaCourse(this.currClickedTeaCourse._id);
+        // 提示移除成功
+        this.$q.notify({
+          message: "移除成功",
+          type: "positive",
         });
+        // 关闭移除对话框
+        this.showRemoveTeaCourseDig = false;
+        // 刷新页面
+        this.$store.dispatch("teaCourse/getTeaCourseInfo");
+      } catch {
+        this.$q.notify({
+          message: "移除失败",
+          type: "negative",
+        });
+      }
     },
 
     // 重命名教学班
@@ -285,6 +291,12 @@ export default {
     },
 
     /* ====== NOTICE: 以下为处理UI点击相关方法 ====== */
+
+    // 点击移除教学课程按钮
+    handleRemoveTeaCoureseBtnClick(teaCourse) {
+      this.currClickedTeaCourse = teaCourse;
+      this.showRemoveTeaCourseDig = true;
+    },
 
     // 点击教学班
     handleTeaClassroomClick(evt, row) {
