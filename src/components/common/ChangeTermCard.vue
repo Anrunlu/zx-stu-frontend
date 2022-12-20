@@ -81,7 +81,7 @@ export default {
         this.$store.dispatch("user/changeTerm", this.selectedTerm);
         // 提示切换成功
         this.$q.notify({
-          message: "切换学期成功",
+          message: "切换学期成功，部分页面需手动刷新后生效",
           type: "positive",
         });
         // 关闭对话框
@@ -99,7 +99,7 @@ export default {
         this.$store.dispatch("user/changeTerm", this.collegeCurrTermId);
         // 提示切换成功
         this.$q.notify({
-          message: "同步学期成功",
+          message: "同步学期成功，部分页面需手动刷新后生效",
           type: "positive",
         });
         // 关闭对话框
