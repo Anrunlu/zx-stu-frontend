@@ -369,7 +369,12 @@ export default {
             })
             .onOk(() => {
               // 跳转到作业详情页
-              this.$router.push("homework");
+              this.$router.push({
+                path: "homework",
+                query: {
+                  category: this.currHomeworkDetails.category,
+                },
+              });
             })
             .onCancel(() => {
               // 通知父组件创建成功

@@ -231,7 +231,7 @@
     </q-dialog>
 
     <!-- 删除作业对话框 -->
-    <q-dialog v-model="removeHomeworkDig">
+    <q-dialog v-model="removeHomeworkDig" persistent>
       <ObjectConfirmRemoveCard
         :shortId="currClickedRowHomework.shortId"
         objectName="作业"
@@ -471,8 +471,18 @@ export default {
     // 获取教师课程列表，store 事件
     this.$store.dispatch("teaCourse/getTeaCourseInfo");
 
-    // 默认先获取课后作业
-    this.currSelectedCategory = this.homeworkCategoryOptions[2];
+    // 获取路由 query 参数
+    const { category } = this.$route.query;
+    // 如果有 category 参数，则设置当前选中的作业分类
+    if (category) {
+      this.currSelectedCategory = this.homeworkCategoryOptions.find(
+        (item) => item.value === category
+      );
+    } else {
+      // 否则设置为默认值
+      this.currSelectedCategory = this.homeworkCategoryOptions[2];
+    }
+
     // 获取作业列表
     this.handleGetHomeworkList();
   },
