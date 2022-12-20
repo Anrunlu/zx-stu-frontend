@@ -18,6 +18,15 @@ export function apiGetHomeworkDetails(homeworkId) {
   });
 }
 
+// 创建作业
+export function apiCreateHomeworks(data) {
+  return loadingFn(request)({
+    url: `/tea/homework`,
+    method: "POST",
+    data,
+  });
+}
+
 // 修改作业
 export function apiModifyHomework(homeworkId, data) {
   return loadingFn(request)({

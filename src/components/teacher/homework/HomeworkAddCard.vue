@@ -1,7 +1,7 @@
 <template>
   <!-- 创建作业 -->
   <q-card style="width: 700px; max-width: 80vw">
-    <q-form @submit="handleEditingHomeworkFormSubmit">
+    <q-form @submit="handlePublishHomeworkSubmit">
       <!-- 标题栏 -->
       <CardBar title="发布作业" icon="add" />
 
@@ -10,21 +10,18 @@
           <!-- 使用的试题集 -->
           <q-item class="col-12">
             <q-item-section>
-              <q-select
+              <q-input
                 outlined
                 square
-                clearable
-                option-label="title"
-                option-value="_id"
-                label="请选择试题集"
-                :rules="[(val) => !!val || '请选择试题集']"
-                hide-bottom-space
+                :value="questionSet.title"
                 dense
+                readonly
+                label="试题集"
               >
                 <template v-slot:prepend>
                   <q-icon name="topic" />
                 </template>
-              </q-select>
+              </q-input>
             </q-item-section>
           </q-item>
 
@@ -48,32 +45,6 @@
             </q-item-section>
           </q-item>
 
-          <!-- 发布到的教学班 -->
-          <q-item class="col-12">
-            <q-item-section>
-              <q-select
-                outlined
-                square
-                use-chips
-                color="black"
-                :options="currSelectedTeaCourse.classrooms"
-                option-label="name"
-                option-value="_id"
-                emit-value
-                v-model="currHomeworkDetails.receiver.name"
-                label="发布到的教学班"
-                :disable="mode === 'modify'"
-                :rules="[(val) => !!val || '请选择教学班']"
-                hide-bottom-space
-                dense
-              >
-                <template v-slot:prepend>
-                  <q-icon name="people" />
-                </template>
-              </q-select>
-            </q-item-section>
-          </q-item>
-
           <!-- 作业类别 -->
           <q-item class="col-12">
             <q-item-section>
@@ -89,10 +60,46 @@
                 label="作业类别"
                 :rules="[(val) => !!val || '请选择作业类别']"
                 hide-bottom-space
+                options-selected-class="text-deep-blue"
                 dense
                 ><template v-slot:prepend>
-                  <q-icon name="app_registration" /> </template
-              ></q-select>
+                  <q-icon name="app_registration" />
+                </template>
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                    <q-item-section avatar>
+                      <q-icon :name="scope.opt.icon" />
+                    </q-item-section>
+                    <q-item-section>
+                      {{ scope.opt.label }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </q-item-section>
+          </q-item>
+
+          <!-- 发布到的教学班 -->
+          <q-item class="col-12">
+            <q-item-section>
+              <q-select
+                outlined
+                square
+                use-chips
+                multiple
+                :options="currSelectedTeaCourse.classrooms"
+                option-label="name"
+                option-value="_id"
+                v-model="currHomeworkDetails.receivers"
+                label="教学班(可多选)"
+                :rules="[(val) => !!val || '请选择教学班']"
+                hide-bottom-space
+                dense
+              >
+                <template v-slot:prepend>
+                  <q-icon name="people" />
+                </template>
+              </q-select>
             </q-item-section>
           </q-item>
 
@@ -271,10 +278,17 @@
 </template>
 
 <script>
+import { apiCreateHomeworks } from "src/api/teacher/homework";
 import { mapGetters } from "vuex";
 export default {
   name: "HomeworkAddCard",
-  props: {},
+  props: {
+    questionSet: {
+      type: Object,
+      default: () => {},
+      required: true,
+    },
+  },
 
   data() {
     return {
@@ -284,17 +298,7 @@ export default {
         category: "",
         starttime: "",
         endtime: "",
-        isShowKnowledge: "",
-        isShowAnswer: "",
-        isShowScores: "",
-        questionSet: {
-          _id: "",
-          title: "",
-        },
-        receiver: {
-          _id: "",
-          name: "",
-        },
+        receivers: [],
         // 是否显示知识点
         isShowKnowledge: false,
         // 作业截止后开放答案
@@ -323,10 +327,81 @@ export default {
     // 获取题集列表
 
     // 发布作业
+    async createHomeworks() {
+      const createHomeworksDto = {
+        title: this.currHomeworkDetails.title,
+        teacourse_id: this.currSelectedTeaCourse._id,
+        course_id: this.currSelectedTeaCourse.courseId,
+        receiverType: "Classroom",
+        receiverIds: this.currHomeworkDetails.receivers.map(
+          (receiver) => receiver._id
+        ),
+        starttime: this.currHomeworkDetails.starttime,
+        endtime: this.currHomeworkDetails.endtime,
+        questionSet_ids: [this.questionSet._id],
+        category: this.currHomeworkDetails.category,
+
+        isShowScoreAfterEndtime:
+          this.currHomeworkDetails.isShowScoreAfterEndtime,
+        isShowAnswerAfterEndtime:
+          this.currHomeworkDetails.isShowAnswerAfterEndtime,
+        isShowKnowledge: this.currHomeworkDetails.isShowKnowledge,
+      };
+
+      try {
+        const { data } = await apiCreateHomeworks(createHomeworksDto);
+        if (data.data.ok) {
+          // 弹窗提示
+          this.$q
+            .dialog({
+              title: "提示",
+              message: "作业发布成功，是否前往查看？",
+              ok: {
+                label: "确定",
+                push: true,
+                color: "positive",
+              },
+              cancel: {
+                label: "取消",
+                push: true,
+              },
+              persistent: true,
+            })
+            .onOk(() => {
+              // 跳转到作业详情页
+              this.$router.push("homework");
+            })
+            .onCancel(() => {
+              // 通知父组件创建成功
+              this.$emit("createHomeworksSuccess");
+            })
+            .onDismiss(() => {});
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: "发布失败",
+          type: "negative",
+        });
+      }
+    },
 
     // 处理表单提交
-    handleEditingHomeworkFormSubmit() {
+    handlePublishHomeworkSubmit() {
+      // 校验时间
+      // 截止时间不能早于开始时间
+      if (
+        new Date(this.currHomeworkDetails.endtime) <
+        new Date(this.currHomeworkDetails.starttime)
+      ) {
+        this.$q.notify({
+          message: "截止时间不能早于开始时间",
+          type: "negative",
+        });
+        return;
+      }
+
       // 发布作业
+      this.createHomeworks();
     },
   },
 

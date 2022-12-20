@@ -68,7 +68,7 @@
           <q-btn
             color="accent"
             outline
-            icon="add"
+            icon="publish"
             label="发布作业"
             @click="handlePublishHomeworkBtnClick"
           />
@@ -230,11 +230,6 @@
       />
     </q-dialog>
 
-    <!-- 发布作业对话框 -->
-    <q-dialog v-model="homeworkAddDig" persistent>
-      <HomeworkAddCard />
-    </q-dialog>
-
     <!-- 删除作业对话框 -->
     <q-dialog v-model="removeHomeworkDig">
       <ObjectConfirmRemoveCard
@@ -319,8 +314,6 @@ export default {
       currClickedRowHomework: {},
       // 作业编辑对话框
       homeworkEditDig: false,
-      // 发布作业对话框
-      homeworkAddDig: false,
       // 删除作业对话框
       removeHomeworkDig: false,
     };
@@ -329,8 +322,6 @@ export default {
   components: {
     HomeworkEditCard: () =>
       import("src/components/teacher/homework/HomeworkEditCard.vue"),
-    HomeworkAddCard: () =>
-      import("src/components/teacher/homework/HomeworkAddCard.vue"),
     ObjectConfirmRemoveCard: () =>
       import("src/components/common/ObjectConfirmRemoveCard.vue"),
   },
@@ -392,7 +383,7 @@ export default {
       try {
         await apiRemoveHomework(this.currClickedRowHomework._id);
         this.$q.notify({
-          message: "移除成功",
+          message: "删除成功",
           type: "positive",
         });
         // 重新获取作业列表
@@ -401,7 +392,7 @@ export default {
         this.currClickedRowHomework = {};
       } catch (error) {
         this.$q.notify({
-          message: "移除失败",
+          message: "删除失败",
           type: "negative",
         });
       }
@@ -433,7 +424,16 @@ export default {
         });
         return;
       }
-      this.homeworkAddDig = true;
+      this.$q.notify({
+        message: "已跳转到题集管理页面，请点击试题集发布按钮完成作业发布",
+        position: "top",
+        icon: "announcement",
+        progress: true,
+        color: "accent",
+        textColor: "white",
+        classes: "glossy",
+      });
+      this.$router.push("questionSet");
     },
 
     // 处理点击作业列表中的某一行

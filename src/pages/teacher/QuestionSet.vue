@@ -164,6 +164,16 @@
               flat
               dense
               size="sm"
+              color="positive"
+              icon="publish"
+              @click.stop="handleTableCellPublishBtnClick(props.row)"
+            >
+              <q-tooltip> 发布为作业 </q-tooltip>
+            </q-btn>
+            <q-btn
+              flat
+              dense
+              size="sm"
               color="primary"
               icon="edit"
               @click.stop=""
@@ -306,6 +316,14 @@
         </template>
       </ObjectConfirmRemoveCard>
     </q-dialog>
+
+    <!-- 发布为作业对话框 -->
+    <q-dialog v-model="homeworkAddDig" persistent>
+      <HomeworkAddCard
+        :questionSet="currClickedRowQuestionSet"
+        @createHomeworksSuccess="handleCreatedHomeworkSuccess"
+      />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -395,6 +413,8 @@ export default {
       questionSetTableFilterDig: false,
       // 删除题集对话框
       removeQuestionSetDig: false,
+      // 发布作业对话框
+      homeworkAddDig: false,
     };
   },
 
@@ -402,6 +422,8 @@ export default {
     CardBar: () => import("src/components/common/CardBar.vue"),
     ObjectConfirmRemoveCard: () =>
       import("src/components/common/ObjectConfirmRemoveCard.vue"),
+    HomeworkAddCard: () =>
+      import("src/components/teacher/homework/HomeworkAddCard.vue"),
   },
 
   computed: {
@@ -517,6 +539,18 @@ export default {
     // 点击题集列表的行
     handleQuestionTableRowClick(evt, row) {
       this.currClickedRowQuestionSet = row;
+    },
+
+    // 点击题集列表的发布按钮
+    handleTableCellPublishBtnClick(row) {
+      this.currClickedRowQuestionSet = row;
+      this.homeworkAddDig = true;
+    },
+
+    // 发布作业成功回调事件
+    handleCreatedHomeworkSuccess() {
+      this.homeworkAddDig = false;
+      this.getQuestionSetList();
     },
 
     // 点击题集列表的删除按钮
