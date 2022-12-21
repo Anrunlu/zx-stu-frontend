@@ -324,8 +324,6 @@ export default {
   },
 
   methods: {
-    // 获取题集列表
-
     // 发布作业
     async createHomeworks() {
       const createHomeworksDto = {
@@ -347,6 +345,11 @@ export default {
           this.currHomeworkDetails.isShowAnswerAfterEndtime,
         isShowKnowledge: this.currHomeworkDetails.isShowKnowledge,
       };
+
+      if (this.currHomeworkDetails.category === "课堂作业") {
+        createHomeworksDto.starttime = new Date();
+        createHomeworksDto.endtime = new Date("2999-12-31");
+      }
 
       try {
         const { data } = await apiCreateHomeworks(createHomeworksDto);
