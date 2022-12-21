@@ -144,7 +144,7 @@
     </q-table>
 
     <!-- 高级筛选对话框 -->
-    <q-dialog v-model="questionTableFilterDig">
+    <q-dialog v-model="questionTableFilterDig" persistent>
       <q-card style="width: 600px; max-width: 80vw">
         <CardBar title="筛选题目" icon="filter_list" />
         <q-card-section>
@@ -289,7 +289,7 @@
     </q-page-sticky>
 
     <!-- 题车对话框 -->
-    <q-dialog v-model="questionCarDig"> <QuestionCar /> </q-dialog>
+    <q-dialog v-model="questionCarDig" persistent> <QuestionCar /> </q-dialog>
 
     <!-- 题目预览对话框 -->
     <q-dialog v-model="questionViewDig">
