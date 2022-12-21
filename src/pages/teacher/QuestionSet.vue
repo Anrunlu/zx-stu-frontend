@@ -143,6 +143,9 @@
                     v-ripple
                     :key="index"
                     v-for="(homework, index) in props.row.homeworks"
+                    @click="
+                      handleQuestionSetTableCitationHomeworkBtnClick(homework)
+                    "
                   >
                     <q-item-section
                       >【{{ homework.receiver.name }}】{{
@@ -153,6 +156,7 @@
                 </q-list>
               </q-card>
             </q-popup-proxy>
+            <q-tooltip> 点击查看引用本试题集的作业 </q-tooltip>
           </q-chip>
         </q-td>
       </template>
@@ -579,6 +583,15 @@ export default {
           type: "positive",
         });
       });
+    },
+
+    // 点击引用试题集的作业
+    handleQuestionSetTableCitationHomeworkBtnClick(homework) {
+      // 跳转到作业详情页面
+      const routeData = this.$router.resolve(
+        `/teacher/homework/${homework._id}`
+      );
+      window.open(routeData.href, "_blank");
     },
 
     // 点击表格上的高级筛选按钮
