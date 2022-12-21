@@ -42,6 +42,7 @@
 
           <template v-slot:body-cell-nickname="props">
             <q-td :props="props">
+              <!-- TODO:抽离成 UsernameWithAvatarChip 组件 -->
               <q-chip square dense color="white" size="sm">
                 <q-avatar color="secondary" text-color="white">
                   <img v-if="props.row.avatar" :src="props.row.avatar" />

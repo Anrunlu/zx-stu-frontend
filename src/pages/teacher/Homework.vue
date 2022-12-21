@@ -166,30 +166,10 @@
               dense
               size="sm"
               color="primary"
-              icon="insert_chart"
-              @click.stop=""
-            >
-              <q-tooltip> 查看成绩 </q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              dense
-              size="sm"
-              color="primary"
               icon="edit"
               @click.stop="handleModifyHomeworkClick(props.row)"
             >
               <q-tooltip> 修改作业 </q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              dense
-              size="sm"
-              color="primary"
-              icon="update"
-              @click.stop=""
-            >
-              <q-tooltip> 延长学生作答时间 </q-tooltip>
             </q-btn>
             <!-- <q-btn
               flat
