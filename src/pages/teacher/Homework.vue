@@ -317,6 +317,17 @@ export default {
     }),
   },
 
+  watch: {
+    currSelectedTeaCourse: {
+      handler: function (newVal, oldVal) {
+        if (!newVal) {
+          this.homeworkList = [];
+        }
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     // 获取作业列表
     async handleGetHomeworkList() {
