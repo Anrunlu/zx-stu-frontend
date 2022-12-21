@@ -455,6 +455,17 @@ export default {
     },
   },
 
+  watch: {
+    currSelectedTeaCourse: {
+      handler: function (newVal, oldVal) {
+        if (!newVal) {
+          this.questionList = [];
+        }
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     // 获取题目列表
     async getQuestionList() {

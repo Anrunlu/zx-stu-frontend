@@ -274,6 +274,17 @@ export default {
     }),
   },
 
+  watch: {
+    currSelectedTeaCourse: {
+      handler: function (newVal, oldVal) {
+        if (!newVal) {
+          this.teaResourceList = [];
+        }
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     // 获取资源列表
     async handleGetTeaResourceList(category) {
