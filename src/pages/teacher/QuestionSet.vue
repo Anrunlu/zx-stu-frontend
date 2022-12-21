@@ -559,12 +559,12 @@ export default {
       this.removeQuestionSetDig = true;
     },
 
-    // 点击试题集编号
+    // 点击题集编号
     handleTableCellIdClick(row) {
       // 复制id到剪贴板
       copyToClipboard(row._id).then(() => {
         this.$q.notify({
-          message: "试题集编号已复制到剪贴板",
+          message: "题集编号已复制到剪贴板",
           type: "positive",
         });
       });

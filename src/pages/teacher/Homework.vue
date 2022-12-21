@@ -245,6 +245,7 @@
 <script>
 import { apiGetHomeworks, apiRemoveHomework } from "src/api/teacher/homework";
 import { mapGetters } from "vuex";
+import { copyToClipboard } from "quasar";
 import {
   computeHomeworkStatusByTime,
   formatTimeWithWeekDay,
@@ -445,6 +446,17 @@ export default {
       //     homeworkId: row.id,
       //   },
       // });
+    },
+
+    // 点击作业编号
+    handleTableCellIdClick(row) {
+      // 复制id到剪贴板
+      copyToClipboard(row._id).then(() => {
+        this.$q.notify({
+          message: "作业编号已复制到剪贴板",
+          type: "positive",
+        });
+      });
     },
 
     // 表格上修改作业按钮点击事件
