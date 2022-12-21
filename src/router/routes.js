@@ -99,6 +99,15 @@ const routes = [
       title: "添加题目",
     },
   },
+  {
+    path: "/teacher/homework/:homeworkId",
+    component: () => import(`pages/teacher/HomeworkProfile.vue`),
+    props: true,
+    meta: {
+      type: "teacher",
+      title: "作业概览",
+    },
+  },
 ];
 
 // Always leave this as last one

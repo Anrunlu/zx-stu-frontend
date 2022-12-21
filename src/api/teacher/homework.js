@@ -43,3 +43,12 @@ export function apiRemoveHomework(homeworkId) {
     method: "DELETE",
   });
 }
+
+// 获取某作业的整体作答情况
+export function apiGetHomeworkOverallAnswerStatus(data) {
+  return loadingFn(request)({
+    url: "/tea/homework/getHomeworkOverallAnswerStatus",
+    method: "POST",
+    data,
+  });
+}

@@ -246,11 +246,8 @@
 import { apiGetHomeworks, apiRemoveHomework } from "src/api/teacher/homework";
 import { mapGetters } from "vuex";
 import { copyToClipboard } from "quasar";
-import {
-  computeHomeworkStatusByTime,
-  formatTimeWithWeekDay,
-} from "src/utils/time";
-import { getObjectShortId } from "src/utils/common";
+import { formatTimeWithWeekDay } from "src/utils/time";
+import { preProcessHomeworkDetails } from "src/utils/homework";
 
 export default {
   name: "Homework",
@@ -362,14 +359,10 @@ export default {
       // 发送请求
       try {
         const { data } = await apiGetHomeworks(payload);
-        this.homeworkList = data.data.map((homework, index) => {
-          return {
-            ...homework,
-            shortId: getObjectShortId(homework),
-            endtimeFormatted: formatTimeWithWeekDay(homework.endtime),
-            statusByTime: computeHomeworkStatusByTime(homework),
-          };
+        data.data.forEach((homework) => {
+          preProcessHomeworkDetails(homework);
         });
+        this.homeworkList = data.data;
       } catch (error) {
         this.$q.notify({
           message: "获取作业列表失败",
@@ -438,14 +431,13 @@ export default {
     },
 
     // 处理点击作业列表中的某一行
-    handleHomeworkClick(row) {
+    handleHomeworkClick(evt, row) {
       this.currClickedRowHomework = row;
-      // this.$router.push({
-      //   name: "homeworkDetail",
-      //   params: {
-      //     homeworkId: row.id,
-      //   },
-      // });
+      // 跳转到作业概览页面
+      // 在新标签页打开
+      // 新标签页打开
+      const routeData = this.$router.resolve(`/teacher/homework/${row._id}`);
+      window.open(routeData.href, "_blank");
     },
 
     // 点击作业编号
