@@ -40,6 +40,17 @@
                   "
                   >平均分：{{ homeworkAvgScore }}</span
                 >
+
+                <!-- 右侧按钮 -->
+                <q-space />
+                <q-btn
+                  flat
+                  color="primary"
+                  icon="view_carousel"
+                  label="题目视图"
+                >
+                  <q-tooltip> 切换为题目视图 </q-tooltip>
+                </q-btn>
               </div>
             </q-card-section>
           </q-card>
@@ -120,7 +131,8 @@
                     icon="refresh"
                     label="刷新"
                     @click="handleRefreshClick"
-                  ></q-btn>
+                  >
+                  </q-btn>
                 </div>
               </template>
 
@@ -219,7 +231,7 @@
                       color="primary"
                       icon="fact_check"
                     >
-                      <q-tooltip> 重新批判</q-tooltip>
+                      <q-tooltip> 客观题重新批判</q-tooltip>
                     </q-btn>
                   </div>
                 </q-td>
