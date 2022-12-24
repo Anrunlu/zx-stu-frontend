@@ -18,11 +18,28 @@
         <div class="row justify-center">
           <q-card class="col-12 col-md-8 q-mb-sm">
             <q-card-section>
-              <div class="q-gutter-md">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa
-                quo quam facere, minus amet neque nemo architecto eius maiores
-                dolores animi repellat repudiandae veritatis molestias nam sunt
-                optio quod? Quis.
+              <div class="q-gutter-md row">
+                <q-chip square outline>
+                  <q-avatar icon="people" color="primary" text-color="white" />
+                  {{ homeworkDetails.receiver.name }}
+                </q-chip>
+                <!-- span标签内容垂直居中 -->
+                <span
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                  >班级完成率：{{ homeworkProgress }}%</span
+                >
+                <span
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                  >平均分：{{ homeworkAvgScore }}</span
+                >
               </div>
             </q-card-section>
           </q-card>
@@ -32,7 +49,7 @@
         <div class="row justify-center">
           <q-card class="col-12 col-md-8">
             <q-table
-              :data="overallStuAnswerStatus"
+              :data="stuAnswerStatus"
               :columns="stuAnswerStatusColumns"
               :dense="tableDense"
               :pagination="pagination"
@@ -41,12 +58,69 @@
             >
               <template v-slot:top-left>
                 <div class="q-gutter-sm row">
-                  <q-btn
+                  <!-- 选择课程 -->
+                  <q-btn-dropdown
+                    :label="
+                      !currSelectedTeaCourse
+                        ? '筛选'
+                        : currSelectedTeaCourse.name
+                    "
                     color="primary"
                     icon="filter_list"
-                    label="筛选"
-                  ></q-btn>
+                  >
+                    <q-list>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="currentStatus = 'finished'"
+                      >
+                        <q-item-section avatar>
+                          <q-icon name="task_alt" color="positive" />
+                        </q-item-section>
+                        <q-item-section
+                          >已完成({{
+                            finishedStuAnswerStatus.length
+                          }})</q-item-section
+                        >
+                      </q-item>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="currentStatus = 'unfinished'"
+                      >
+                        <q-item-section avatar>
+                          <q-icon name="o_cancel" color="red" />
+                        </q-item-section>
+                        <q-item-section
+                          >未完成({{
+                            unfinishedStuAnswerStatus.length
+                          }})</q-item-section
+                        >
+                      </q-item>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="currentStatus = 'all'"
+                      >
+                        <q-item-section avatar>
+                          <q-icon name="people" color="primary" />
+                        </q-item-section>
+                        <q-item-section
+                          >全部({{
+                            overallStuAnswerStatus.length
+                          }})</q-item-section
+                        >
+                      </q-item>
+                    </q-list>
+                  </q-btn-dropdown>
                   <q-btn color="positive" icon="download" label="导出"></q-btn>
+                  <q-btn
+                    outline
+                    color="secondary"
+                    icon="refresh"
+                    label="刷新"
+                    @click="handleRefreshClick"
+                  ></q-btn>
                 </div>
               </template>
 
@@ -107,11 +181,11 @@
                   <q-badge
                     square
                     :color="
-                      props.value > 0
-                        ? 'blue-4'
-                        : props.value == 1
-                        ? 'green-4'
-                        : 'grey-4'
+                      props.value == 1
+                        ? 'green-3'
+                        : props.value > 0
+                        ? 'blue-3'
+                        : 'grey-3'
                     "
                     text-color="white"
                     size="sm"
@@ -158,11 +232,13 @@
     <q-footer bordered class="bg-white text-primary">
       <div class="float-left q-ml-sm">
         <div class="q-py-sm">
-          <span style="font-size: 0.5rem; color: #9e9e9e">上次更新：</span>
+          <span style="font-size: 0.5rem; color: #9e9e9e"
+            >最近更新：{{ lastUpdateTime }}</span
+          >
         </div>
       </div>
       <div class="float-right q-mr-sm">
-        <q-btn flat square label="保存" icon="save" @click="handleSaveClick" />
+        <q-btn flat square label="保存" icon="save" />
       </div>
     </q-footer>
   </q-layout>
@@ -184,6 +260,9 @@ export default {
   props: ["homeworkId"],
   data() {
     return {
+      stuAnswerStatus: [],
+      // 当前选中的状态
+      currentStatus: "all",
       stuAnswerStatusColumns: [
         {
           name: "nickname",
@@ -237,8 +316,14 @@ export default {
         rowsPerPage: 0,
         sortBy: "username",
       },
+      // 数据最近更新时间
+      lastUpdateTime: "",
       // 学生筛选
       stufilter: "",
+      // 作业总进度
+      homeworkProgress: 0,
+      // 作业平均分
+      homeworkAvgScore: 0,
       // 作业详情
       homeworkDetails: {},
       // 全部学生作答情况
@@ -259,6 +344,12 @@ export default {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
     }),
+  },
+
+  watch: {
+    currentStatus(newVal, oldVal) {
+      this.changeStuAnswerStatus(newVal);
+    },
   },
 
   methods: {
@@ -296,6 +387,23 @@ export default {
           preProcessStuAnswerStatus(stuAnswerStatus);
         });
 
+        // 计算总进度
+        this.homeworkProgress = Math.round(
+          (data.data.filter((stuAnswerStatus) => stuAnswerStatus.isFinished)
+            .length /
+            data.data.length) *
+            100
+        ).toFixed(2);
+
+        // 计算平均分
+        let totalScore = 0;
+        data.data.forEach((stuAnswerStatus) => {
+          totalScore += stuAnswerStatus.score;
+        });
+        this.homeworkAvgScore = Math.round(
+          totalScore / data.data.length
+        ).toFixed(2);
+
         this.overallStuAnswerStatus = data.data;
         this.finishedStuAnswerStatus = data.data.filter(
           (stuAnswerStatus) => stuAnswerStatus.isFinished
@@ -303,6 +411,11 @@ export default {
         this.unfinishedStuAnswerStatus = data.data.filter(
           (stuAnswerStatus) => !stuAnswerStatus.isFinished
         );
+
+        this.changeStuAnswerStatus(this.currentStatus);
+
+        // 设置最近更新时间
+        this.lastUpdateTime = new Date().toLocaleString();
       } catch (error) {
         this.$q.notify({
           message: "获取作答情况失败",
@@ -311,9 +424,20 @@ export default {
       }
     },
 
-    // 点击保存按钮
-    handleSaveClick() {
-      // 保存题目
+    // 切换学生作答情况
+    changeStuAnswerStatus(status) {
+      if (status === "all") {
+        this.stuAnswerStatus = this.overallStuAnswerStatus;
+      } else if (status === "finished") {
+        this.stuAnswerStatus = this.finishedStuAnswerStatus;
+      } else if (status === "unfinished") {
+        this.stuAnswerStatus = this.unfinishedStuAnswerStatus;
+      }
+    },
+
+    // 刷新作业信息
+    handleRefreshClick() {
+      this.getHomeworkDetail();
     },
 
     // 关闭页面
