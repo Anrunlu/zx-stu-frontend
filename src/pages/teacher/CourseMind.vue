@@ -15,9 +15,9 @@
       <q-page class="q-my-sm">
         <div id="map" style="width: 100vw; height: 96vh"></div>
       </q-page>
-      <q-page-sticky position="top-right" :offset="[18, 18]" expand>
+      <!-- <q-page-sticky position="top-right" :offset="[18, 18]" expand>
         <q-btn color="primary" icon="check" label="OK" @click="onClick" />
-      </q-page-sticky>
+      </q-page-sticky> -->
     </q-page-container>
   </q-layout>
 </template>
