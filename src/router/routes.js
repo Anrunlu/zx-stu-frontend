@@ -91,6 +91,15 @@ const routes = [
     },
   },
   {
+    path: "/teacher/course_mindmap/:courseId?",
+    component: () => import(`pages/teacher/CourseMind.vue`),
+    props: true,
+    meta: {
+      type: "teacher",
+      title: "课程导图",
+    },
+  },
+  {
     path: "/teacher/question_add/:courseId",
     component: () => import(`pages/teacher/QuestionAdd.vue`),
     props: true,

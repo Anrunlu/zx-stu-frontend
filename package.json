@@ -21,6 +21,7 @@
     "js-base64": "^3.7.2",
     "marked": "^4.2.3",
     "marked-katex-extension": "^1.0.1",
+    "mind-elixir": "^1.1.3",
     "qiniu-js": "^3.4.1",
     "quasar": "^1.0.0",
     "vue-katex-auto-render": "^0.1.3",
