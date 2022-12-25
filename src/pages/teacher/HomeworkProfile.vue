@@ -46,10 +46,22 @@
                 <q-btn
                   flat
                   color="primary"
-                  icon="view_carousel"
+                  icon="swipe"
                   label="题目视图"
+                  @click="handleSwitchViewClick('questionView')"
+                  v-if="currentView === 'stuAnswerStatusView'"
                 >
                   <q-tooltip> 切换为题目视图 </q-tooltip>
+                </q-btn>
+                <q-btn
+                  flat
+                  color="positive"
+                  icon="swipe"
+                  label="学生视图"
+                  @click="handleSwitchViewClick('stuAnswerStatusView')"
+                  v-else
+                >
+                  <q-tooltip> 切换为学生视图 </q-tooltip>
                 </q-btn>
               </div>
             </q-card-section>
@@ -64,18 +76,15 @@
               :columns="stuAnswerStatusColumns"
               :dense="tableDense"
               :pagination="pagination"
-              :filter="stufilter"
+              :filter="filter"
               row-key="_id"
+              v-if="currentView === 'stuAnswerStatusView'"
             >
               <template v-slot:top-left>
                 <div class="q-gutter-sm row">
                   <!-- 选择课程 -->
                   <q-btn-dropdown
-                    :label="
-                      !currSelectedTeaCourse
-                        ? '筛选'
-                        : currSelectedTeaCourse.name
-                    "
+                    label="筛选"
                     color="primary"
                     icon="filter_list"
                   >
@@ -141,7 +150,7 @@
                   color="primary"
                   dense
                   debounce="300"
-                  v-model="stufilter"
+                  v-model="filter"
                   placeholder="搜索(输入姓名或学号)"
                 >
                   <template v-slot:append>
@@ -228,10 +237,133 @@
                       flat
                       dense
                       size="sm"
-                      color="primary"
-                      icon="fact_check"
+                      color="red-4"
+                      icon="published_with_changes"
                     >
                       <q-tooltip> 客观题重新批判</q-tooltip>
+                    </q-btn>
+                  </div>
+                </q-td>
+              </template>
+            </q-table>
+
+            <q-table
+              :data="questionList"
+              :columns="questionListColumns"
+              :dense="tableDense"
+              :pagination="pagination"
+              :filter="filter"
+              row-key="_id"
+              v-else
+            >
+              <template v-slot:top-left>
+                <div class="q-gutter-sm row">
+                  <!-- 选择课程 -->
+                  <q-btn-dropdown
+                    label="筛选"
+                    color="primary"
+                    icon="filter_list"
+                  >
+                    <q-list>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="currentStatus = 'finished'"
+                      >
+                        <q-item-section avatar>
+                          <q-icon name="task_alt" color="positive" />
+                        </q-item-section>
+                        <q-item-section
+                          >已完成({{
+                            finishedStuAnswerStatus.length
+                          }})</q-item-section
+                        >
+                      </q-item>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="currentStatus = 'unfinished'"
+                      >
+                        <q-item-section avatar>
+                          <q-icon name="o_cancel" color="red" />
+                        </q-item-section>
+                        <q-item-section
+                          >未完成({{
+                            unfinishedStuAnswerStatus.length
+                          }})</q-item-section
+                        >
+                      </q-item>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="currentStatus = 'all'"
+                      >
+                        <q-item-section avatar>
+                          <q-icon name="people" color="primary" />
+                        </q-item-section>
+                        <q-item-section
+                          >全部({{
+                            overallStuAnswerStatus.length
+                          }})</q-item-section
+                        >
+                      </q-item>
+                    </q-list>
+                  </q-btn-dropdown>
+                  <q-btn color="positive" icon="download" label="导出"></q-btn>
+                  <q-btn
+                    outline
+                    color="secondary"
+                    icon="refresh"
+                    label="刷新"
+                    @click="handleRefreshClick"
+                  >
+                  </q-btn>
+                </div>
+              </template>
+
+              <template v-slot:top-right>
+                <q-input
+                  color="primary"
+                  dense
+                  debounce="300"
+                  v-model="filter"
+                  placeholder="搜索"
+                >
+                  <template v-slot:append>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+              </template>
+
+              <template v-slot:body-cell-shortId="props">
+                <q-td
+                  :props="props"
+                  @click.stop="handleTableCellIdClick(props.row)"
+                  class="cursor-pointer"
+                >
+                  <q-icon name="fingerprint" size="xs" color="grey-6" />{{
+                    props.row.shortId
+                  }}
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-type="props">
+                <q-td :props="props">
+                  <QuestionChip :questionType="props.row.type" :size="'xs'" />
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-action="props">
+                <q-td :props="props">
+                  <div class="q-gutter-sm">
+                    <q-btn
+                      flat
+                      dense
+                      size="sm"
+                      color="red-4"
+                      icon="published_with_changes"
+                    >
+                      <q-tooltip> 重新批判</q-tooltip>
                     </q-btn>
                   </div>
                 </q-td>
@@ -266,12 +398,15 @@ import {
   preProcessHomeworkDetails,
   preProcessStuAnswerStatus,
 } from "src/utils/homework";
+import { preProcessQuestionList } from "src/utils/question";
 
 export default {
   name: "HomeworkProfile",
   props: ["homeworkId"],
   data() {
     return {
+      // 当前显示的视图
+      currentView: "stuAnswerStatusView",
       stuAnswerStatus: [],
       // 当前选中的状态
       currentStatus: "all",
@@ -324,6 +459,7 @@ export default {
           align: "center",
         },
       ],
+
       pagination: {
         rowsPerPage: 0,
         sortBy: "username",
@@ -331,24 +467,61 @@ export default {
       // 数据最近更新时间
       lastUpdateTime: "",
       // 学生筛选
-      stufilter: "",
+      filter: "",
       // 作业总进度
       homeworkProgress: 0,
       // 作业平均分
       homeworkAvgScore: 0,
       // 作业详情
-      homeworkDetails: {},
+      homeworkDetails: {
+        // 接收者
+        receiver: {
+          name: "",
+        },
+      },
       // 全部学生作答情况
       overallStuAnswerStatus: [],
       // 已完成学生作答情况
       finishedStuAnswerStatus: [],
       // 未完成学生作答情况
       unfinishedStuAnswerStatus: [],
+      // 题目列表
+      questionList: [],
+      questionListColumns: [
+        {
+          name: "shortId",
+          label: "题目编号",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "type",
+          label: "类型",
+          align: "center",
+          field: "type",
+          sortable: true,
+        },
+        {
+          name: "content",
+          label: "内容",
+          align: "center",
+          field: "content",
+          sortable: true,
+        },
+        {
+          name: "action",
+          align: "center",
+          label: "操作",
+        },
+      ],
+      // 题集名称
+      questionSetName: "",
     };
   },
 
   components: {
     ObjectShortId: () => import("src/components/common/ObjectShortId.vue"),
+    QuestionChip: () => import("src/components/common/QuestionChip.vue"),
   },
 
   computed: {
@@ -444,6 +617,30 @@ export default {
         this.stuAnswerStatus = this.finishedStuAnswerStatus;
       } else if (status === "unfinished") {
         this.stuAnswerStatus = this.unfinishedStuAnswerStatus;
+      }
+    },
+
+    // 切换视图
+    handleSwitchViewClick(view) {
+      if (view === "questionView") {
+        // 处理题目列表
+        this.questionList = this.homeworkDetails.questionSets[0].questions.map(
+          (question) => {
+            return {
+              ...question,
+              meta: this.homeworkDetails.questionSets[0].questionsMeta.find(
+                (meta) => meta.question_id == question._id
+              ),
+            };
+          }
+        );
+
+        this.questionList = preProcessQuestionList(this.questionList);
+
+        this.currentView = view;
+      } else {
+        this.getHomeworkDetail();
+        this.currentView = view;
       }
     },
 
