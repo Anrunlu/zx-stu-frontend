@@ -353,6 +353,30 @@
                 </q-td>
               </template>
 
+              <template v-slot:body-cell-scoringRate="props">
+                <q-td :props="props">
+                  <q-linear-progress
+                    rounded
+                    stripe
+                    size="17px"
+                    :value="props.value"
+                    :color="
+                      props.value >= 0.85
+                        ? 'green-3'
+                        : props.value >= 0.7
+                        ? 'blue-3'
+                        : 'red-3'
+                    "
+                  >
+                    <div class="absolute-full flex flex-center">
+                      <span class="text-white text-caption">{{
+                        props.row.scoringRateLabel
+                      }}</span>
+                    </div>
+                  </q-linear-progress>
+                </q-td>
+              </template>
+
               <template v-slot:body-cell-action="props">
                 <q-td :props="props">
                   <div class="q-gutter-sm">
@@ -393,12 +417,13 @@ import { mapGetters } from "vuex";
 import {
   apiGetHomeworkDetails,
   apiGetHomeworkOverallAnswerStatus,
+  apiGetStatisticsForCertainHomework,
 } from "src/api/teacher/homework";
 import {
   preProcessHomeworkDetails,
   preProcessStuAnswerStatus,
 } from "src/utils/homework";
-import { preProcessQuestionList } from "src/utils/question";
+import { toFixed2 } from "src/utils/common";
 
 export default {
   name: "HomeworkProfile",
@@ -509,6 +534,13 @@ export default {
           sortable: true,
         },
         {
+          name: "scoringRate",
+          label: "得分率",
+          align: "center",
+          field: "scoringRate",
+          sortable: true,
+        },
+        {
           name: "action",
           align: "center",
           label: "操作",
@@ -555,7 +587,7 @@ export default {
       }
     },
 
-    // 获取教学班学生作答情况
+    // 获取教学班学生作答情况(学生视图)
     async getHomeworkOverallAnswerStatus() {
       const getHomeworkOverallAnswerStatusDto = {
         homework_id: this.homeworkDetails._id,
@@ -609,6 +641,50 @@ export default {
       }
     },
 
+    // 获取题目和正答率相关信息(题目视图)
+    async getStatisticsForCertainHomework() {
+      const getStatisticsForCertainHomeworkDto = {
+        homework_id: this.homeworkDetails._id,
+        classroom_id: this.homeworkDetails.receiver._id,
+        questionSet_id: this.homeworkDetails.questionSets[0]._id,
+      };
+
+      try {
+        const { data } = await apiGetStatisticsForCertainHomework(
+          getStatisticsForCertainHomeworkDto
+        );
+
+        // 处理题目列表，计算题目得分率等
+        this.questionList = data.data.homeworkStatistics.map((info) => {
+          const currQuestionPresetScore =
+            this.homeworkDetails.questionSets[0].questionsMeta.find(
+              (questionMeta) => questionMeta.question_id === info.question._id
+            ).presetScore;
+
+          const currQuestionMaxScore =
+            currQuestionPresetScore * this.overallStuAnswerStatus.length;
+
+          const scoringRate = info.totalScore / currQuestionMaxScore;
+
+          return {
+            ...info.question,
+            shortId: info.question._id.slice(-5).toUpperCase(),
+            content:
+              info.question.content.slice(0, 20).replace(/<[^>]+>/g, "") +
+              "...",
+            scoringRate,
+            scoringRateLabel: toFixed2(scoringRate * 100) + "%",
+          };
+        });
+      } catch (error) {
+        console.log(error);
+        this.$q.notify({
+          message: "获取统计信息失败",
+          type: "negative",
+        });
+      }
+    },
+
     // 切换学生作答情况
     changeStuAnswerStatus(status) {
       if (status === "all") {
@@ -623,25 +699,11 @@ export default {
     // 切换视图
     handleSwitchViewClick(view) {
       if (view === "questionView") {
-        // 处理题目列表
-        this.questionList = this.homeworkDetails.questionSets[0].questions.map(
-          (question) => {
-            return {
-              ...question,
-              meta: this.homeworkDetails.questionSets[0].questionsMeta.find(
-                (meta) => meta.question_id == question._id
-              ),
-            };
-          }
-        );
-
-        this.questionList = preProcessQuestionList(this.questionList);
-
-        this.currentView = view;
+        this.getStatisticsForCertainHomework();
       } else {
         this.getHomeworkDetail();
-        this.currentView = view;
       }
+      this.currentView = view;
     },
 
     // 刷新作业信息

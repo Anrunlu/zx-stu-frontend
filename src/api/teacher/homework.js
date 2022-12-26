@@ -52,3 +52,12 @@ export function apiGetHomeworkOverallAnswerStatus(data) {
     data,
   });
 }
+
+// 获取某作业内题目的正答率(题目视图)
+export function apiGetStatisticsForCertainHomework(data) {
+  return loadingFn(request)({
+    url: "/tea/homework/getStatisticsForCertainHomework",
+    method: "POST",
+    data,
+  });
+}
