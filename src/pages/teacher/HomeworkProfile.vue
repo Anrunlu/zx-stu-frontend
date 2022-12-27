@@ -240,7 +240,7 @@
                       color="red-4"
                       icon="published_with_changes"
                     >
-                      <q-tooltip> 客观题重新批判</q-tooltip>
+                      <q-tooltip> 客观题重新评判</q-tooltip>
                     </q-btn>
                   </div>
                 </q-td>
@@ -387,7 +387,7 @@
                       color="red-4"
                       icon="published_with_changes"
                     >
-                      <q-tooltip> 重新批判</q-tooltip>
+                      <q-tooltip> 重新评判</q-tooltip>
                     </q-btn>
                   </div>
                 </q-td>
@@ -414,6 +414,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { copyToClipboard } from "quasar";
 import {
   apiGetHomeworkDetails,
   apiGetHomeworkOverallAnswerStatus,
@@ -655,11 +656,18 @@ export default {
         );
 
         // 处理题目列表，计算题目得分率等
+
         this.questionList = data.data.homeworkStatistics.map((info) => {
-          const currQuestionPresetScore =
-            this.homeworkDetails.questionSets[0].questionsMeta.find(
-              (questionMeta) => questionMeta.question_id === info.question._id
-            ).presetScore;
+          let currQuestionPresetScore = 0;
+
+          if (this.homeworkDetails.questionSets[0].questionsMeta.length == 0) {
+            currQuestionPresetScore = 100;
+          } else {
+            currQuestionPresetScore =
+              this.homeworkDetails.questionSets[0].questionsMeta.find(
+                (questionMeta) => questionMeta.question_id === info.question._id
+              ).presetScore;
+          }
 
           const currQuestionMaxScore =
             currQuestionPresetScore * this.overallStuAnswerStatus.length;
@@ -709,6 +717,17 @@ export default {
     // 刷新作业信息
     handleRefreshClick() {
       this.getHomeworkDetail();
+    },
+
+    // 点击题目列表的id(题目编号)
+    handleTableCellIdClick(row) {
+      // 复制id到剪贴板
+      copyToClipboard(row._id).then(() => {
+        this.$q.notify({
+          message: "题目编号已复制到剪贴板",
+          type: "positive",
+        });
+      });
     },
 
     // 关闭页面
