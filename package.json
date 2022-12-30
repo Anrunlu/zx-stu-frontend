@@ -17,6 +17,7 @@
     "axios": "^0.21.1",
     "ckeditor5-custom-build": "./ckeditor5",
     "core-js": "^3.6.5",
+    "driver.js": "^0.9.8",
     "file-saver": "^2.0.5",
     "js-base64": "^3.7.2",
     "marked": "^4.2.3",

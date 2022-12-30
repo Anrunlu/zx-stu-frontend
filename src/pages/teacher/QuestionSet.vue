@@ -41,7 +41,13 @@
             @click="handleQuestionTableFilterBtnClick"
           />
           <!-- 创建题集 -->
-          <q-btn color="accent" outline icon="add" label="创建题集">
+          <q-btn
+            id="create—questionset-btn"
+            color="accent"
+            outline
+            icon="add"
+            label="创建题集"
+          >
             <q-menu anchor="bottom right" self="top right">
               <q-list style="min-width: 100px">
                 <q-item
@@ -94,6 +100,15 @@
             <q-icon name="search" />
           </template>
         </q-input>
+
+        <q-btn
+          flat
+          round
+          dense
+          color="grey-7"
+          icon="o_help_center"
+          @click.stop="handleStartGuide"
+        />
 
         <q-btn
           flat
@@ -165,6 +180,7 @@
         <q-td :props="props">
           <div class="q-gutter-sm">
             <q-btn
+              id="publish-questionset-btn"
               flat
               dense
               size="sm"
@@ -175,6 +191,7 @@
               <q-tooltip> 发布为作业 </q-tooltip>
             </q-btn>
             <q-btn
+              id="edit-questionset-btn"
               flat
               dense
               size="sm"
@@ -185,6 +202,7 @@
               <q-tooltip> 编辑题集 </q-tooltip>
             </q-btn>
             <q-btn
+              id="remove-questionset-btn"
               flat
               dense
               size="sm"
@@ -340,6 +358,8 @@ import {
   apiRemoveQuestionSet,
 } from "src/api/teacher/questionSet";
 import { getObjectShortId } from "src/utils/common";
+import Driver from "driver.js";
+import "driver.js/dist/driver.min.css";
 
 export default {
   name: "QuestionSet",
@@ -629,6 +649,58 @@ export default {
       this.getQuestionSetList();
       // 关闭高级筛选对话框
       this.questionSetTableFilterDig = false;
+    },
+
+    // 引导
+    handleStartGuide() {
+      const driver = new Driver({
+        doneBtnText: "完成",
+        closeBtnText: "关闭",
+        nextBtnText: "下一个",
+        prevBtnText: "上一个",
+      });
+
+      // Define the steps for introduction
+      driver.defineSteps([
+        {
+          element: "#create—questionset-btn",
+          popover: {
+            className: "first-step-popover-class",
+            title: "创建题集",
+            description: "点击创建题集按钮，依据选的方式创建题集",
+            position: "bottom",
+          },
+        },
+        {
+          element: "#publish-questionset-btn",
+          popover: {
+            title: "发布题集",
+            description: "点击此按钮，可将题集发布为作业",
+            position: "left",
+          },
+        },
+        {
+          element: "#edit-questionset-btn",
+          popover: {
+            title: "编辑题集",
+            description:
+              "点击此按钮，可编辑题集。注意您只能编辑自己创建的题集。",
+            position: "left",
+          },
+        },
+        {
+          element: "#remove-questionset-btn",
+          popover: {
+            title: "删除题集",
+            description:
+              "点击此按钮，可删除题集。注意您只能删除自己创建的题集。",
+            position: "left",
+          },
+        },
+      ]);
+
+      // Start the introduction
+      driver.start();
     },
   },
 
