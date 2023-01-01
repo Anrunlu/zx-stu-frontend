@@ -1,0 +1,207 @@
+<template>
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated>
+      <q-bar class="bg-primary text-white shadow-1">
+        <q-icon name="edit_note" />
+        <div>张三</div>
+        <q-space />
+        <q-btn dense flat icon="settings" label="批改设置"> </q-btn>
+        <q-btn dense flat icon="help">
+          <q-tooltip>帮助</q-tooltip>
+        </q-btn>
+        <q-btn dense flat icon="close">
+          <q-tooltip>关闭</q-tooltip>
+        </q-btn>
+      </q-bar>
+    </q-header>
+
+    <q-drawer
+      v-model="drawerLeft"
+      show-if-above
+      :width="220"
+      :breakpoint="700"
+      elevated
+    >
+      <q-scroll-area class="fit">
+        <div class="q-my-md">
+          <q-list separator>
+            <q-item
+              clickable
+              v-ripple
+              v-for="student in overallAnswerStatus"
+              :key="student.username"
+            >
+              <q-item-section avatar>
+                <q-avatar rounded color="secondary" text-color="white">
+                  <img :src="student.avatar" v-if="student.avatar" />
+                  <span v-else>{{ student.nickname.slice(0, 1) }}</span>
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>{{ student.nickname }}</q-item-section>
+              <q-item-section side>
+                <span
+                  v-if="student.answerProgress <= 0"
+                  style="font-size: 0.5rem"
+                  >未作答</span
+                >
+                <span v-else>{{ student.score }}</span>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </q-scroll-area>
+    </q-drawer>
+
+    <q-page-container>
+      <q-page class="q-my-md"> </q-page>
+    </q-page-container>
+
+    <q-footer bordered class="bg-white text-primary q-py-sm">
+      <div class="row q-gutter-lg q-ml-sm">
+        <div class="col-7 col-xl-5">
+          <div class="row q-gutter-sm">
+            <q-slider
+              class="col"
+              v-model="model"
+              label
+              markers
+              :marker-labels="fnMarkerLabel"
+              :min="0"
+              :max="6"
+              dense
+            />
+            <q-input
+              class="q-ml-lg"
+              clearable
+              clear-icon="close"
+              type="number"
+              label="输入成绩"
+              dense
+              outlined
+            />
+            <q-btn-group push>
+              <q-btn-dropdown label="提交" color="blue" split>
+                <q-list>
+                  <q-item clickable v-close-popup>
+                    <q-item-section>
+                      <q-item-label>输入评语</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </q-btn-group>
+          </div>
+        </div>
+
+        <div class="col">
+          <q-btn-group outline>
+            <q-btn outline label="下一人" icon="arrow_downward" />
+            <q-btn
+              outline
+              :label="`1/${overallAnswerStatus.length}`"
+              @click="drawerLeft = !drawerLeft"
+            />
+            <q-btn outline label="上一人" icon-right="arrow_upward" />
+            <q-btn outline label="上一题" icon="chevron_left" />
+            <q-btn outline label="下一题" icon-right="chevron_right" />
+          </q-btn-group>
+        </div>
+      </div>
+    </q-footer>
+  </q-layout>
+</template>
+
+<script>
+import { mapGetters } from "vuex";
+import {
+  apiGetHomeworkDetails,
+  apiGetHomeworkOverallAnswerStatus,
+} from "src/api/teacher/homework";
+import {
+  preProcessHomeworkDetails,
+  preProcessStuAnswerStatus,
+} from "src/utils/homework";
+
+export default {
+  name: "StudentHomework",
+  props: {
+    homeworkId: {
+      type: String,
+      default: "",
+    },
+  },
+  data() {
+    return {
+      model: 3,
+      drawerLeft: true,
+      overallAnswerStatus: [],
+    };
+  },
+
+  components: {},
+
+  computed: {
+    ...mapGetters("teaCourse", {
+      teaCourseList: "teaCourseList",
+      currSelectedTeaCourse: "currSelectedTeaCourse",
+    }),
+  },
+
+  methods: {
+    // 获取作业详细信息
+    async getHomeworkDetail() {
+      try {
+        const { data } = await apiGetHomeworkDetails(this.homeworkId);
+        preProcessHomeworkDetails(data.data);
+        this.homeworkDetails = data.data;
+
+        // 获取教学班学生作答情况
+        this.getHomeworkOverallAnswerStatus();
+      } catch (error) {
+        this.$q.notify({
+          message: "获取作业信息失败",
+          type: "negative",
+        });
+      }
+    },
+
+    // 获取教学班学生作答情况
+    async getHomeworkOverallAnswerStatus() {
+      const getHomeworkOverallAnswerStatusDto = {
+        homework_id: this.homeworkDetails._id,
+        receiver_id: this.homeworkDetails.receiver._id,
+        receiver_type: "Classroom",
+        tcc_id: this.homeworkDetails.tcc,
+      };
+
+      try {
+        const { data } = await apiGetHomeworkOverallAnswerStatus(
+          getHomeworkOverallAnswerStatusDto
+        );
+        data.data.forEach((stuAnswerStatus) => {
+          preProcessStuAnswerStatus(stuAnswerStatus);
+        });
+
+        this.overallAnswerStatus = data.data;
+
+        console.log(this.overallAnswerStatus);
+      } catch (error) {
+        this.$q.notify({
+          message: "获取作答情况失败",
+          type: "negative",
+        });
+      }
+    },
+
+    fnMarkerLabel(val) {
+      return `${10 * val}`;
+    },
+  },
+
+  created() {
+    this.getHomeworkDetail();
+  },
+};
+</script>
+
+<style></style>

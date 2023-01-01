@@ -78,6 +78,7 @@
               :pagination="pagination"
               :filter="filter"
               row-key="_id"
+              @row-click="handlestuAnswerStatusViewTableRowClick"
               v-if="currentView === 'stuAnswerStatusView'"
             >
               <template v-slot:top-left>
@@ -405,9 +406,9 @@
           >
         </div>
       </div>
-      <div class="float-right q-mr-sm">
+      <!-- <div class="float-right q-mr-sm">
         <q-btn flat square label="保存" icon="save" />
-      </div>
+      </div> -->
     </q-footer>
   </q-layout>
 </template>
@@ -691,6 +692,17 @@ export default {
           type: "negative",
         });
       }
+    },
+
+    // 点击学生作答情况表格行
+    handlestuAnswerStatusViewTableRowClick(evt, row) {
+      console.log(row);
+      this.$router.push({
+        path: "/teacher/student_homework/" + this.homeworkId,
+        query: {
+          u: row.username,
+        },
+      });
     },
 
     // 切换学生作答情况
