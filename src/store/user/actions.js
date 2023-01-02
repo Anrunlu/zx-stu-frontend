@@ -84,13 +84,13 @@ export function getUserInfo({ commit, dispatch }) {
 }
 
 // 切换学期
-export function changeTerm({ commit, dispatch }, termId) {
+export function changeTerm({ commit, dispatch }, term) {
   return new Promise((resolve, reject) => {
-    apiModifyProfile({ currTerm: termId })
+    apiModifyProfile({ currTerm: term._id })
       .then((response) => {
         const { data } = response;
         if (data.code === 2000) {
-          commit("setTermId", termId);
+          commit("setTermId", term._id);
 
           // 重新获取用户数据
           dispatch("getUserInfo");
