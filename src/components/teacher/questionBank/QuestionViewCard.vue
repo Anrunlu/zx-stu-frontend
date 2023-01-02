@@ -10,7 +10,7 @@
         />
       </template>
 
-      <template v-slot:right>
+      <template v-slot:right v-if="!pure">
         <q-btn
           round
           flat
@@ -79,7 +79,7 @@
       </div>
     </q-card-section>
 
-    <q-card-actions align="right">
+    <q-card-actions align="right" v-if="!pure">
       <q-btn
         class="q-ml-sm"
         color="positive"
@@ -105,7 +105,22 @@ import { preProcessQuestionDetails } from "src/utils/question";
 
 export default {
   name: "QuestionViewCard",
-  props: ["questionId", "inQuestionCar"],
+  props: {
+    questionId: {
+      type: String,
+      required: true,
+    },
+    inQuestionCar: {
+      type: Boolean,
+      required: false,
+    },
+    pure: {
+      // 纯净模式，不显示多余按钮
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   data() {
     return {
       questionDetails: {},

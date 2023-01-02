@@ -16,6 +16,7 @@
             color="primary"
             icon="search"
             label="查看题干"
+            @click="handleViewQuestionBtnClick"
           >
             <q-tooltip>
               第 {{ currQuestionIndex + 1 }}/{{ totalQuestionCount }} 题
@@ -46,6 +47,11 @@
         ></div>
       </q-card-section>
     </q-card>
+
+    <!-- 查看题干对话框 -->
+    <q-dialog v-model="questionViewDig">
+      <QuestionViewCard pure :questionId="currQuestion._id" />
+    </q-dialog>
 
     <!-- 批注对话框 -->
     <q-dialog v-model="studentqaAnnotationDig" maximized>
@@ -94,7 +100,13 @@ export default {
   data() {
     return {
       studentqaAnnotationDig: false,
+      questionViewDig: false,
     };
+  },
+
+  components: {
+    QuestionViewCard: () =>
+      import("src/components/teacher/questionBank/QuestionViewCard.vue"),
   },
 
   methods: {
@@ -111,6 +123,11 @@ export default {
             .appendChild(canvas);
         }, 300);
       });
+    },
+
+    // 点击查看题干按钮
+    handleViewQuestionBtnClick() {
+      this.questionViewDig = true;
     },
   },
 };

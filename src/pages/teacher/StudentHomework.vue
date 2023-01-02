@@ -124,8 +124,18 @@
               icon-right="arrow_upward"
               @click="handlePrevStu"
             />
-            <q-btn outline label="上一题" icon="chevron_left" />
-            <q-btn outline label="下一题" icon-right="chevron_right" />
+            <q-btn
+              outline
+              label="上一题"
+              icon="chevron_left"
+              @click="handlePrevQuestion"
+            />
+            <q-btn
+              outline
+              label="下一题"
+              icon-right="chevron_right"
+              @click="handleNextQuestion"
+            />
           </q-btn-group>
         </div>
       </div>
@@ -493,6 +503,41 @@ export default {
       // this.getStudentHomeworkDetail();
 
       this.locateStuNoFlash();
+    },
+
+    // 上一题
+    handlePrevQuestion() {
+      const currIndex = this.jiedaQuestions.findIndex(
+        (item) => item._id === this.currJiedaQuestion._id
+      );
+
+      if (currIndex > 0) {
+        this.currJiedaQuestion = this.jiedaQuestions[currIndex - 1];
+        this.currJiedaQuestionIndex = currIndex - 1;
+      } else {
+        // 第一题
+        this.$q.notify({
+          message: "当前第一题",
+          type: "warning",
+        });
+      }
+    },
+
+    // 下一题
+    handleNextQuestion() {
+      const currIndex = this.jiedaQuestions.findIndex(
+        (item) => item._id === this.currJiedaQuestion._id
+      );
+      if (currIndex < this.jiedaQuestions.length - 1) {
+        this.currJiedaQuestion = this.jiedaQuestions[currIndex + 1];
+        this.currJiedaQuestionIndex = currIndex + 1;
+      } else {
+        // 最后一题
+        this.$q.notify({
+          message: "当前最后一题",
+          type: "warning",
+        });
+      }
     },
 
     // 点击关闭按钮
