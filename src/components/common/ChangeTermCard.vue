@@ -76,9 +76,9 @@ export default {
 
   methods: {
     // 确认切换学期
-    handleConfirmChangeTermBtnClick() {
+    async handleConfirmChangeTermBtnClick() {
       try {
-        this.$store.dispatch("user/changeTerm", this.selectedTerm);
+        await this.$store.dispatch("user/changeTerm", this.selectedTerm);
         // 提示切换成功
         this.$q.notify({
           message: "切换学期成功，部分页面需手动刷新后生效",
@@ -94,9 +94,9 @@ export default {
     },
 
     // 同步为行政学期
-    handleSyncTermBtnClick() {
+    async handleSyncTermBtnClick() {
       try {
-        this.$store.dispatch("user/changeTerm", this.collegeCurrTermId);
+        await this.$store.dispatch("user/changeTerm", this.collegeCurrTermId);
         // 提示切换成功
         this.$q.notify({
           message: "同步学期成功，部分页面需手动刷新后生效",
