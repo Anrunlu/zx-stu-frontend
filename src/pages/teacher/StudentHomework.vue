@@ -78,11 +78,19 @@
               >
             </div>
           </q-card-section>
-          <ckeditor
+          <q-separator />
+          <q-card-section>
+            <div
+              id="student-qa"
+              v-viewer
+              v-html="currJiedaQuestion.studentQA[0].stuAnswer[0].content"
+            ></div>
+          </q-card-section>
+          <!-- <ckeditor
             :editor="editor"
             v-model="currJiedaQuestion.studentQA[0].stuAnswer[0].content"
             :config="editorConfig"
-          ></ckeditor>
+          ></ckeditor> -->
         </q-card>
       </q-page>
     </q-page-container>
@@ -546,5 +554,21 @@ export default {
     height: 96vh;
     overflow-y: auto;
   }
+}
+
+#student-qa {
+  height: 84vh;
+  overflow-y: auto;
+}
+@media screen and (max-width: 1920px) {
+  #student-qa {
+    height: 76vh;
+    overflow-y: auto;
+  }
+}
+#student-qa img {
+  max-width: 75%;
+  display: block;
+  margin: 0 auto;
 }
 </style>
