@@ -418,7 +418,8 @@ export default {
       }
     },
 
-    switchToStu(stuInfo) {
+    // 切换学生
+    async switchToStu(stuInfo) {
       this.currStuInfo = stuInfo;
       // 获取学生在 overallAnswerStatus 中的索引
       this.currStuInfoIndex = this.overallAnswerStatus.findIndex(
@@ -426,7 +427,17 @@ export default {
       );
 
       // 获取学生作答详情
-      this.getCurrStuAnswerDetail();
+      await this.getCurrStuAnswerDetail();
+
+      // 如果路由 query 参数中有 q 参数，则切换到该题目
+      if (this.$route.query.q) {
+        const question = this.questions.find(
+          (q) => q._id == this.$route.query.q
+        );
+        if (question) {
+          this.switchToQuestion(question);
+        }
+      }
 
       // 列表定位到学生
       this.locateStuNoFlash();
@@ -434,7 +445,33 @@ export default {
       this.$router.replace(
         {
           query: {
+            ...this.$route.query,
             u: stuInfo.username,
+          },
+        },
+        () => {}
+      );
+    },
+
+    // 切换题目
+    switchToQuestion(question) {
+      if (question.type === "解答") {
+        this.currJiedaQuestionIndex = this.jiedaQuestions.findIndex(
+          (q) => q._id === question._id
+        );
+        this.currJiedaQuestion =
+          this.jiedaQuestions[this.currJiedaQuestionIndex];
+      }
+      // 获取题目在 questions 中的索引
+      this.currQuestionIndex = this.questions.findIndex(
+        (q) => q._id === question._id
+      );
+      // 更新路由 query 参数
+      this.$router.replace(
+        {
+          query: {
+            ...this.$route.query,
+            q: question._id,
           },
         },
         () => {}
@@ -514,6 +551,7 @@ export default {
       if (currIndex > 0) {
         this.currJiedaQuestion = this.jiedaQuestions[currIndex - 1];
         this.currJiedaQuestionIndex = currIndex - 1;
+        this.switchToQuestion(this.currJiedaQuestion);
       } else {
         // 第一题
         this.$q.notify({
@@ -531,6 +569,7 @@ export default {
       if (currIndex < this.jiedaQuestions.length - 1) {
         this.currJiedaQuestion = this.jiedaQuestions[currIndex + 1];
         this.currJiedaQuestionIndex = currIndex + 1;
+        this.switchToQuestion(this.currJiedaQuestion);
       } else {
         // 最后一题
         this.$q.notify({
