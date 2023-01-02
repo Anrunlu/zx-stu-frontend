@@ -477,7 +477,7 @@ export default {
           block: "center",
           inline: "center",
         });
-      }, 100);
+      }, 250);
     },
 
     // 点击学生列表
