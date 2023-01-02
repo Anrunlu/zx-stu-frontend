@@ -5,6 +5,12 @@ import { LoadingBar, Notify } from "quasar";
 export default ({ router, store, Vue }) => {
   // 路由守卫
   router.beforeEach(async (to, from, next) => {
+    // 如果 to.path 包含 student_homework 说明是批改作业页面，为了减少网络开销，直接放行
+    if (to.path.includes("student_homework")) {
+      next();
+      return;
+    }
+
     LoadingBar.start(); // 开始进度条
 
     const userType = store.getters["user/type"]; // 获取用户类型，如果没有登录，返回空字符串

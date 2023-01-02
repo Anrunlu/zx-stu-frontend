@@ -1,15 +1,15 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh Lpr fFf">
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit_note" />
-        <div>张三</div>
+        <div>{{ currStuInfo.nickname }} {{ currStuInfo.username }}</div>
         <q-space />
         <q-btn dense flat icon="settings" label="批改设置"> </q-btn>
         <q-btn dense flat icon="help">
           <q-tooltip>帮助</q-tooltip>
         </q-btn>
-        <q-btn dense flat icon="close">
+        <q-btn dense flat icon="close" @click="handleCloseBtnClick">
           <q-tooltip>关闭</q-tooltip>
         </q-btn>
       </q-bar>
@@ -30,6 +30,10 @@
               v-ripple
               v-for="student in overallAnswerStatus"
               :key="student.username"
+              :id="student.username"
+              :active="student.username === currStuInfo.username"
+              active-class="bg-cyan-1 text-grey-8"
+              @click="handleStuItemClick(student)"
             >
               <q-item-section avatar>
                 <q-avatar rounded color="secondary" text-color="white">
@@ -53,7 +57,34 @@
     </q-drawer>
 
     <q-page-container>
-      <q-page class="q-my-md"> </q-page>
+      <q-page class="q-ma-md">
+        <q-card>
+          <q-card-section class="q-pa-sm">
+            <div class="row q-gutter-sm">
+              <q-badge color="positive">已批改</q-badge>
+              <q-btn
+                dense
+                flat
+                size="sm"
+                color="primary"
+                icon="search"
+                label="查看题干"
+              >
+                <q-tooltip> 第 {{ currQuestionIndex + 1 }}/10 题 </q-tooltip>
+              </q-btn>
+              <q-space />
+              <span class="text-grey q-mr-sm"
+                >第 {{ currQuestionIndex + 1 }}/10 题</span
+              >
+            </div>
+          </q-card-section>
+          <ckeditor
+            :editor="editor"
+            v-model="content"
+            :config="editorConfig"
+          ></ckeditor>
+        </q-card>
+      </q-page>
     </q-page-container>
 
     <q-footer bordered class="bg-white text-primary q-py-sm">
@@ -95,13 +126,25 @@
 
         <div class="col">
           <q-btn-group outline>
-            <q-btn outline label="下一人" icon="arrow_downward" />
             <q-btn
               outline
-              :label="`1/${overallAnswerStatus.length}`"
-              @click="drawerLeft = !drawerLeft"
+              label="下一人"
+              icon="arrow_downward"
+              @click="handleNextStu"
             />
-            <q-btn outline label="上一人" icon-right="arrow_upward" />
+            <q-btn
+              outline
+              :label="`${currStuInfoIndex + 1}/${overallAnswerStatus.length}`"
+              @click="drawerLeft = !drawerLeft"
+            >
+              <q-tooltip> 点击开启/关闭学生列表 </q-tooltip>
+            </q-btn>
+            <q-btn
+              outline
+              label="上一人"
+              icon-right="arrow_upward"
+              @click="handlePrevStu"
+            />
             <q-btn outline label="上一题" icon="chevron_left" />
             <q-btn outline label="下一题" icon-right="chevron_right" />
           </q-btn-group>
@@ -112,6 +155,9 @@
 </template>
 
 <script>
+import Editor from "ckeditor5-custom-build/build/ckeditor";
+import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
+import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 import { mapGetters } from "vuex";
 import {
   apiGetHomeworkDetails,
@@ -132,9 +178,14 @@ export default {
   },
   data() {
     return {
+      editor: Editor,
       model: 3,
       drawerLeft: true,
       overallAnswerStatus: [],
+      currStuInfo: {},
+      currStuInfoIndex: 0,
+      currQuestionIndex: 0,
+      content: "",
     };
   },
 
@@ -145,6 +196,39 @@ export default {
       teaCourseList: "teaCourseList",
       currSelectedTeaCourse: "currSelectedTeaCourse",
     }),
+
+    editorConfig() {
+      return {
+        toolbar: {
+          items: [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "fontColor",
+            "highlight",
+            "removeFormat",
+            "underline",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "alignment",
+            "|",
+            "math",
+            "codeBlock",
+            "imageUpload",
+            "uploadFile",
+            "blockQuote",
+            "insertTable",
+            "|",
+            "findAndReplace",
+            "undo",
+            "redo",
+          ],
+        },
+        extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
+      };
+    },
   },
 
   methods: {
@@ -184,13 +268,115 @@ export default {
 
         this.overallAnswerStatus = data.data;
 
-        console.log(this.overallAnswerStatus);
+        // 获取路由 query 参数
+        const query = this.$route.query;
+
+        // 如果有 u 参数，则定位到该学生
+        if (query.u) {
+          const stuInfo = this.overallAnswerStatus.find(
+            (stu) => stu.username === query.u
+          );
+
+          this.switchToStu(stuInfo);
+
+          setTimeout(() => {
+            this.locateStuNoFlash();
+          }, 100);
+        }
       } catch (error) {
         this.$q.notify({
           message: "获取作答情况失败",
           type: "negative",
         });
       }
+    },
+
+    switchToStu(stuInfo) {
+      this.currStuInfo = stuInfo;
+      // 获取学生在 overallAnswerStatus 中的索引
+      this.currStuInfoIndex = this.overallAnswerStatus.findIndex(
+        (stu) => stu._id === stuInfo._id
+      );
+      // 列表定位到学生
+      this.locateStuNoFlash();
+      // 更新路由 query 参数
+      this.$router.replace(
+        {
+          query: {
+            u: stuInfo.username,
+          },
+        },
+        () => {}
+      );
+    },
+
+    // 定位到学生不闪烁
+    locateStuNoFlash() {
+      setTimeout(() => {
+        // 找到题目卡片
+        const item = document.getElementById(this.currStuInfo.username);
+        if (!item) {
+          return;
+        }
+        // 定位到题目区域
+        item.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      }, 100);
+    },
+
+    // 点击学生列表
+    handleStuItemClick(stuInfo) {
+      this.switchToStu(stuInfo);
+    },
+
+    // 上一人
+    handlePrevStu() {
+      const currStuIndex = this.overallAnswerStatus.findIndex(
+        (stu) => stu._id === this.currStuInfo._id
+      );
+      const prevStuIndex = currStuIndex - 1;
+      // 如果是第一个学生，不做任何操作
+      if (prevStuIndex < 0) {
+        this.$q.notify({
+          message: "已经是第一个学生了",
+          type: "warning",
+        });
+        return;
+      }
+
+      this.switchToStu(this.overallAnswerStatus[prevStuIndex]);
+
+      // this.getStudentHomeworkDetail();
+    },
+
+    // 下一人
+    handleNextStu() {
+      const currStuIndex = this.overallAnswerStatus.findIndex(
+        (stu) => stu._id === this.currStuInfo._id
+      );
+      const nextStuIndex = currStuIndex + 1;
+      // 如果是最后一个学生，不做任何操作
+      if (nextStuIndex >= this.overallAnswerStatus.length) {
+        this.$q.notify({
+          message: "已经是最后一个学生了",
+          type: "warning",
+        });
+        return;
+      }
+
+      this.switchToStu(this.overallAnswerStatus[nextStuIndex]);
+
+      // this.getStudentHomeworkDetail();
+
+      this.locateStuNoFlash();
+    },
+
+    // 点击关闭按钮
+    handleCloseBtnClick() {
+      this.$router.push(`/teacher/homework/${this.homeworkId}`);
     },
 
     fnMarkerLabel(val) {
@@ -204,4 +390,16 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.ck.ck-content:not(.ck-comment__input *) {
+  height: 84vh;
+  overflow-y: auto;
+}
+@media screen and (max-width: 1920px) {
+  .ck.ck-content:not(.ck-comment__input *) {
+    /* height: 76vh; */
+    height: 96vh;
+    overflow-y: auto;
+  }
+}
+</style>
