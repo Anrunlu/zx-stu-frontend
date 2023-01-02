@@ -80,7 +80,7 @@
           </q-card-section>
           <ckeditor
             :editor="editor"
-            v-model="content"
+            v-model="currJiedaQuestion.studentQA[0].stuAnswer[0].content"
             :config="editorConfig"
           ></ckeditor>
         </q-card>
@@ -162,10 +162,14 @@ import { mapGetters } from "vuex";
 import {
   apiGetHomeworkDetails,
   apiGetHomeworkOverallAnswerStatus,
+  apiGetStudentHomeworkDetails,
 } from "src/api/teacher/homework";
 import {
   preProcessHomeworkDetails,
   preProcessStuAnswerStatus,
+  pretreatmentChoiceQuestions,
+  pretreatmentFillBlankQuestions,
+  pretreatmentJiedaQuestions,
 } from "src/utils/homework";
 
 export default {
@@ -185,7 +189,30 @@ export default {
       currStuInfo: {},
       currStuInfoIndex: 0,
       currQuestionIndex: 0,
-      content: "",
+      hasObjQues: false,
+      hasSubQues: false,
+      questions: [],
+      choiceQuestions: [],
+      fillBlankQuestions: [],
+      jiedaQuestions: [],
+      currJiedaQuestionIndex: 0,
+      currJiedaQuestion: {
+        id: "",
+        type: "",
+        difficulty: 0,
+        presetScore: 0,
+        content: "",
+        studentQA: [
+          {
+            stuAnswer: [
+              {
+                content: "",
+              },
+            ],
+            score: 0,
+          },
+        ],
+      },
     };
   },
 
@@ -291,12 +318,130 @@ export default {
       }
     },
 
+    // 获取当前学生作答详情
+    async getCurrStuAnswerDetail() {
+      const payload = {
+        homework_id: this.homeworkId,
+        student_id: this.currStuInfo._id,
+      };
+
+      try {
+        const { data } = await apiGetStudentHomeworkDetails(payload);
+
+        const questionSets = data.data.questionSets;
+        // 过滤题型和统计各类型题目数
+        const quesCategory = [];
+        // 选择题，包括单、多选和判断
+        let choiceQuestions = questionSets[0].questions.filter(
+          (question) =>
+            question.type === "单选" ||
+            question.type === "多选" ||
+            question.type === "判断"
+        );
+        if (choiceQuestions.length > 0) {
+          quesCategory.push({
+            type: "选择题",
+            num: choiceQuestions.length,
+            submitedNum: choiceQuestions.filter((q) => q.studentQA.length > 0)
+              .length,
+            routePrefix: "choice",
+            // id: hmwId,
+          });
+        }
+        // 填空题
+        let fillBlankQuestions = questionSets[0].questions.filter(
+          (question) => question.type === "填空"
+        );
+        if (fillBlankQuestions.length > 0) {
+          quesCategory.push({
+            type: "填空题",
+            num: fillBlankQuestions.length,
+            submitedNum: fillBlankQuestions.filter(
+              (q) => q.studentQA.length > 0
+            ).length,
+            routePrefix: "fillBlank",
+            // id: hmwId,
+          });
+        }
+        // 编程题
+        const programQuestions = questionSets[0].questions.filter(
+          (question) => question.type === "编程"
+        );
+        if (programQuestions.length > 0) {
+          quesCategory.push({
+            type: "编程题",
+            num: programQuestions.length,
+            submitedNum: programQuestions.filter((q) => q.studentQA.length > 0)
+              .length,
+            routePrefix: "program",
+            // id: hmwId,
+          });
+        }
+        // 解答题
+        const jiedaQuestions = questionSets[0].questions.filter(
+          (question) => question.type === "解答"
+        );
+        if (jiedaQuestions.length > 0) {
+          quesCategory.push({
+            type: "解答题",
+            num: jiedaQuestions.length,
+            submitedNum: jiedaQuestions.filter((q) => q.studentQA.length > 0)
+              .length,
+            routePrefix: "jieda",
+            // id: hmwId,
+          });
+        }
+
+        // 设置 hasObjQues 和 hasSubQues 和 correctMode
+        const hasObjQues = quesCategory.some(
+          (q) => q.type === "选择题" || q.type === "填空题"
+        );
+        const hasSubQues = quesCategory.some((q) => q.type === "解答题");
+
+        this.hasObjQues = hasObjQues;
+        this.hasSubQues = hasSubQues;
+
+        // 预处理选择题
+        choiceQuestions = pretreatmentChoiceQuestions(choiceQuestions);
+        // 预处理填空题
+        fillBlankQuestions = pretreatmentFillBlankQuestions(fillBlankQuestions);
+        // 预处理解答题
+        pretreatmentJiedaQuestions(jiedaQuestions);
+
+        const questions = [
+          ...choiceQuestions,
+          ...fillBlankQuestions,
+          ...programQuestions,
+          ...jiedaQuestions,
+        ];
+
+        this.questions = questions;
+        this.quesCategory = quesCategory;
+        this.choiceQuestions = choiceQuestions;
+        this.fillBlankQuestions = fillBlankQuestions;
+        this.jiedaQuestions = jiedaQuestions;
+        this.programQuestions = programQuestions;
+
+        this.currJiedaQuestion = jiedaQuestions[this.currJiedaQuestionIndex];
+      } catch (error) {
+        console.log(error);
+        this.$q.notify({
+          message: "获取学生作答详情失败",
+          type: "negative",
+        });
+      }
+    },
+
     switchToStu(stuInfo) {
       this.currStuInfo = stuInfo;
       // 获取学生在 overallAnswerStatus 中的索引
       this.currStuInfoIndex = this.overallAnswerStatus.findIndex(
         (stu) => stu._id === stuInfo._id
       );
+
+      // 获取学生作答详情
+      this.getCurrStuAnswerDetail();
+
       // 列表定位到学生
       this.locateStuNoFlash();
       // 更新路由 query 参数

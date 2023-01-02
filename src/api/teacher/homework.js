@@ -61,3 +61,12 @@ export function apiGetStatisticsForCertainHomework(data) {
     data,
   });
 }
+
+// 获取学生作答详情
+export function apiGetStudentHomeworkDetails(data) {
+  return loadingFn(request)({
+    url: "/tea/homework/getHomeworkWithStudentAnswer",
+    method: "POST",
+    data,
+  });
+}
