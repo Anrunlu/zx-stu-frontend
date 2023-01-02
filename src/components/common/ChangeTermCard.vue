@@ -96,7 +96,9 @@ export default {
     // 同步为行政学期
     async handleSyncTermBtnClick() {
       try {
-        await this.$store.dispatch("user/changeTerm", this.collegeCurrTermId);
+        await this.$store.dispatch("user/changeTerm", {
+          _id: this.collegeCurrTermId,
+        });
         // 提示切换成功
         this.$q.notify({
           message: "同步学期成功，部分页面需手动刷新后生效",
