@@ -1,0 +1,147 @@
+<template>
+  <div>
+    <q-card>
+      <q-card-section class="q-pa-sm">
+        <div class="row q-gutter-sm">
+          <q-badge
+            :color="currQuestion.studentQA[0].corrected ? 'positive' : 'grey-5'"
+            >{{
+              currQuestion.studentQA[0].corrected ? "已批改" : "未批改"
+            }}</q-badge
+          >
+          <q-btn
+            dense
+            flat
+            size="sm"
+            color="primary"
+            icon="search"
+            label="查看题干"
+          >
+            <q-tooltip>
+              第 {{ currQuestionIndex + 1 }}/{{ totalQuestionCount }} 题
+            </q-tooltip>
+          </q-btn>
+          <q-btn
+            dense
+            flat
+            size="sm"
+            color="primary"
+            icon="edit"
+            label="批注"
+            @click="handleAnnotationBtnClick"
+          >
+          </q-btn>
+          <q-space />
+          <span class="text-grey q-mr-sm"
+            >第 {{ currQuestionIndex + 1 }}/{{ totalQuestionCount }} 题</span
+          >
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section>
+        <div
+          id="studentqa"
+          v-viewer
+          v-html="currQuestion.studentQA[0].stuAnswer[0].content"
+        ></div>
+      </q-card-section>
+    </q-card>
+
+    <!-- 批注对话框 -->
+    <q-dialog v-model="studentqaAnnotationDig" maximized>
+      <q-card id="studentqa-annotation-card"> </q-card>
+    </q-dialog>
+  </div>
+</template>
+
+<script>
+import html2canvas from "html2canvas";
+export default {
+  name: "StudentHomeworkJiedaQuestionCard",
+  props: {
+    currQuestion: {
+      type: Object,
+      default: () => {
+        return {
+          id: "",
+          type: "",
+          difficulty: 0,
+          presetScore: 0,
+          content: "",
+          studentQA: [
+            {
+              stuAnswer: [
+                {
+                  content: "",
+                },
+              ],
+              score: 0,
+            },
+          ],
+        };
+      },
+    },
+    currQuestionIndex: {
+      type: Number,
+      default: 0,
+    },
+    totalQuestionCount: {
+      type: Number,
+      default: 0,
+    },
+  },
+
+  data() {
+    return {
+      studentqaAnnotationDig: false,
+    };
+  },
+
+  methods: {
+    // 点击批注按钮
+    handleAnnotationBtnClick() {
+      // 将 dom 及其子元素绘制到 canvas 上
+      const capture = document.getElementById("studentqa");
+      html2canvas(capture, { allowTaint: true }).then((canvas) => {
+        // const dataURL = canvas.toDataURL("image/png");
+        this.studentqaAnnotationDig = true;
+        setTimeout(() => {
+          document
+            .getElementById("studentqa-annotation-card")
+            .appendChild(canvas);
+        }, 300);
+      });
+    },
+  },
+};
+</script>
+
+<style>
+#studentqa {
+  height: 84vh;
+  overflow-y: auto;
+}
+@media screen and (max-width: 1920px) {
+  #studentqa {
+    height: 76vh;
+    overflow-y: auto;
+  }
+}
+#studentqa img {
+  max-width: 75%;
+  display: block;
+  margin: 0 auto;
+}
+
+.ck.ck-content:not(.ck-comment__input *) {
+  height: 84vh;
+  overflow-y: auto;
+}
+@media screen and (max-width: 1920px) {
+  .ck.ck-content:not(.ck-comment__input *) {
+    /* height: 76vh; */
+    height: 96vh;
+    overflow-y: auto;
+  }
+}
+</style>

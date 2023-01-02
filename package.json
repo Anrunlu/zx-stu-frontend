@@ -19,6 +19,7 @@
     "core-js": "^3.6.5",
     "driver.js": "^0.9.8",
     "file-saver": "^2.0.5",
+    "html2canvas": "^1.4.1",
     "js-base64": "^3.7.2",
     "marked": "^4.2.3",
     "marked-katex-extension": "^1.0.1",

@@ -58,40 +58,11 @@
 
     <q-page-container>
       <q-page class="q-ma-md">
-        <q-card>
-          <q-card-section class="q-pa-sm">
-            <div class="row q-gutter-sm">
-              <q-badge color="positive">已批改</q-badge>
-              <q-btn
-                dense
-                flat
-                size="sm"
-                color="primary"
-                icon="search"
-                label="查看题干"
-              >
-                <q-tooltip> 第 {{ currQuestionIndex + 1 }}/10 题 </q-tooltip>
-              </q-btn>
-              <q-space />
-              <span class="text-grey q-mr-sm"
-                >第 {{ currQuestionIndex + 1 }}/10 题</span
-              >
-            </div>
-          </q-card-section>
-          <q-separator />
-          <q-card-section>
-            <div
-              id="student-qa"
-              v-viewer
-              v-html="currJiedaQuestion.studentQA[0].stuAnswer[0].content"
-            ></div>
-          </q-card-section>
-          <!-- <ckeditor
-            :editor="editor"
-            v-model="currJiedaQuestion.studentQA[0].stuAnswer[0].content"
-            :config="editorConfig"
-          ></ckeditor> -->
-        </q-card>
+        <JiedaQuestionCard
+          :currQuestion="currJiedaQuestion"
+          :currQuestionIndex="currJiedaQuestionIndex"
+          :totalQuestionCount="jiedaQuestions.length"
+        />
       </q-page>
     </q-page-container>
 
@@ -101,18 +72,18 @@
           <div class="row q-gutter-sm">
             <q-slider
               class="col"
-              v-model="model"
+              v-model="currJiedaQuestion.studentQA[0].score"
               label
-              markers
-              :marker-labels="fnMarkerLabel"
+              :marker-labels="sliderMarkerLabel"
               :min="0"
-              :max="6"
+              :max="currJiedaQuestion.presetScore"
               dense
             />
             <q-input
               class="q-ml-lg"
               clearable
               clear-icon="close"
+              v-model="currJiedaQuestion.studentQA[0].score"
               type="number"
               label="输入成绩"
               dense
@@ -163,9 +134,6 @@
 </template>
 
 <script>
-import Editor from "ckeditor5-custom-build/build/ckeditor";
-import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
-import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 import { mapGetters } from "vuex";
 import {
   apiGetHomeworkDetails,
@@ -190,8 +158,6 @@ export default {
   },
   data() {
     return {
-      editor: Editor,
-      model: 3,
       drawerLeft: true,
       overallAnswerStatus: [],
       currStuInfo: {},
@@ -224,7 +190,10 @@ export default {
     };
   },
 
-  components: {},
+  components: {
+    JiedaQuestionCard: () =>
+      import("src/components/teacher/studentHomework/JiedaQuestionCard.vue"),
+  },
 
   computed: {
     ...mapGetters("teaCourse", {
@@ -232,37 +201,16 @@ export default {
       currSelectedTeaCourse: "currSelectedTeaCourse",
     }),
 
-    editorConfig() {
-      return {
-        toolbar: {
-          items: [
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "fontColor",
-            "highlight",
-            "removeFormat",
-            "underline",
-            "bulletedList",
-            "numberedList",
-            "|",
-            "alignment",
-            "|",
-            "math",
-            "codeBlock",
-            "imageUpload",
-            "uploadFile",
-            "blockQuote",
-            "insertTable",
-            "|",
-            "findAndReplace",
-            "undo",
-            "redo",
-          ],
-        },
-        extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
-      };
+    sliderMarkerLabel() {
+      const level1 = this.currJiedaQuestion.presetScore * 0.6 || 60;
+      const level2 = this.currJiedaQuestion.presetScore * 0.85 || 85;
+      const level3 = this.currJiedaQuestion.presetScore * 1 || 100;
+      return [
+        { value: 0, label: `0分` },
+        { value: level1, label: `${level1}分` },
+        { value: level2, label: `${level2}分` },
+        { value: level3, label: `${level3}` },
+      ];
     },
   },
 
@@ -316,7 +264,7 @@ export default {
 
           setTimeout(() => {
             this.locateStuNoFlash();
-          }, 100);
+          }, 500);
         }
       } catch (error) {
         this.$q.notify({
@@ -422,6 +370,26 @@ export default {
           ...programQuestions,
           ...jiedaQuestions,
         ];
+
+        const questionsMeta = questionSets[0].questionsMeta; // 题目元数据
+
+        if (questionsMeta.length > 0) {
+          // 把题目元数据拼接到题目上
+          questions.forEach((question) => {
+            const questionMeta = questionsMeta.find(
+              (meta) => meta._id === question._id
+            );
+            question.presetScore = questionMeta.presetScore;
+            question.creator = questionMeta.creator;
+          });
+        } else {
+          // TODO:为了兼容旧数据，这样处理
+          // 如果没有题目元数据，表明题目预设分是100
+          const baseScore = 100;
+          questions.forEach((q) => {
+            q.presetScore = baseScore;
+          });
+        }
 
         this.questions = questions;
         this.quesCategory = quesCategory;
@@ -531,10 +499,6 @@ export default {
     handleCloseBtnClick() {
       this.$router.push(`/teacher/homework/${this.homeworkId}`);
     },
-
-    fnMarkerLabel(val) {
-      return `${10 * val}`;
-    },
   },
 
   created() {
@@ -542,33 +506,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.ck.ck-content:not(.ck-comment__input *) {
-  height: 84vh;
-  overflow-y: auto;
-}
-@media screen and (max-width: 1920px) {
-  .ck.ck-content:not(.ck-comment__input *) {
-    /* height: 76vh; */
-    height: 96vh;
-    overflow-y: auto;
-  }
-}
-
-#student-qa {
-  height: 84vh;
-  overflow-y: auto;
-}
-@media screen and (max-width: 1920px) {
-  #student-qa {
-    height: 76vh;
-    overflow-y: auto;
-  }
-}
-#student-qa img {
-  max-width: 75%;
-  display: block;
-  margin: 0 auto;
-}
-</style>

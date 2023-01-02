@@ -696,7 +696,6 @@ export default {
 
     // 点击学生作答情况表格行
     handlestuAnswerStatusViewTableRowClick(evt, row) {
-      console.log(row);
       this.$router.push({
         path: "/teacher/student_homework/" + this.homeworkId,
         query: {
