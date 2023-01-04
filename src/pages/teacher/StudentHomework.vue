@@ -66,7 +66,7 @@
               :key="questionDetails._id"
               :id="questionDetails._id"
               class="q-my-sm shadow-1 cursor-pointer"
-              :class="{ 'bg-cyan-1': questionDetails._id == currQuestion._id }"
+              :class="{ 'shadow-5': questionDetails._id == currQuestion._id }"
               @click="handleQuestionCardClick(questionDetails)"
             >
               <q-card-section v-if="questionDetails.type != '解答'">
@@ -74,6 +74,11 @@
                 <div>
                   <div>
                     <QuestionChip :questionType="questionDetails.type" />
+                    <ObjectShortId
+                      :id="questionDetails._id"
+                      :color="'grey'"
+                      objectName="题目"
+                    />
                     <q-chip
                       class="float-right"
                       dense
@@ -149,12 +154,20 @@
             </q-card>
 
             <!-- 解答题 -->
-            <JiedaQuestionCard
-              v-if="jiedaQuestions.length > 0"
-              :currQuestion="currJiedaQuestion"
-              :currQuestionIndex="currJiedaQuestionIndex"
-              :totalQuestionCount="jiedaQuestions.length"
-            />
+            <div
+              class="cursor-pointer"
+              @click.stop="handleQuestionCardClick(currJiedaQuestion)"
+              :class="{
+                'shadow-3': currJiedaQuestion._id == currQuestion._id,
+              }"
+            >
+              <JiedaQuestionCard
+                v-if="jiedaQuestions.length > 0"
+                :currQuestion="currJiedaQuestion"
+                :currQuestionIndex="currJiedaQuestionIndex"
+                :totalQuestionCount="jiedaQuestions.length"
+              />
+            </div>
           </div>
         </div>
       </q-page>
@@ -315,6 +328,7 @@ export default {
 
   components: {
     QuestionChip: () => import("src/components/common/QuestionChip.vue"),
+    ObjectShortId: () => import("src/components/common/ObjectShortId.vue"),
     JiedaQuestionCard: () =>
       import("src/components/teacher/studentHomework/JiedaQuestionCard.vue"),
   },
@@ -588,7 +602,7 @@ export default {
       );
 
       // 定位到题目
-      if (this.currQuestionIndex > 1) {
+      if (this.currQuestionIndex > 1 && question.type != "解答") {
         this.locateQuestionNoFlash();
       }
 
@@ -646,6 +660,7 @@ export default {
 
     // 点击题目卡片
     handleQuestionCardClick(question) {
+      console.log(question);
       this.switchToQuestion(question);
     },
 

@@ -3,11 +3,11 @@
     square
     size="sm"
     icon="fingerprint"
-    color="white"
+    :color="color"
     outline
     :label="shortIdToShow"
     clickable
-    @click="handleQuestionIdClick"
+    @click.stop="handleQuestionIdClick"
   >
     <q-tooltip> {{ id }} 点击复制到剪贴板 </q-tooltip>
   </q-chip>
@@ -28,6 +28,10 @@ export default {
     objectName: {
       type: String,
       default: "",
+    },
+    color: {
+      type: String,
+      default: "white",
     },
   },
 

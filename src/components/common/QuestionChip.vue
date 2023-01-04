@@ -1,6 +1,6 @@
 <template>
   <q-chip
-    :color="`${questionBadgeColor[questionType]}-4`"
+    :color="`${questionBadgeColor[questionType]}-3`"
     text-color="white"
     :label="questionType"
     :icon="questionIcon[questionType]"
