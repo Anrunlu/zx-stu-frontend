@@ -35,10 +35,11 @@ export function pretreatmentChoiceQuestions(choiceQuestions) {
     q.answer.forEach((a) => {
       Vue.set(a, "selected", false);
     });
-    q.answer = q.answer.map((a) => {
-      a.content = marked(a.content);
-      // 判断是否已作答
-      if (q.studentQA) {
+
+    if (q.studentQA.length > 0) {
+      q.answer = q.answer.map((a) => {
+        a.content = marked(a.content);
+        // 判断是否已作答
         if (q.studentQA.length > 0) {
           // 添加作答标记
           Vue.set(q, "submited", true);
@@ -62,14 +63,25 @@ export function pretreatmentChoiceQuestions(choiceQuestions) {
           } else {
             Vue.set(a, "selected", q.studentQA[0].stuAnswer[0].mark === a.mark);
           }
-        } else {
-          Vue.set(q, "submited", false);
-          Vue.set(a, "selected", false);
         }
-      }
 
-      return a;
-    });
+        return a;
+      });
+    } else {
+      Vue.set(q, "submited", false);
+      Vue.set(q, "getScore", 0);
+      Vue.set(q, "studentQA", [
+        {
+          stuAnswer: [
+            {
+              content: "",
+            },
+          ],
+          score: 0,
+        },
+      ]);
+    }
+
     q.content = marked(q.content);
     return q;
   });

@@ -58,11 +58,105 @@
 
     <q-page-container>
       <q-page class="q-ma-md">
-        <JiedaQuestionCard
-          :currQuestion="currJiedaQuestion"
-          :currQuestionIndex="currJiedaQuestionIndex"
-          :totalQuestionCount="jiedaQuestions.length"
-        />
+        <div class="row justify-center">
+          <div class="col-11 col-md-10">
+            <!-- 非解答题 -->
+            <q-card
+              v-for="questionDetails in questions"
+              :key="questionDetails._id"
+              :id="questionDetails._id"
+              class="q-my-sm shadow-1 cursor-pointer"
+              :class="{ 'bg-cyan-1': questionDetails._id == currQuestion._id }"
+              @click="handleQuestionCardClick(questionDetails)"
+            >
+              <q-card-section v-if="questionDetails.type != '解答'">
+                <!-- 题干区域 -->
+                <div>
+                  <div>
+                    <QuestionChip :questionType="questionDetails.type" />
+                    <q-chip
+                      class="float-right"
+                      dense
+                      outline
+                      size="sm"
+                      square
+                      :color="questionDetails.getScore > 0 ? 'green-5' : 'grey'"
+                      :label="`得分:${questionDetails.getScore}`"
+                    />
+                  </div>
+                  <div
+                    class="text-subtitle1 q-pt-sm"
+                    v-html="questionDetails.content"
+                    v-katex
+                    v-viewer
+                  ></div>
+                </div>
+                <!-- 选项区域 -->
+                <q-list>
+                  <q-item
+                    v-for="(option, index) in questionDetails.answer"
+                    :key="index"
+                  >
+                    <q-item-section
+                      avatar
+                      v-if="questionDetails.type != '填空'"
+                    >
+                      <q-icon
+                        :class="{
+                          'q-pa-xs rounded-borders bg-red-2':
+                            option.selected && !option.isRight,
+                        }"
+                        :color="
+                          option.isRight && option.selected
+                            ? 'positive'
+                            : option.selected
+                            ? 'primary'
+                            : 'grey'
+                        "
+                        >{{ option.mark }}
+
+                        <q-badge
+                          color="red"
+                          floating
+                          rounded
+                          v-if="option.selected && !option.isRight"
+                        >
+                          x
+                        </q-badge>
+                      </q-icon>
+                    </q-item-section>
+                    <q-item-section avatar v-else>
+                      <q-icon :color="option.isRight ? 'positive' : 'grey'">{{
+                        option.mark.slice(1, 2)
+                      }}</q-icon>
+                    </q-item-section>
+                    <q-item-section>
+                      <div
+                        class="text-body2 option"
+                        v-katex
+                        v-html="option.content"
+                        v-viewer
+                      ></div>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+                <span class="q-mt-sm text-grey" style="font-size: 0.3rem">{{
+                  questionDetails.submited
+                    ? `最后提交:${questionDetails.lastSubmitedTime}`
+                    : "未作答"
+                }}</span>
+              </q-card-section>
+            </q-card>
+
+            <!-- 解答题 -->
+            <JiedaQuestionCard
+              v-if="jiedaQuestions.length > 0"
+              :currQuestion="currJiedaQuestion"
+              :currQuestionIndex="currJiedaQuestionIndex"
+              :totalQuestionCount="jiedaQuestions.length"
+            />
+          </div>
+        </div>
       </q-page>
     </q-page-container>
 
@@ -72,18 +166,18 @@
           <div class="row q-gutter-sm">
             <q-slider
               class="col"
-              v-model="currJiedaQuestion.studentQA[0].score"
+              v-model="currQuestion.studentQA[0].score"
               label
               :marker-labels="sliderMarkerLabel"
               :min="0"
-              :max="currJiedaQuestion.presetScore"
+              :max="currQuestion.presetScore"
               dense
             />
             <q-input
               class="q-ml-lg"
               clearable
               clear-icon="close"
-              v-model="currJiedaQuestion.studentQA[0].score"
+              v-model="currQuestion.studentQA[0].score"
               type="number"
               label="输入成绩"
               dense
@@ -168,10 +262,29 @@ export default {
   },
   data() {
     return {
+      mode: "waterfall", // foucs: 专注模式, waterfall: 瀑布模式
       drawerLeft: true,
       overallAnswerStatus: [],
       currStuInfo: {},
       currStuInfoIndex: 0,
+      currQuestion: {
+        _id: "",
+        id: "",
+        type: "",
+        difficulty: 0,
+        presetScore: 0,
+        content: "",
+        studentQA: [
+          {
+            stuAnswer: [
+              {
+                content: "",
+              },
+            ],
+            score: 0,
+          },
+        ],
+      },
       currQuestionIndex: 0,
       hasObjQues: false,
       hasSubQues: false,
@@ -201,6 +314,7 @@ export default {
   },
 
   components: {
+    QuestionChip: () => import("src/components/common/QuestionChip.vue"),
     JiedaQuestionCard: () =>
       import("src/components/teacher/studentHomework/JiedaQuestionCard.vue"),
   },
@@ -212,9 +326,9 @@ export default {
     }),
 
     sliderMarkerLabel() {
-      const level1 = this.currJiedaQuestion.presetScore * 0.6 || 60;
-      const level2 = this.currJiedaQuestion.presetScore * 0.85 || 85;
-      const level3 = this.currJiedaQuestion.presetScore * 1 || 100;
+      const level1 = this.currQuestion.presetScore * 0.6 || 60;
+      const level2 = this.currQuestion.presetScore * 0.85 || 85;
+      const level3 = this.currQuestion.presetScore * 1 || 100;
       return [
         { value: 0, label: `0分` },
         { value: level1, label: `${level1}分` },
@@ -408,7 +522,11 @@ export default {
         this.jiedaQuestions = jiedaQuestions;
         this.programQuestions = programQuestions;
 
-        this.currJiedaQuestion = jiedaQuestions[this.currJiedaQuestionIndex];
+        this.currQuestion = questions[this.currQuestionIndex];
+
+        if (this.jiedaQuestions.length > 0) {
+          this.currJiedaQuestion = jiedaQuestions[this.currJiedaQuestionIndex];
+        }
       } catch (error) {
         console.log(error);
         this.$q.notify({
@@ -455,6 +573,8 @@ export default {
 
     // 切换题目
     switchToQuestion(question) {
+      this.currQuestion = question;
+
       if (question.type === "解答") {
         this.currJiedaQuestionIndex = this.jiedaQuestions.findIndex(
           (q) => q._id === question._id
@@ -466,27 +586,51 @@ export default {
       this.currQuestionIndex = this.questions.findIndex(
         (q) => q._id === question._id
       );
-      // 更新路由 query 参数
-      this.$router.replace(
-        {
-          query: {
-            ...this.$route.query,
-            q: question._id,
+
+      // 定位到题目
+      if (this.currQuestionIndex > 1) {
+        this.locateQuestionNoFlash();
+      }
+
+      // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
+      if (this.mode === "focus") {
+        this.$router.replace(
+          {
+            query: {
+              ...this.$route.query,
+              q: question._id,
+            },
           },
-        },
-        () => {}
-      );
+          () => {}
+        );
+      }
     },
 
     // 定位到学生不闪烁
     locateStuNoFlash() {
       setTimeout(() => {
-        // 找到题目卡片
+        // 找到学生
         const item = document.getElementById(this.currStuInfo.username);
         if (!item) {
           return;
         }
-        // 定位到题目区域
+        // 定位到学生区域
+        item.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      }, 250);
+    },
+
+    // 定位到题目不闪烁
+    locateQuestionNoFlash() {
+      setTimeout(() => {
+        const item = document.getElementById(this.currQuestion._id);
+        if (!item) {
+          return;
+        }
+
         item.scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -498,6 +642,11 @@ export default {
     // 点击学生列表
     handleStuItemClick(stuInfo) {
       this.switchToStu(stuInfo);
+    },
+
+    // 点击题目卡片
+    handleQuestionCardClick(question) {
+      this.switchToQuestion(question);
     },
 
     // 上一人
@@ -544,14 +693,14 @@ export default {
 
     // 上一题
     handlePrevQuestion() {
-      const currIndex = this.jiedaQuestions.findIndex(
-        (item) => item._id === this.currJiedaQuestion._id
+      const currIndex = this.questions.findIndex(
+        (item) => item._id === this.currQuestion._id
       );
 
       if (currIndex > 0) {
-        this.currJiedaQuestion = this.jiedaQuestions[currIndex - 1];
-        this.currJiedaQuestionIndex = currIndex - 1;
-        this.switchToQuestion(this.currJiedaQuestion);
+        this.currQuestion = this.questions[currIndex - 1];
+        this.currQuestionIndex = currIndex - 1;
+        this.switchToQuestion(this.currQuestion);
       } else {
         // 第一题
         this.$q.notify({
@@ -563,13 +712,13 @@ export default {
 
     // 下一题
     handleNextQuestion() {
-      const currIndex = this.jiedaQuestions.findIndex(
-        (item) => item._id === this.currJiedaQuestion._id
+      const currIndex = this.questions.findIndex(
+        (item) => item._id === this.currQuestion._id
       );
-      if (currIndex < this.jiedaQuestions.length - 1) {
-        this.currJiedaQuestion = this.jiedaQuestions[currIndex + 1];
-        this.currJiedaQuestionIndex = currIndex + 1;
-        this.switchToQuestion(this.currJiedaQuestion);
+      if (currIndex < this.questions.length - 1) {
+        this.currQuestion = this.questions[currIndex + 1];
+        this.currQuestionIndex = currIndex + 1;
+        this.switchToQuestion(this.currQuestion);
       } else {
         // 最后一题
         this.$q.notify({
