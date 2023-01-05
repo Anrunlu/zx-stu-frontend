@@ -31,14 +31,14 @@ export function preProcessStuAnswerStatus(stuAnswerStatus) {
 // 预处理选择题
 export function pretreatmentChoiceQuestions(choiceQuestions) {
   const res = choiceQuestions.map((q) => {
-    // 初始化所有选项
+    // 初始化所有选项，格式化选项内容
     q.answer.forEach((a) => {
+      a.content = marked(a.content);
       Vue.set(a, "selected", false);
     });
 
     if (q.studentQA.length > 0) {
       q.answer = q.answer.map((a) => {
-        a.content = marked(a.content);
         // 判断是否已作答
         if (q.studentQA.length > 0) {
           // 添加作答标记
@@ -82,6 +82,7 @@ export function pretreatmentChoiceQuestions(choiceQuestions) {
       ]);
     }
 
+    // 格式化题目内容
     q.content = marked(q.content);
     return q;
   });
@@ -91,30 +92,48 @@ export function pretreatmentChoiceQuestions(choiceQuestions) {
 // 预处理填空题
 export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
   const res = fillBlankQuestions.map((q) => {
-    q.answer = q.answer.map((a) => {
-      // 判断是否已作答
-      if (q.studentQA.length > 0) {
-        // 添加作答标记
-        Vue.set(q, "submited", true);
-        // 添加最后作答时间标记
-        Vue.set(
-          q,
-          "lastSubmitedTime",
-          formatTimeWithWeekDayAndSecond(q.studentQA[0].updatedAt)
-        );
-        // 得分 TODO:如果复用的话，这里需要修改，因为score可能不存在，目前只在学生作业作答详情页使用
-        Vue.set(q, "getScore", q.studentQA[0].score);
+    // 格式化正确答案内容
+    q.answer.forEach((a) => {
+      a.content = marked(a.content);
+    });
+
+    // 判断是否已作答
+    if (q.studentQA.length > 0) {
+      // 添加作答标记
+      Vue.set(q, "submited", true);
+      // 添加最后作答时间标记
+      Vue.set(
+        q,
+        "lastSubmitedTime",
+        formatTimeWithWeekDayAndSecond(q.studentQA[0].updatedAt)
+      );
+      // 得分 TODO:如果复用的话，这里需要修改，因为score可能不存在，目前只在学生作业作答详情页使用
+      Vue.set(q, "getScore", q.studentQA[0].score);
+
+      q.answer = q.answer.map((a, aIndex) => {
         // 合并学生作答和填空
-        q.studentQA[0].stuAnswer.forEach((sqa) => {
-          if (sqa.mark === a.mark) {
-            a.content = sqa.content;
+        q.studentQA[0].stuAnswer.forEach((sqa, sqaIndex) => {
+          if (aIndex === sqaIndex) {
+            a.stuAnswer = sqa.content;
           }
         });
-      } else {
-        Vue.set(q, "submited", false);
-      }
-      return a;
-    });
+        return a;
+      });
+    } else {
+      Vue.set(q, "submited", false);
+      Vue.set(q, "getScore", 0);
+      Vue.set(q, "studentQA", [
+        {
+          stuAnswer: [
+            {
+              content: "",
+            },
+          ],
+          score: 0,
+        },
+      ]);
+    }
+    q.content = marked(q.content);
     return q;
   });
   return res;

@@ -135,7 +135,7 @@ export default {
 
 <style>
 #studentqa {
-  height: 84vh;
+  height: 86vh;
   overflow-y: auto;
 }
 @media screen and (max-width: 1920px) {
@@ -148,17 +148,5 @@ export default {
   max-width: 75%;
   display: block;
   margin: 0 auto;
-}
-
-.ck.ck-content:not(.ck-comment__input *) {
-  height: 84vh;
-  overflow-y: auto;
-}
-@media screen and (max-width: 1920px) {
-  .ck.ck-content:not(.ck-comment__input *) {
-    /* height: 76vh; */
-    height: 96vh;
-    overflow-y: auto;
-  }
 }
 </style>

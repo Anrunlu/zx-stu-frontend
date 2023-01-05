@@ -102,6 +102,7 @@
                     v-for="(option, index) in questionDetails.answer"
                     :key="index"
                   >
+                    <!-- 非填空题 -->
                     <q-item-section
                       avatar
                       v-if="questionDetails.type != '填空'"
@@ -130,6 +131,7 @@
                         </q-badge>
                       </q-icon>
                     </q-item-section>
+                    <!-- 填空题 -->
                     <q-item-section avatar v-else>
                       <q-icon :color="option.isRight ? 'positive' : 'grey'">{{
                         option.mark.slice(1, 2)
@@ -220,10 +222,11 @@
             />
             <q-btn
               outline
+              dense
               :label="`${currStuInfoIndex + 1}/${overallAnswerStatus.length}`"
               @click="drawerLeft = !drawerLeft"
             >
-              <q-tooltip> 点击开启/关闭学生列表 </q-tooltip>
+              <q-tooltip> 开启/关闭学生列表 </q-tooltip>
             </q-btn>
             <q-btn
               outline
@@ -233,13 +236,21 @@
             />
             <q-btn
               outline
-              label="上一题"
+              label="上题"
               icon="chevron_left"
               @click="handlePrevQuestion"
             />
             <q-btn
               outline
-              label="下一题"
+              dense
+              :label="`${currQuestionIndex + 1}/${questions.length}`"
+              @click="drawerLeft = !drawerLeft"
+            >
+              <q-tooltip> 开启/关闭题目列表 </q-tooltip>
+            </q-btn>
+            <q-btn
+              outline
+              label="下题"
               icon-right="chevron_right"
               @click="handleNextQuestion"
             />
@@ -660,7 +671,6 @@ export default {
 
     // 点击题目卡片
     handleQuestionCardClick(question) {
-      console.log(question);
       this.switchToQuestion(question);
     },
 
@@ -754,3 +764,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.option p {
+  margin: 0;
+}
+</style>
