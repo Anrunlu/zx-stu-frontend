@@ -145,7 +145,7 @@ export default {
   }
 }
 #studentqa img {
-  max-width: 75%;
+  max-width: 85% !important;
   display: block;
   margin: 0 auto;
 }

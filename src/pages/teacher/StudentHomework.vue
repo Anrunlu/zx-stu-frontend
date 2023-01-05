@@ -61,102 +61,22 @@
         <div class="row justify-center">
           <div class="col-11 col-md-10">
             <!-- 非解答题 -->
-            <q-card
-              v-for="questionDetails in questions"
+            <div
+              v-for="questionDetails in questions.filter(
+                (question) => question.type != '解答'
+              )"
               :key="questionDetails._id"
-              :id="questionDetails._id"
-              class="q-my-sm shadow-1 cursor-pointer"
-              :class="{ 'shadow-5': questionDetails._id == currQuestion._id }"
-              @click="handleQuestionCardClick(questionDetails)"
             >
-              <q-card-section v-if="questionDetails.type != '解答'">
-                <!-- 题干区域 -->
-                <div>
-                  <div>
-                    <QuestionChip :questionType="questionDetails.type" />
-                    <ObjectShortId
-                      :id="questionDetails._id"
-                      :color="'grey'"
-                      objectName="题目"
-                    />
-                    <q-chip
-                      class="float-right"
-                      dense
-                      outline
-                      size="sm"
-                      square
-                      :color="questionDetails.getScore > 0 ? 'green-5' : 'grey'"
-                      :label="`得分:${questionDetails.getScore}`"
-                    />
-                  </div>
-                  <div
-                    class="text-subtitle1 q-pt-sm"
-                    v-html="questionDetails.content"
-                    v-katex
-                    v-viewer
-                  ></div>
-                </div>
-                <!-- 选项区域 -->
-                <q-list>
-                  <q-item
-                    v-for="(option, index) in questionDetails.answer"
-                    :key="index"
-                  >
-                    <!-- 非填空题 -->
-                    <q-item-section
-                      avatar
-                      v-if="questionDetails.type != '填空'"
-                    >
-                      <q-icon
-                        :class="{
-                          'q-pa-xs rounded-borders bg-red-2':
-                            option.selected && !option.isRight,
-                        }"
-                        :color="
-                          option.isRight && option.selected
-                            ? 'positive'
-                            : option.selected
-                            ? 'primary'
-                            : 'grey'
-                        "
-                        >{{ option.mark }}
-
-                        <q-badge
-                          color="red"
-                          floating
-                          rounded
-                          v-if="option.selected && !option.isRight"
-                        >
-                          x
-                        </q-badge>
-                      </q-icon>
-                    </q-item-section>
-                    <!-- 填空题 -->
-                    <q-item-section avatar v-else>
-                      <q-icon :color="option.isRight ? 'positive' : 'grey'">{{
-                        option.mark.slice(1, 2)
-                      }}</q-icon>
-                    </q-item-section>
-                    <q-item-section>
-                      <div
-                        class="text-body2 option"
-                        v-katex
-                        v-html="option.content"
-                        v-viewer
-                      ></div>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-                <span class="q-mt-sm text-grey" style="font-size: 0.3rem">{{
-                  questionDetails.submited
-                    ? `最后提交:${questionDetails.lastSubmitedTime}`
-                    : "未作答"
-                }}</span>
-              </q-card-section>
-            </q-card>
+              <QuestionViewCard
+                :questionDetails="questionDetails"
+                :isActive="questionDetails._id == currQuestion._id"
+                @questionCardClick="handleQuestionCardClick"
+              />
+            </div>
 
             <!-- 解答题 -->
             <div
+              v-if="jiedaQuestions.length > 0"
               class="cursor-pointer"
               @click.stop="handleQuestionCardClick(currJiedaQuestion)"
               :class="{
@@ -164,7 +84,6 @@
               }"
             >
               <JiedaQuestionCard
-                v-if="jiedaQuestions.length > 0"
                 :currQuestion="currJiedaQuestion"
                 :currQuestionIndex="currJiedaQuestionIndex"
                 :totalQuestionCount="jiedaQuestions.length"
@@ -338,8 +257,8 @@ export default {
   },
 
   components: {
-    QuestionChip: () => import("src/components/common/QuestionChip.vue"),
-    ObjectShortId: () => import("src/components/common/ObjectShortId.vue"),
+    QuestionViewCard: () =>
+      import("src/components/teacher/studentHomework/QuestionViewCard.vue"),
     JiedaQuestionCard: () =>
       import("src/components/teacher/studentHomework/JiedaQuestionCard.vue"),
   },
@@ -764,9 +683,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.option p {
-  margin: 0;
-}
-</style>

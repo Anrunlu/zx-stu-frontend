@@ -113,6 +113,7 @@ export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
       q.answer = q.answer.map((a, aIndex) => {
         // 合并学生作答和填空
         q.studentQA[0].stuAnswer.forEach((sqa, sqaIndex) => {
+          a.rightAnswer = a.content;
           if (aIndex === sqaIndex) {
             a.stuAnswer = sqa.content;
           }
