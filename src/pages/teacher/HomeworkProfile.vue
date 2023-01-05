@@ -75,7 +75,7 @@
               :data="stuAnswerStatus"
               :columns="stuAnswerStatusColumns"
               :dense="tableDense"
-              :pagination="pagination"
+              :pagination="stuAnswerStatusPagination"
               :filter="filter"
               row-key="_id"
               @row-click="handlestuAnswerStatusViewTableRowClick"
@@ -252,7 +252,7 @@
               :data="questionList"
               :columns="questionListColumns"
               :dense="tableDense"
-              :pagination="pagination"
+              :pagination.sync="questionListPagination"
               :filter="filter"
               row-key="_id"
               v-else
@@ -487,7 +487,7 @@ export default {
         },
       ],
 
-      pagination: {
+      stuAnswerStatusPagination: {
         rowsPerPage: 0,
         sortBy: "username",
       },
@@ -548,6 +548,10 @@ export default {
           label: "操作",
         },
       ],
+      questionListPagination: {
+        rowsPerPage: 0,
+        sortBy: "scoringRate",
+      },
       // 题集名称
       questionSetName: "",
     };
@@ -561,7 +565,6 @@ export default {
   computed: {
     ...mapGetters("settings", {
       tableDense: "tableDense",
-      tablePagination: "tablePagination",
     }),
   },
 
