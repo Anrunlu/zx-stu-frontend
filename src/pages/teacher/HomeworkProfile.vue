@@ -79,7 +79,7 @@
               :filter="filter"
               row-key="_id"
               @row-click="handlestuAnswerStatusViewTableRowClick"
-              v-if="currentView === 'stuAnswerStatusView'"
+              v-show="currentView === 'stuAnswerStatusView'"
             >
               <template v-slot:top-left>
                 <div class="q-gutter-sm row">
@@ -255,7 +255,7 @@
               :pagination.sync="questionListPagination"
               :filter="filter"
               row-key="_id"
-              v-else
+              v-show="currentView === 'questionView'"
             >
               <template v-slot:top-left>
                 <div class="q-gutter-sm row">

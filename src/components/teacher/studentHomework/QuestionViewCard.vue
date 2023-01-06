@@ -7,6 +7,7 @@
       'shadow-2 actived': isActive,
     }"
     @click="handleQuestionCardClick"
+    @dblclick="handleQuestionCardDblClick"
   >
     <q-card-section>
       <!-- 题干区域 -->
@@ -131,6 +132,9 @@ export default {
   methods: {
     handleQuestionCardClick() {
       this.$emit("questionCardClick", this.questionDetails);
+    },
+    handleQuestionCardDblClick() {
+      this.$emit("questionCardDblClick", this.questionDetails);
     },
   },
 };

@@ -1,11 +1,18 @@
 <template>
-  <q-layout view="hHh Lpr fFf">
+  <q-layout view="hHh Lpr fFf" class="bg-grey-1">
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit_note" />
         <div>{{ currStuInfo.nickname }} {{ currStuInfo.username }}</div>
         <q-space />
-        <q-btn dense flat icon="settings" label="批改设置"> </q-btn>
+        <q-btn
+          dense
+          flat
+          icon="settings"
+          label="批改设置"
+          @click="handleSettingsBtnClick"
+        >
+        </q-btn>
         <q-btn dense flat icon="help">
           <q-tooltip>帮助</q-tooltip>
         </q-btn>
@@ -60,33 +67,52 @@
       <q-page class="q-ma-md">
         <div class="row justify-center">
           <div class="col-11 col-md-10">
-            <!-- 非解答题 -->
-            <div
-              v-for="questionDetails in questions.filter(
-                (question) => question.type != '解答'
-              )"
-              :key="questionDetails._id"
-            >
-              <QuestionViewCard
-                :questionDetails="questionDetails"
-                :isActive="questionDetails._id == currQuestion._id"
-                @questionCardClick="handleQuestionCardClick"
-              />
+            <!-- 瀑布模式 -->
+            <div v-show="mode == 'waterfall'">
+              <div
+                v-for="questionDetails in questions"
+                :key="questionDetails._id"
+              >
+                <!-- 非解答题 -->
+                <QuestionViewCard
+                  v-if="questionDetails.type != '解答'"
+                  :questionDetails="questionDetails"
+                  :isActive="questionDetails._id == currQuestion._id"
+                  @questionCardClick="handleQuestionCardClick"
+                  @questionCardDblClick="handleQuestionCardDblClick"
+                />
+                <!-- 解答题 -->
+                <JiedaQuestionCard
+                  v-else
+                  :questionDetails="questionDetails"
+                  :currJiedaQuestionIndex="currJiedaQuestionIndex"
+                  :totalJiedaQuestionCount="jiedaQuestions.length"
+                  :isActive="questionDetails._id == currQuestion._id"
+                  @questionCardClick="handleQuestionCardClick"
+                  @questionCardDblClick="handleQuestionCardDblClick"
+                />
+              </div>
             </div>
 
-            <!-- 解答题 -->
-            <div
-              v-if="jiedaQuestions.length > 0"
-              class="cursor-pointer"
-              @click.stop="handleQuestionCardClick(currJiedaQuestion)"
-              :class="{
-                'shadow-3': currJiedaQuestion._id == currQuestion._id,
-              }"
-            >
+            <!-- 专注模式 -->
+            <div v-show="mode == 'focus'">
+              <!-- 非解答题 -->
+              <QuestionViewCard
+                v-if="currQuestion.type != '解答'"
+                :questionDetails="currQuestion"
+                :isActive="true"
+                @questionCardClick="handleQuestionCardClick"
+                @questionCardDblClick="handleQuestionCardDblClick"
+              />
+              <!-- 解答题 -->
               <JiedaQuestionCard
-                :currQuestion="currJiedaQuestion"
-                :currQuestionIndex="currJiedaQuestionIndex"
-                :totalQuestionCount="jiedaQuestions.length"
+                v-else
+                :questionDetails="currJiedaQuestion"
+                :currJiedaQuestionIndex="currJiedaQuestionIndex"
+                :totalJiedaQuestionCount="jiedaQuestions.length"
+                :isActive="true"
+                @questionCardClick="handleQuestionCardClick"
+                @questionCardDblClick="handleQuestionCardDblClick"
               />
             </div>
           </div>
@@ -535,19 +561,47 @@ export default {
       if (this.currQuestionIndex > 1 && question.type != "解答") {
         this.locateQuestionNoFlash();
       }
+    },
 
-      // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
-      if (this.mode === "focus") {
+    // 切换 mode
+    switchMode(mode) {
+      if (mode == this.mode) {
+        return;
+      }
+
+      if (mode == "waterfall") {
         this.$router.replace(
           {
             query: {
               ...this.$route.query,
-              q: question._id,
+              q: null,
             },
           },
           () => {}
         );
+        // 提示用户
+        this.$q.notify({
+          message: "已退出专注模式",
+          type: "info",
+        });
+      } else if (mode == "focus") {
+        // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
+        this.$router.replace(
+          {
+            query: {
+              ...this.$route.query,
+              q: this.currQuestion._id,
+            },
+          },
+          () => {}
+        );
+        // 提示用户
+        this.$q.notify({
+          message: "当前为专注模式",
+          type: "info",
+        });
       }
+      this.mode = mode;
     },
 
     // 定位到学生不闪烁
@@ -591,6 +645,15 @@ export default {
     // 点击题目卡片
     handleQuestionCardClick(question) {
       this.switchToQuestion(question);
+    },
+
+    // 双击题目卡片
+    handleQuestionCardDblClick(question) {
+      this.switchToQuestion(question);
+      // 视图进入 foucs 模式
+      if (this.mode == "waterfall") {
+        this.switchMode("focus");
+      }
     },
 
     // 上一人
@@ -669,6 +732,15 @@ export default {
           message: "当前最后一题",
           type: "warning",
         });
+      }
+    },
+
+    // 点击批改设置按钮
+    handleSettingsBtnClick() {
+      if (this.mode == "focus") {
+        this.mode = "waterfall";
+      } else {
+        this.mode = "focus";
       }
     },
 

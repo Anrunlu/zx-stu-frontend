@@ -1,12 +1,21 @@
 <template>
   <div>
-    <q-card>
+    <q-card
+      class="q-my-sm shadow-1 cursor-pointer"
+      :class="{
+        'shadow-2': isActive,
+      }"
+      @click="handleQuestionCardClick"
+      @dblclick="handleQuestionCardDblClick"
+    >
       <q-card-section class="q-pa-sm">
         <div class="row q-gutter-sm">
           <q-badge
-            :color="currQuestion.studentQA[0].corrected ? 'positive' : 'grey-5'"
+            :color="
+              questionDetails.studentQA[0].corrected ? 'positive' : 'grey-5'
+            "
             >{{
-              currQuestion.studentQA[0].corrected ? "已批改" : "未批改"
+              questionDetails.studentQA[0].corrected ? "已批改" : "未批改"
             }}</q-badge
           >
           <q-btn
@@ -19,7 +28,10 @@
             @click="handleViewQuestionBtnClick"
           >
             <q-tooltip>
-              第 {{ currQuestionIndex + 1 }}/{{ totalQuestionCount }} 题
+              第 {{ currJiedaQuestionIndex + 1 }}/{{
+                totalJiedaQuestionCount
+              }}
+              题
             </q-tooltip>
           </q-btn>
           <q-btn
@@ -34,7 +46,10 @@
           </q-btn>
           <q-space />
           <span class="text-grey q-mr-sm"
-            >第 {{ currQuestionIndex + 1 }}/{{ totalQuestionCount }} 题</span
+            >第 {{ currJiedaQuestionIndex + 1 }}/{{
+              totalJiedaQuestionCount
+            }}
+            题</span
           >
         </div>
       </q-card-section>
@@ -43,14 +58,14 @@
         <div
           id="studentqa"
           v-viewer
-          v-html="currQuestion.studentQA[0].stuAnswer[0].content"
+          v-html="questionDetails.studentQA[0].stuAnswer[0].content"
         ></div>
       </q-card-section>
     </q-card>
 
     <!-- 查看题干对话框 -->
     <q-dialog v-model="questionViewDig">
-      <QuestionViewCard pure :questionId="currQuestion._id" />
+      <QuestionViewCard pure :questionId="questionDetails._id" />
     </q-dialog>
 
     <!-- 批注对话框 -->
@@ -65,7 +80,7 @@ import html2canvas from "html2canvas";
 export default {
   name: "StudentHomeworkJiedaQuestionCard",
   props: {
-    currQuestion: {
+    questionDetails: {
       type: Object,
       default: () => {
         return {
@@ -87,13 +102,18 @@ export default {
         };
       },
     },
-    currQuestionIndex: {
+    currJiedaQuestionIndex: {
       type: Number,
       default: 0,
     },
-    totalQuestionCount: {
+    totalJiedaQuestionCount: {
       type: Number,
       default: 0,
+    },
+    isActive: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 
@@ -110,6 +130,13 @@ export default {
   },
 
   methods: {
+    handleQuestionCardClick() {
+      this.$emit("questionCardClick", this.questionDetails);
+    },
+    handleQuestionCardDblClick() {
+      this.$emit("questionCardDblClick", this.questionDetails);
+    },
+
     // 点击批注按钮
     handleAnnotationBtnClick() {
       // 将 dom 及其子元素绘制到 canvas 上
