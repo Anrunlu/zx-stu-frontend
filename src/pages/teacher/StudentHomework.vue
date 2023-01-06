@@ -157,7 +157,7 @@
               class="q-ml-lg"
               clearable
               clear-icon="close"
-              v-model="currQuestion.studentQA[0].score"
+              v-model.number="currQuestion.studentQA[0].score"
               type="number"
               label="输入成绩"
               dense
