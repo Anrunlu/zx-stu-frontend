@@ -5,13 +5,18 @@
         <q-icon name="edit_note" />
         <div>{{ currStuInfo.nickname }} {{ currStuInfo.username }}</div>
         <q-space />
+        <q-btn dense flat icon="settings" @click="handleSettingsBtnClick">
+          <q-tooltip>设置</q-tooltip>
+        </q-btn>
         <q-btn
           dense
           flat
-          icon="settings"
-          label="批改设置"
-          @click="handleSettingsBtnClick"
+          @click="$q.fullscreen.toggle()"
+          :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
         >
+          <q-tooltip>
+            {{ $q.fullscreen.isActive ? "退出全屏" : "全屏" }}
+          </q-tooltip>
         </q-btn>
         <q-btn dense flat icon="help">
           <q-tooltip>帮助</q-tooltip>
