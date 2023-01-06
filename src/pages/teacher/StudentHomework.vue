@@ -5,6 +5,19 @@
         <q-icon name="edit_note" />
         <div>{{ currStuInfo.nickname }} {{ currStuInfo.username }}</div>
         <q-space />
+        <q-chip
+          v-show="mode == 'focus'"
+          text-color="white"
+          color="positive"
+          dense
+          square
+          icon="center_focus_strong"
+          label="专注模式"
+          clickable
+          @click="switchMode('waterfall')"
+        >
+          <q-tooltip> 点击退出专注模式 <kbd>V</kbd></q-tooltip>
+        </q-chip>
         <q-btn dense flat icon="settings" @click="handleSettingsBtnClick">
           <q-tooltip>设置</q-tooltip>
         </q-btn>
@@ -28,7 +41,7 @@
     </q-header>
 
     <q-drawer
-      v-model="drawerLeft"
+      v-model="displayStuList"
       show-if-above
       :width="220"
       :breakpoint="700"
@@ -174,9 +187,9 @@
               outline
               dense
               :label="`${currStuInfoIndex + 1}/${overallAnswerStatus.length}`"
-              @click="drawerLeft = !drawerLeft"
+              @click="handleDisplayStuList"
             >
-              <q-tooltip> 开启/关闭学生列表 </q-tooltip>
+              <q-tooltip> 开启/关闭学生列表 <kbd>Tab</kbd> </q-tooltip>
             </q-btn>
             <q-btn
               outline
@@ -194,7 +207,6 @@
               outline
               dense
               :label="`${currQuestionIndex + 1}/${questions.length}`"
-              @click="drawerLeft = !drawerLeft"
             >
               <q-tooltip> 开启/关闭题目列表 </q-tooltip>
             </q-btn>
@@ -237,7 +249,7 @@ export default {
   data() {
     return {
       mode: "waterfall", // foucs: 专注模式, waterfall: 瀑布模式
-      drawerLeft: true,
+      displayStuList: true,
       overallAnswerStatus: [],
       currStuInfo: {},
       currStuInfoIndex: 0,
@@ -562,6 +574,19 @@ export default {
         (q) => q._id === question._id
       );
 
+      // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
+      if (this.mode == "focus") {
+        this.$router.replace(
+          {
+            query: {
+              ...this.$route.query,
+              q: this.currQuestion._id,
+            },
+          },
+          () => {}
+        );
+      }
+
       // 定位到题目
       if (this.currQuestionIndex > 1 && question.type != "解答") {
         this.locateQuestionNoFlash();
@@ -570,6 +595,7 @@ export default {
 
     // 切换 mode
     switchMode(mode) {
+      // 如果 mode 没有变化，则不做任何操作
       if (mode == this.mode) {
         return;
       }
@@ -584,12 +610,21 @@ export default {
           },
           () => {}
         );
+        // 定位到当前题目
+        this.locateQuestionNoFlash();
         // 提示用户
         this.$q.notify({
           message: "已退出专注模式",
-          type: "info",
+          position: "top",
+          icon: "notifications",
+          color: "warning",
+          textColor: "white",
+          classes: "glossy",
+          timeout: 1000,
         });
       } else if (mode == "focus") {
+        // 全屏
+        this.$q.fullscreen.request();
         // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
         this.$router.replace(
           {
@@ -602,8 +637,14 @@ export default {
         );
         // 提示用户
         this.$q.notify({
-          message: "当前为专注模式",
-          type: "info",
+          message: `当前为专注模式，只显示当前题目，您可以通过 <kbd>V</kbd> 键快速切换模式。`,
+          position: "top",
+          icon: "notifications",
+          progress: true,
+          color: "accent",
+          textColor: "white",
+          classes: "glossy",
+          html: true,
         });
       }
       this.mode = mode;
@@ -642,9 +683,14 @@ export default {
       }, 250);
     },
 
-    // 点击学生列表
+    // 点击学生列表表项
     handleStuItemClick(stuInfo) {
       this.switchToStu(stuInfo);
+    },
+
+    // 切换学生列表显示
+    handleDisplayStuList() {
+      this.displayStuList = !this.displayStuList;
     },
 
     // 点击题目卡片
@@ -749,14 +795,59 @@ export default {
       }
     },
 
+    // 通过快捷键切换模式
+    handleSwitchModeByShortcut() {
+      if (this.mode == "focus") {
+        this.switchMode("waterfall");
+      } else {
+        this.switchMode("focus");
+      }
+    },
+
     // 点击关闭按钮
     handleCloseBtnClick() {
       this.$router.push(`/teacher/homework/${this.homeworkId}`);
     },
   },
 
+  mounted() {
+    // 绑定按键，上一人
+    this.$shortcut.bind("up", this.handlePrevStu);
+    // 下一人
+    this.$shortcut.bind("down", this.handleNextStu);
+    // 上一题
+    this.$shortcut.bind("left", this.handlePrevQuestion);
+    // 下一题
+    this.$shortcut.bind("right", this.handleNextQuestion);
+    // 切换模式
+    this.$shortcut.bind("v", this.handleSwitchModeByShortcut);
+    // 展开学生列表
+    this.$shortcut.bind("tab", this.handleDisplayStuList);
+  },
+
   created() {
     this.getHomeworkDetail();
   },
+
+  beforeDestroy() {
+    this.$shortcut.unbind("up");
+    this.$shortcut.unbind("down");
+    this.$shortcut.unbind("left");
+    this.$shortcut.unbind("right");
+    this.$shortcut.unbind("v");
+    this.$shortcut.unbind("tab");
+  },
 };
 </script>
+
+<style>
+kbd {
+  color: grey;
+  background-color: hsl(0deg, 0%, 99%);
+  border-radius: 5px;
+  border: 1px solid hsl(0deg, 0%, 80%);
+  padding: 4px 5px;
+  font-weight: bold;
+  box-shadow: inset 0 1px 0 hsl(0deg, 0%, 100%), 0 1px 0 hsl(0deg, 0%, 80%);
+}
+</style>

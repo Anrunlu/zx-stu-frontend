@@ -21,6 +21,7 @@
     "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "js-base64": "^3.7.2",
+    "keymaster": "^1.6.2",
     "marked": "^4.2.3",
     "marked-katex-extension": "^1.0.1",
     "mind-elixir": "^1.1.3",
