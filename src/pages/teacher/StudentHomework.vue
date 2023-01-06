@@ -11,7 +11,7 @@
           color="positive"
           dense
           square
-          icon="center_focus_strong"
+          icon="videocam"
           label="专注模式"
           clickable
           @click="switchMode('waterfall')"
@@ -592,9 +592,7 @@ export default {
       }
 
       // 定位到题目
-      if (this.currQuestionIndex > 1 && question.type != "解答") {
-        this.locateQuestionNoFlash();
-      }
+      this.locateQuestionNoFlash();
     },
 
     // 切换 mode
@@ -679,11 +677,20 @@ export default {
           return;
         }
 
-        item.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center",
-        });
+        // 如果是解答题或者第一个题目，使用 offset 定位
+        if (this.currQuestion.type == "解答" || this.currQuestionIndex == 0) {
+          const offset = item.offsetTop - 8;
+          window.scrollTo({
+            top: offset,
+            behavior: "smooth",
+          });
+        } else {
+          item.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "center",
+          });
+        }
       }, 250);
     },
 
@@ -720,8 +727,10 @@ export default {
       // 如果是第一个学生，不做任何操作
       if (prevStuIndex < 0) {
         this.$q.notify({
-          message: "已经是第一个学生了",
+          message: "当前第一个学生",
           type: "warning",
+          position: "top",
+          timeout: 1000,
         });
         return;
       }
@@ -740,8 +749,10 @@ export default {
       // 如果是最后一个学生，不做任何操作
       if (nextStuIndex >= this.overallAnswerStatus.length) {
         this.$q.notify({
-          message: "已经是最后一个学生了",
+          message: "当前最后一个学生",
           type: "warning",
+          position: "top",
+          timeout: 1000,
         });
         return;
       }
@@ -768,6 +779,8 @@ export default {
         this.$q.notify({
           message: "当前第一题",
           type: "warning",
+          position: "top",
+          timeout: 1000,
         });
       }
     },
@@ -786,6 +799,8 @@ export default {
         this.$q.notify({
           message: "当前最后一题",
           type: "warning",
+          position: "top",
+          timeout: 1000,
         });
       }
     },
