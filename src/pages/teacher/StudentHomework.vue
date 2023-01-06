@@ -105,8 +105,6 @@
                   v-else
                   :index="index + 1"
                   :questionDetails="questionDetails"
-                  :currJiedaQuestionIndex="currJiedaQuestionIndex"
-                  :totalJiedaQuestionCount="jiedaQuestions.length"
                   :isActive="questionDetails._id == currQuestion._id"
                   @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
@@ -130,8 +128,7 @@
               <JiedaQuestionCard
                 v-else
                 :index="currQuestionIndex + 1"
-                :questionDetails="currJiedaQuestion"
-                :totalJiedaQuestionCount="jiedaQuestions.length"
+                :questionDetails="currQuestion"
                 :isActive="true"
                 @questionCardClick="handleQuestionCardClick"
                 @questionCardDblClick="handleQuestionCardDblClick"
@@ -156,6 +153,7 @@
               dense
             />
             <q-input
+              ref="scoreInput"
               class="q-ml-lg"
               clearable
               clear-icon="close"
@@ -164,9 +162,15 @@
               label="输入成绩"
               dense
               outlined
+              @keypress.enter="handleSubmit"
             />
             <q-btn-group push>
-              <q-btn-dropdown label="提交" color="blue" split>
+              <q-btn-dropdown
+                label="提交"
+                color="blue"
+                @click="handleSubmit"
+                split
+              >
                 <q-list>
                   <q-item clickable v-close-popup>
                     <q-item-section>
@@ -282,24 +286,6 @@ export default {
       choiceQuestions: [],
       fillBlankQuestions: [],
       jiedaQuestions: [],
-      currJiedaQuestionIndex: 0,
-      currJiedaQuestion: {
-        id: "",
-        type: "",
-        difficulty: 0,
-        presetScore: 0,
-        content: "",
-        studentQA: [
-          {
-            stuAnswer: [
-              {
-                content: "",
-              },
-            ],
-            score: 0,
-          },
-        ],
-      },
     };
   },
 
@@ -562,17 +548,23 @@ export default {
       );
     },
 
+    // 提交
+    handleSubmit() {
+      // 分数输入框失焦
+      this.$refs.scoreInput.blur();
+
+      this.$q.notify({
+        message: "提交成功",
+        type: "positive",
+        position: "top",
+        timeout: 1000,
+      });
+    },
+
     // 切换题目
     switchToQuestion(question) {
       this.currQuestion = question;
 
-      if (question.type === "解答") {
-        this.currJiedaQuestionIndex = this.jiedaQuestions.findIndex(
-          (q) => q._id === question._id
-        );
-        this.currJiedaQuestion =
-          this.jiedaQuestions[this.currJiedaQuestionIndex];
-      }
       // 获取题目在 questions 中的索引
       this.currQuestionIndex = this.questions.findIndex(
         (q) => q._id === question._id
@@ -805,6 +797,11 @@ export default {
       }
     },
 
+    // 激活分数输入框
+    handleActivateScoreInput() {
+      this.$refs.scoreInput.focus();
+    },
+
     // 点击批改设置按钮
     handleSettingsBtnClick() {
       if (this.mode == "focus") {
@@ -842,6 +839,10 @@ export default {
     this.$shortcut.bind("v", this.handleSwitchModeByShortcut);
     // 展开学生列表
     this.$shortcut.bind("tab", this.handleDisplayStuList);
+    // 激活分数输入框
+    this.$shortcut.bind("space", this.handleActivateScoreInput);
+    // 提交
+    this.$shortcut.bind("enter", this.handleSubmit);
   },
 
   created() {
@@ -855,6 +856,8 @@ export default {
     this.$shortcut.unbind("right");
     this.$shortcut.unbind("v");
     this.$shortcut.unbind("tab");
+    this.$shortcut.unbind("space");
+    this.$shortcut.unbind("enter");
   },
 };
 </script>

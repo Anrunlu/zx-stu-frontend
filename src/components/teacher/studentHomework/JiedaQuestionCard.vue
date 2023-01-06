@@ -28,10 +28,6 @@
             label="查看题干"
             @click="handleViewQuestionBtnClick"
           >
-            <q-tooltip>
-              第 {{ currJiedaQuestionIndex + 1 }}/{{ totalJiedaQuestionCount }}
-              题
-            </q-tooltip>
           </q-btn>
           <q-btn
             dense
@@ -108,14 +104,6 @@ export default {
           ],
         };
       },
-    },
-    currJiedaQuestionIndex: {
-      type: Number,
-      default: 0,
-    },
-    totalJiedaQuestionCount: {
-      type: Number,
-      default: 0,
     },
     isActive: {
       type: Boolean,
