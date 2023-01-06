@@ -19,14 +19,15 @@
             :color="'grey'"
             objectName="题目"
           />
+          <!-- 序号 -->
           <q-chip
             class="float-right"
+            color="grey"
             dense
             outline
             size="sm"
             square
-            :color="questionDetails.getScore > 0 ? 'green-5' : 'grey'"
-            :label="`得分:${questionDetails.getScore}`"
+            :label="index"
           />
         </div>
         <div
@@ -97,11 +98,27 @@
           </q-item-section>
         </q-item>
       </q-list>
-      <span class="q-mt-sm text-grey" style="font-size: 0.3rem">{{
-        questionDetails.submited
-          ? `最后提交:${questionDetails.lastSubmitedTime}`
-          : "未作答"
-      }}</span>
+      <!-- 底部信息区域 -->
+      <div class="">
+        <q-chip
+          class=""
+          dense
+          outline
+          size="sm"
+          square
+          :color="questionDetails.getScore > 0 ? 'green-5' : 'grey'"
+          :label="`${questionDetails.getScore}分`"
+        />
+        <span class="float-right q-mt-sm text-grey" style="font-size: 0.3rem"
+          >{{
+            questionDetails.submited
+              ? `${questionDetails.lastSubmitedTime}`
+              : "未作答"
+          }}
+
+          <q-tooltip> 最后提交时间 </q-tooltip>
+        </span>
+      </div>
     </q-card-section>
   </q-card>
 </template>
@@ -110,10 +127,15 @@
 export default {
   name: "QuestionViewCardForStudentHomework", // 用于作业批改页面，仅展示选择和填空题目
   props: {
+    index: {
+      type: Number,
+      required: false,
+    },
     questionDetails: {
       type: Object,
       required: true,
     },
+
     isActive: {
       type: Boolean,
       required: false,

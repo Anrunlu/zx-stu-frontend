@@ -88,12 +88,13 @@
             <!-- 瀑布模式 -->
             <div v-show="mode == 'waterfall'">
               <div
-                v-for="questionDetails in questions"
+                v-for="(questionDetails, index) in questions"
                 :key="questionDetails._id"
               >
                 <!-- 非解答题 -->
                 <QuestionViewCard
                   v-if="questionDetails.type != '解答'"
+                  :index="index + 1"
                   :questionDetails="questionDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @questionCardClick="handleQuestionCardClick"
@@ -102,6 +103,7 @@
                 <!-- 解答题 -->
                 <JiedaQuestionCard
                   v-else
+                  :index="index + 1"
                   :questionDetails="questionDetails"
                   :currJiedaQuestionIndex="currJiedaQuestionIndex"
                   :totalJiedaQuestionCount="jiedaQuestions.length"
@@ -117,7 +119,9 @@
               <!-- 非解答题 -->
               <QuestionViewCard
                 v-if="currQuestion.type != '解答'"
+                :index="currQuestionIndex + 1"
                 :questionDetails="currQuestion"
+                :currQuestionIndex="currQuestionIndex"
                 :isActive="true"
                 @questionCardClick="handleQuestionCardClick"
                 @questionCardDblClick="handleQuestionCardDblClick"
@@ -125,8 +129,8 @@
               <!-- 解答题 -->
               <JiedaQuestionCard
                 v-else
+                :index="currQuestionIndex + 1"
                 :questionDetails="currJiedaQuestion"
-                :currJiedaQuestionIndex="currJiedaQuestionIndex"
                 :totalJiedaQuestionCount="jiedaQuestions.length"
                 :isActive="true"
                 @questionCardClick="handleQuestionCardClick"

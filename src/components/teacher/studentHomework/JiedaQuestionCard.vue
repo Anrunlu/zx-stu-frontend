@@ -28,9 +28,7 @@
             @click="handleViewQuestionBtnClick"
           >
             <q-tooltip>
-              第 {{ currJiedaQuestionIndex + 1 }}/{{
-                totalJiedaQuestionCount
-              }}
+              第 {{ currJiedaQuestionIndex + 1 }}/{{ totalJiedaQuestionCount }}
               题
             </q-tooltip>
           </q-btn>
@@ -45,12 +43,16 @@
           >
           </q-btn>
           <q-space />
-          <span class="text-grey q-mr-sm"
-            >第 {{ currJiedaQuestionIndex + 1 }}/{{
-              totalJiedaQuestionCount
-            }}
-            题</span
-          >
+          <!-- 序号 -->
+          <q-chip
+            class="float-right"
+            color="grey"
+            dense
+            outline
+            size="sm"
+            square
+            :label="index"
+          />
         </div>
       </q-card-section>
       <q-separator />
@@ -80,6 +82,10 @@ import html2canvas from "html2canvas";
 export default {
   name: "StudentHomeworkJiedaQuestionCard",
   props: {
+    index: {
+      type: Number,
+      required: false,
+    },
     questionDetails: {
       type: Object,
       default: () => {
