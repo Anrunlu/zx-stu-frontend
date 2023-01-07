@@ -582,9 +582,6 @@ export default {
         const { data } = await apiGetHomeworkDetails(this.homeworkId);
         preProcessHomeworkDetails(data.data);
         this.homeworkDetails = data.data;
-
-        // 获取教学班学生作答情况
-        this.getHomeworkOverallAnswerStatus();
       } catch (error) {
         this.$q.notify({
           message: "获取作业信息失败",
@@ -736,14 +733,18 @@ export default {
       if (view === "questionView") {
         this.getStatisticsForCertainHomework();
       } else {
-        this.getHomeworkDetail();
+        this.getHomeworkOverallAnswerStatus();
       }
       this.currentView = view;
     },
 
     // 刷新作业信息
     handleRefreshClick() {
-      this.getHomeworkDetail();
+      if (this.currentView === "questionView") {
+        this.getStatisticsForCertainHomework();
+      } else {
+        this.getHomeworkOverallAnswerStatus();
+      }
     },
 
     // 点击题目列表的id(题目编号)
@@ -763,8 +764,10 @@ export default {
     },
   },
 
-  created() {
-    this.getHomeworkDetail();
+  async created() {
+    await this.getHomeworkDetail();
+    // 获取教学班学生作答情况
+    await this.getHomeworkOverallAnswerStatus();
   },
 };
 </script>

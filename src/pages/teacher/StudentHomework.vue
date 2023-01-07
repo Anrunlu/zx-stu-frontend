@@ -255,7 +255,6 @@ import { mapGetters } from "vuex";
 import {
   apiGetHomeworkDetails,
   apiGetHomeworkOverallAnswerStatus,
-  apiGetHomeworkQuestionStatistics,
   apiGetStudentHomeworkDetails,
 } from "src/api/teacher/homework";
 import {
