@@ -22,6 +22,7 @@
           <q-tooltip>设置</q-tooltip>
         </q-btn>
         <q-btn
+          v-if="!$q.platform.is.mobile"
           dense
           flat
           @click="$q.fullscreen.toggle()"
@@ -31,10 +32,16 @@
             {{ $q.fullscreen.isActive ? "退出全屏" : "全屏" }}
           </q-tooltip>
         </q-btn>
-        <q-btn dense flat icon="help">
+        <q-btn dense flat icon="help" v-if="!$q.platform.is.mobile">
           <q-tooltip>帮助</q-tooltip>
         </q-btn>
-        <q-btn dense flat icon="close" @click="handleCloseBtnClick">
+        <q-btn
+          dense
+          flat
+          icon="close"
+          @click="handleCloseBtnClick"
+          v-if="!$q.platform.is.mobile"
+        >
           <q-tooltip>关闭</q-tooltip>
         </q-btn>
       </q-bar>
@@ -84,7 +91,7 @@
     <q-page-container>
       <q-page class="q-ma-md">
         <div class="row justify-center">
-          <div class="col-11 col-md-10">
+          <div class="col-12 col-md-10">
             <!-- 瀑布模式 -->
             <div v-show="mode == 'waterfall'">
               <div
@@ -126,6 +133,7 @@
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
                 <QuestionStatisticsCard
+                  v-if="mode == 'focus'"
                   :questionId="currQuestion._id"
                   :homeworkId="homeworkId"
                 />
@@ -146,7 +154,11 @@
       </q-page>
     </q-page-container>
 
-    <q-footer bordered class="bg-white text-primary q-py-sm">
+    <q-footer
+      bordered
+      class="bg-white text-primary q-py-sm"
+      v-if="!$q.platform.is.mobile"
+    >
       <div class="row q-gutter-lg q-ml-sm">
         <div class="col-7 col-xl-5">
           <div class="row q-gutter-sm">
@@ -572,15 +584,6 @@ export default {
 
     // 提交
     async handleSubmit() {
-      const payload = {
-        homework_id: this.homeworkId,
-        question_id: this.currQuestion._id,
-      };
-
-      const { data } = await apiGetHomeworkQuestionStatistics(payload);
-
-      console.log(data);
-
       // 检查评分是否大于预设分
       if (
         this.currQuestion.studentQA[0].score > this.currQuestion.presetScore

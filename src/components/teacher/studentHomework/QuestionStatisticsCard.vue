@@ -43,6 +43,7 @@
                   size="25px"
                   :value="answerCase.rate"
                   :color="answerCase.isRight ? 'green-5' : 'grey-5'"
+                  stripe
                 >
                   <div class="absolute-full flex flex-center">
                     <q-badge
@@ -56,6 +57,27 @@
               <q-item-section side>{{ answerCase.num }}人</q-item-section>
             </q-item>
           </template>
+          <!-- TODO:抽离成 UsernameWithAvatarChip 组件 -->
+          <q-card>
+            <q-card-section>
+              <div class="row">
+                <q-chip
+                  class="col-3 col-md-1"
+                  square
+                  color="white"
+                  size="sm"
+                  v-for="student in answerCase.studentsWithThisAnswer"
+                  :key="student.username"
+                >
+                  <q-avatar color="secondary" text-color="white">
+                    <img v-if="student.avatar" :src="student.avatar" />
+                    <span v-else>{{ student.nickname.slice(0, 1) }}</span>
+                  </q-avatar>
+                  {{ student.nickname }}
+                </q-chip>
+              </div>
+            </q-card-section>
+          </q-card>
         </q-expansion-item>
       </q-list>
       <!-- 底部信息区域 -->
@@ -120,6 +142,9 @@ export default {
 
       const { data } = await apiGetHomeworkQuestionStatistics(payload);
 
+      this.questionStatistics.studentAnswerDetails =
+        data.data.studentAnswerDetails;
+
       const question = data.data.question;
       const answerNumArray = data.data.questionOptionsStatistics;
       const totalAnsweredStudentNum = data.data.studentAnswerDetails.length;
@@ -136,6 +161,22 @@ export default {
           }
         });
       });
+
+      // 显示当前选项学生列表，TODO:开销较大，后期考虑优化
+      answerNumArray.forEach((an) => {
+        let studentsWithThisAnswer =
+          this.questionStatistics.studentAnswerDetails.reduce((pre, curr) => {
+            const currStuAnswers = curr.stuAnswer;
+            currStuAnswers.forEach((stuAn) => {
+              if (stuAn.mark == an._id) {
+                pre.push(curr.student.user);
+              }
+            });
+            return pre;
+          }, []);
+        an.studentsWithThisAnswer = studentsWithThisAnswer;
+      });
+
       // 按 ABCD 排序
       answerNumArray.sort(function (a, b) {
         let nameA = a._id.toUpperCase(); // ignore upper and lowercase
@@ -151,16 +192,10 @@ export default {
       this.questionStatistics.answerNumArray = answerNumArray;
       this.questionStatistics.totalAnswerNum = totalAnswerNum;
       this.questionStatistics.totalAnsweredStudentNum = totalAnsweredStudentNum;
-      this.questionStatistics.studentAnswerDetails =
-        data.data.studentAnswerDetails;
     },
 
     handleQuestionCardClick() {},
     handleQuestionCardDblClick() {},
-  },
-
-  created() {
-    // this.getQuestionStatistics();
   },
 };
 </script>

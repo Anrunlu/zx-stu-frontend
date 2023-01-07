@@ -61,8 +61,8 @@ module.exports = function (ctx) {
 
       env: {
         API_URL: ctx.dev
-          ? "http://anrunlu-test.com"
-          : "https://v2.zxapi.anrunlu.net",
+          ? "http://v2test.zxapi.anrunlu.net/"
+          : "http://v2test.zxapi.anrunlu.net/",
       },
       // transpile: false,
 
@@ -95,6 +95,7 @@ module.exports = function (ctx) {
       https: false,
       port: 8080,
       open: true, // opens browser window automatically
+      // host: "192.168.31.51",
     },
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
