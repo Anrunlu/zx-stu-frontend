@@ -5,16 +5,16 @@ import { LoadingBar, Notify } from "quasar";
 export default ({ router, store, Vue }) => {
   // 路由守卫
   router.beforeEach(async (to, from, next) => {
-    // 如果 to.path 包含 student_homework 说明是批改作业页面，为了减少网络开销，直接放行
+    const userType = store.getters["user/type"]; // 获取用户类型，如果没有登录，返回空字符串
+    document.title = getPageTitle(to.meta.title, userType); // 设置页面标题
+
+    // 如果 to.path 包含 student_homework 说明是批改作业页面，为了减少不必要的请求，直接放行
     if (to.path.includes("student_homework")) {
       next();
       return;
     }
 
     LoadingBar.start(); // 开始进度条
-
-    const userType = store.getters["user/type"]; // 获取用户类型，如果没有登录，返回空字符串
-    document.title = getPageTitle(to.meta.title, userType); // 设置页面标题
 
     if (to.meta.isPublic) {
       // 如果路由元信息中的 isPublic 为 true
