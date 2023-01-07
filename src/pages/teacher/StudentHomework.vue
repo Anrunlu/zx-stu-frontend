@@ -524,14 +524,22 @@ export default {
       // 获取学生作答详情
       await this.getCurrStuAnswerDetail();
 
-      // 如果路由 query 参数中有 q 参数，则切换到该题目
-      if (this.$route.query.q) {
+      // 获取路由 query 参数
+      const query = this.$route.query;
+
+      // 如果路由 query 参数中有 q 参数，则切换到该题目。注意！！因为此时题目数据才加载完毕，所以要在此处切换！！
+      if (query.q) {
         const question = this.questions.find(
           (q) => q._id == this.$route.query.q
         );
         if (question) {
           this.switchToQuestion(question);
         }
+      }
+
+      // 如果有 m 参数，则切换到相应的模式
+      if (query.m) {
+        this.switchMode(query.m);
       }
 
       // 列表定位到学生
@@ -612,6 +620,7 @@ export default {
           {
             query: {
               ...this.$route.query,
+              m: "waterfall",
               q: null,
             },
           },
@@ -630,21 +639,31 @@ export default {
           timeout: 1000,
         });
       } else if (mode == "focus") {
-        // 全屏
-        this.$q.fullscreen.request();
         // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
         this.$router.replace(
           {
             query: {
               ...this.$route.query,
+              m: "focus",
               q: this.currQuestion._id,
             },
           },
           () => {}
         );
+        // 全屏
+        this.$q.fullscreen.request().catch(() => {
+          setTimeout(() => {
+            this.$q.notify({
+              message:
+                "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的批阅体验。",
+              position: "top",
+              type: "warning",
+            });
+          }, 7000);
+        });
         // 提示用户
         this.$q.notify({
-          message: `当前为专注模式，只显示当前题目，您可以通过 <kbd>V</kbd> 键快速切换模式。`,
+          message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。`,
           position: "top",
           icon: "notifications",
           progress: true,
