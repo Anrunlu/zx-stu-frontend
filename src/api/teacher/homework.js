@@ -70,3 +70,12 @@ export function apiGetStudentHomeworkDetails(data) {
     data,
   });
 }
+
+// 获取某作业内某题目的选项分布
+export function apiGetHomeworkQuestionStatistics(data) {
+  return loadingFn(request)({
+    url: "/tea/homework/getHomeworkQuestionStatistics",
+    method: "POST",
+    data,
+  });
+}

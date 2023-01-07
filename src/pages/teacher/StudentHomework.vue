@@ -115,15 +115,22 @@
             <!-- 专注模式 -->
             <div v-show="mode == 'focus'">
               <!-- 非解答题 -->
-              <QuestionViewCard
-                v-if="currQuestion.type != '解答'"
-                :index="currQuestionIndex + 1"
-                :questionDetails="currQuestion"
-                :currQuestionIndex="currQuestionIndex"
-                :isActive="true"
-                @questionCardClick="handleQuestionCardClick"
-                @questionCardDblClick="handleQuestionCardDblClick"
-              />
+
+              <div v-if="currQuestion.type != '解答'">
+                <QuestionViewCard
+                  :index="currQuestionIndex + 1"
+                  :questionDetails="currQuestion"
+                  :currQuestionIndex="currQuestionIndex"
+                  :isActive="true"
+                  @questionCardClick="handleQuestionCardClick"
+                  @questionCardDblClick="handleQuestionCardDblClick"
+                />
+                <QuestionStatisticsCard
+                  :questionId="currQuestion._id"
+                  :homeworkId="homeworkId"
+                />
+              </div>
+
               <!-- 解答题 -->
               <JiedaQuestionCard
                 v-else
@@ -236,6 +243,7 @@ import { mapGetters } from "vuex";
 import {
   apiGetHomeworkDetails,
   apiGetHomeworkOverallAnswerStatus,
+  apiGetHomeworkQuestionStatistics,
   apiGetStudentHomeworkDetails,
 } from "src/api/teacher/homework";
 import {
@@ -294,6 +302,10 @@ export default {
       import("src/components/teacher/studentHomework/QuestionViewCard.vue"),
     JiedaQuestionCard: () =>
       import("src/components/teacher/studentHomework/JiedaQuestionCard.vue"),
+    QuestionStatisticsCard: () =>
+      import(
+        "src/components/teacher/studentHomework/QuestionStatisticsCard.vue"
+      ),
   },
 
   computed: {
@@ -559,7 +571,16 @@ export default {
     },
 
     // 提交
-    handleSubmit() {
+    async handleSubmit() {
+      const payload = {
+        homework_id: this.homeworkId,
+        question_id: this.currQuestion._id,
+      };
+
+      const { data } = await apiGetHomeworkQuestionStatistics(payload);
+
+      console.log(data);
+
       // 检查评分是否大于预设分
       if (
         this.currQuestion.studentQA[0].score > this.currQuestion.presetScore

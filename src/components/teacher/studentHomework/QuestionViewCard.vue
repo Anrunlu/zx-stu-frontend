@@ -99,9 +99,8 @@
         </q-item>
       </q-list>
       <!-- 底部信息区域 -->
-      <div class="">
+      <div class="q-mt-sm">
         <q-chip
-          class=""
           dense
           outline
           size="sm"
@@ -135,7 +134,6 @@ export default {
       type: Object,
       required: true,
     },
-
     isActive: {
       type: Boolean,
       required: false,
