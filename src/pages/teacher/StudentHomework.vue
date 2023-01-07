@@ -356,17 +356,19 @@ export default {
         const query = this.$route.query;
 
         // 如果有 u 参数，则定位到该学生
+        let stuInfo = null;
         if (query.u) {
-          const stuInfo = this.overallAnswerStatus.find(
+          stuInfo = this.overallAnswerStatus.find(
             (stu) => stu.username === query.u
           );
-
-          this.switchToStu(stuInfo);
-
-          setTimeout(() => {
-            this.locateStuNoFlash();
-          }, 500);
+        } else {
+          // 否则默认定位到第一个学生
+          stuInfo = this.overallAnswerStatus[0];
         }
+        this.switchToStu(stuInfo);
+        setTimeout(() => {
+          this.locateStuNoFlash();
+        }, 500);
       } catch (error) {
         this.$q.notify({
           message: "获取作答情况失败",
@@ -650,27 +652,36 @@ export default {
           },
           () => {}
         );
-        // 全屏
-        this.$q.fullscreen.request().catch(() => {
-          setTimeout(() => {
-            this.$q.notify({
-              message:
-                "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的批阅体验。",
-              position: "top",
-              type: "warning",
-            });
-          }, 7000);
-        });
+
         // 提示用户
         this.$q.notify({
-          message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。`,
+          message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的批阅体验？`,
           position: "top",
           icon: "notifications",
           progress: true,
           color: "accent",
           textColor: "white",
           classes: "glossy",
+          timeout: 10000,
           html: true,
+          actions: [
+            {
+              label: "全屏",
+              color: "white",
+              handler: () => {
+                this.$q.fullscreen.request().catch(() => {
+                  setTimeout(() => {
+                    this.$q.notify({
+                      message:
+                        "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的批阅体验。",
+                      position: "top",
+                      type: "warning",
+                    });
+                  }, 7000);
+                });
+              },
+            },
+          ],
         });
       }
       this.mode = mode;

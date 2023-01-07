@@ -78,7 +78,7 @@
               :pagination="stuAnswerStatusPagination"
               :filter="filter"
               row-key="_id"
-              @row-click="handlestuAnswerStatusViewTableRowClick"
+              @row-click="handleStuAnswerStatusViewTableRowClick"
               v-show="currentView === 'stuAnswerStatusView'"
             >
               <template v-slot:top-left>
@@ -255,6 +255,7 @@
               :pagination.sync="questionListPagination"
               :filter="filter"
               row-key="_id"
+              @row-click="handleQuestionViewTableRowClick"
               v-show="currentView === 'questionView'"
             >
               <template v-slot:top-left>
@@ -697,12 +698,24 @@ export default {
       }
     },
 
-    // 点击学生作答情况表格行
-    handlestuAnswerStatusViewTableRowClick(evt, row) {
+    // 点击学生视图表格行
+    handleStuAnswerStatusViewTableRowClick(evt, row) {
       this.$router.push({
         path: "/teacher/student_homework/" + this.homeworkId,
         query: {
           u: row.username,
+        },
+      });
+    },
+
+    // 点击题目视图表格行
+    handleQuestionViewTableRowClick(evt, row) {
+      this.$router.push({
+        path: "/teacher/student_homework/" + this.homeworkId,
+        query: {
+          u: row.username,
+          m: "focus",
+          q: row._id,
         },
       });
     },
