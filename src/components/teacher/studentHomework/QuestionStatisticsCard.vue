@@ -21,35 +21,42 @@
     </q-card-section>
 
     <q-card-section>
-      <q-list padding>
-        <q-item
+      <q-list id="question-assessment">
+        <q-expansion-item
           v-for="answerCase in questionStatistics.answerNumArray"
           :key="answerCase._id"
-          @click="showStudentsWithThisAnswer(answerCase._id)"
-          clickable
+          expand-separator
         >
-          <q-item-section avatar>
-            <q-icon :color="answerCase.isRight ? 'positive' : 'grey'"
-              >{{ answerCase._id }}
-            </q-icon>
-          </q-item-section>
-
-          <q-item-section>
-            <q-linear-progress
-              size="25px"
-              :value="answerCase.rate"
-              :color="answerCase.isRight ? 'green-5' : 'grey-5'"
+          <template v-slot:header>
+            <q-item
+              @click="showStudentsWithThisAnswer(answerCase._id)"
+              class="full-width q-pa-none"
             >
-              <div class="absolute-full flex flex-center">
-                <q-badge
-                  color="white"
-                  text-color="accent"
-                  :label="Math.round(answerCase.rate * 100) + '%'"
-                />
-              </div>
-            </q-linear-progress>
-          </q-item-section>
-        </q-item>
+              <q-item-section avatar>
+                <q-icon :color="answerCase.isRight ? 'positive' : 'grey'"
+                  >{{ answerCase._id }}
+                </q-icon>
+              </q-item-section>
+
+              <q-item-section>
+                <q-linear-progress
+                  size="25px"
+                  :value="answerCase.rate"
+                  :color="answerCase.isRight ? 'green-5' : 'grey-5'"
+                >
+                  <div class="absolute-full flex flex-center">
+                    <q-badge
+                      color="white"
+                      text-color="accent"
+                      :label="Math.round(answerCase.rate * 100) + '%'"
+                    />
+                  </div>
+                </q-linear-progress>
+              </q-item-section>
+              <q-item-section side>{{ answerCase.num }}人</q-item-section>
+            </q-item>
+          </template>
+        </q-expansion-item>
       </q-list>
       <!-- 底部信息区域 -->
       <div>
@@ -159,14 +166,8 @@ export default {
 </script>
 
 <style>
-.option p {
-  margin: 0;
-}
-img {
-  /* 防止图片溢出 */
-  max-width: 100% !important;
-}
-.actived {
-  border: 1px skyblue solid;
+#question-assessment .q-item {
+  padding-top: 1px;
+  padding-bottom: 3px;
 }
 </style>

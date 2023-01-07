@@ -6,17 +6,17 @@
         <div>{{ currStuInfo.nickname }} {{ currStuInfo.username }}</div>
         <q-space />
         <q-chip
-          v-show="mode == 'focus'"
           text-color="white"
-          color="positive"
+          :color="mode == 'focus' ? 'positive' : 'white'"
+          :outline="mode != 'focus'"
           dense
           square
           icon="videocam"
           label="专注模式"
           clickable
-          @click="switchMode('waterfall')"
+          @click="switchMode()"
         >
-          <q-tooltip> 点击退出专注模式 <kbd>V</kbd></q-tooltip>
+          <q-tooltip> 切换模式 <kbd>V</kbd></q-tooltip>
         </q-chip>
         <q-btn dense flat icon="settings" @click="handleSettingsBtnClick">
           <q-tooltip>设置</q-tooltip>
@@ -633,17 +633,22 @@ export default {
 
     // 切换 mode
     switchMode(mode) {
+      let _mode = mode;
       // 如果 mode 没有变化，则不做任何操作
-      if (mode == this.mode) {
+      if (_mode == this.mode) {
         return;
       }
 
-      if (mode == "waterfall") {
+      if (!_mode) {
+        _mode = this.mode == "waterfall" ? "focus" : "waterfall";
+      }
+
+      if (_mode == "waterfall") {
         this.$router.replace(
           {
             query: {
               ...this.$route.query,
-              m: "waterfall",
+              m: _mode,
               q: null,
             },
           },
@@ -661,13 +666,13 @@ export default {
           classes: "glossy",
           timeout: 1000,
         });
-      } else if (mode == "focus") {
+      } else if (_mode == "focus") {
         // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
         this.$router.replace(
           {
             query: {
               ...this.$route.query,
-              m: "focus",
+              m: _mode,
               q: this.currQuestion._id,
             },
           },
@@ -705,7 +710,7 @@ export default {
           ],
         });
       }
-      this.mode = mode;
+      this.mode = _mode;
     },
 
     // 定位到学生不闪烁
