@@ -550,6 +550,19 @@ export default {
 
     // 提交
     handleSubmit() {
+      // 检查评分是否大于预设分
+      if (
+        this.currQuestion.studentQA[0].score > this.currQuestion.presetScore
+      ) {
+        this.$q.notify({
+          message: "评分不能大于预设分",
+          type: "negative",
+          position: "top",
+          timeout: 1000,
+        });
+        return;
+      }
+
       // 分数输入框失焦
       this.$refs.scoreInput.blur();
 
