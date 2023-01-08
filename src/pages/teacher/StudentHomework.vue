@@ -133,7 +133,12 @@
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
                 <QuestionStatisticsCard
-                  v-if="mode == 'focus'"
+                  v-if="
+                    mode == 'focus' &&
+                    displayStatisticsCard &&
+                    currQuestion.type != '解答' &&
+                    currQuestion.type != '填空'
+                  "
                   :questionId="currQuestion._id"
                   :homeworkId="homeworkId"
                 />
@@ -216,7 +221,12 @@
               :label="`${currStuInfoIndex + 1}/${overallAnswerStatus.length}`"
               @click="handleDisplayStuList"
             >
-              <q-tooltip> 开启/关闭学生列表 <kbd>Tab</kbd> </q-tooltip>
+              <q-tooltip
+                :delay="1000"
+                content-class="bg-white text-black shadow-1"
+              >
+                开启/关闭学生列表 <kbd style="margin-left: 5px">Tab</kbd>
+              </q-tooltip>
             </q-btn>
             <q-btn
               outline
@@ -260,9 +270,7 @@ import {
 import {
   preProcessHomeworkDetails,
   preProcessStuAnswerStatus,
-  pretreatmentChoiceQuestions,
-  pretreatmentFillBlankQuestions,
-  pretreatmentJiedaQuestions,
+  pretreatmentStudentHomeworkDetails,
 } from "src/utils/homework";
 
 export default {
@@ -277,6 +285,7 @@ export default {
     return {
       mode: "waterfall", // foucs: 专注模式, waterfall: 瀑布模式
       displayStuList: true,
+      displayStatisticsCard: true,
       overallAnswerStatus: [],
       currStuInfo: {},
       currStuInfoIndex: 0,
@@ -299,12 +308,7 @@ export default {
         ],
       },
       currQuestionIndex: 0,
-      hasObjQues: false,
-      hasSubQues: false,
       questions: [],
-      choiceQuestions: [],
-      fillBlankQuestions: [],
-      jiedaQuestions: [],
     };
   },
 
@@ -410,125 +414,13 @@ export default {
       try {
         const { data } = await apiGetStudentHomeworkDetails(payload);
 
-        const questionSets = data.data.questionSets;
-        // 过滤题型和统计各类型题目数
-        const quesCategory = [];
-        // 选择题，包括单、多选和判断
-        let choiceQuestions = questionSets[0].questions.filter(
-          (question) =>
-            question.type === "单选" ||
-            question.type === "多选" ||
-            question.type === "判断"
+        const { questions, quesCategory } = pretreatmentStudentHomeworkDetails(
+          data.data
         );
-        if (choiceQuestions.length > 0) {
-          quesCategory.push({
-            type: "选择题",
-            num: choiceQuestions.length,
-            submitedNum: choiceQuestions.filter((q) => q.studentQA.length > 0)
-              .length,
-            routePrefix: "choice",
-            // id: hmwId,
-          });
-        }
-        // 填空题
-        let fillBlankQuestions = questionSets[0].questions.filter(
-          (question) => question.type === "填空"
-        );
-        if (fillBlankQuestions.length > 0) {
-          quesCategory.push({
-            type: "填空题",
-            num: fillBlankQuestions.length,
-            submitedNum: fillBlankQuestions.filter(
-              (q) => q.studentQA.length > 0
-            ).length,
-            routePrefix: "fillBlank",
-            // id: hmwId,
-          });
-        }
-        // 编程题
-        const programQuestions = questionSets[0].questions.filter(
-          (question) => question.type === "编程"
-        );
-        if (programQuestions.length > 0) {
-          quesCategory.push({
-            type: "编程题",
-            num: programQuestions.length,
-            submitedNum: programQuestions.filter((q) => q.studentQA.length > 0)
-              .length,
-            routePrefix: "program",
-            // id: hmwId,
-          });
-        }
-        // 解答题
-        const jiedaQuestions = questionSets[0].questions.filter(
-          (question) => question.type === "解答"
-        );
-        if (jiedaQuestions.length > 0) {
-          quesCategory.push({
-            type: "解答题",
-            num: jiedaQuestions.length,
-            submitedNum: jiedaQuestions.filter((q) => q.studentQA.length > 0)
-              .length,
-            routePrefix: "jieda",
-            // id: hmwId,
-          });
-        }
-
-        // 设置 hasObjQues 和 hasSubQues 和 correctMode
-        const hasObjQues = quesCategory.some(
-          (q) => q.type === "选择题" || q.type === "填空题"
-        );
-        const hasSubQues = quesCategory.some((q) => q.type === "解答题");
-
-        this.hasObjQues = hasObjQues;
-        this.hasSubQues = hasSubQues;
-
-        // 预处理选择题
-        choiceQuestions = pretreatmentChoiceQuestions(choiceQuestions);
-        // 预处理填空题
-        fillBlankQuestions = pretreatmentFillBlankQuestions(fillBlankQuestions);
-        // 预处理解答题
-        pretreatmentJiedaQuestions(jiedaQuestions);
-
-        const questions = [
-          ...choiceQuestions,
-          ...fillBlankQuestions,
-          ...programQuestions,
-          ...jiedaQuestions,
-        ];
-
-        const questionsMeta = questionSets[0].questionsMeta; // 题目元数据
-
-        if (questionsMeta.length > 0) {
-          // 把题目元数据拼接到题目上
-          questions.forEach((question) => {
-            const questionMeta = questionsMeta.find(
-              (meta) => meta._id === question._id
-            );
-            question.presetScore = questionMeta.presetScore;
-            question.creator = questionMeta.creator;
-          });
-        } else {
-          // TODO:为了兼容旧数据，这样处理
-          // 如果没有题目元数据，表明题目预设分是100
-          const baseScore = 100;
-          questions.forEach((q) => {
-            q.presetScore = baseScore;
-          });
-        }
 
         this.questions = questions;
         this.quesCategory = quesCategory;
-        this.choiceQuestions = choiceQuestions;
-        this.fillBlankQuestions = fillBlankQuestions;
-        this.jiedaQuestions = jiedaQuestions;
-        this.programQuestions = programQuestions;
-
         this.currQuestion = questions[this.currQuestionIndex];
-
-        if (this.jiedaQuestions.length > 0) {
-          this.currJiedaQuestion = jiedaQuestions[this.currJiedaQuestionIndex];
-        }
       } catch (error) {
         console.log(error);
         this.$q.notify({
@@ -874,13 +766,7 @@ export default {
     },
 
     // 点击批改设置按钮
-    handleSettingsBtnClick() {
-      if (this.mode == "focus") {
-        this.mode = "waterfall";
-      } else {
-        this.mode = "focus";
-      }
-    },
+    handleSettingsBtnClick() {},
 
     // 通过快捷键切换模式
     handleSwitchModeByShortcut() {

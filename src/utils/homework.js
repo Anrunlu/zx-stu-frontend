@@ -176,3 +176,111 @@ export function pretreatmentJiedaQuestions(jiedaQuestions) {
     }
   });
 }
+
+// 处理学生作业作答详情
+export function pretreatmentStudentHomeworkDetails(studentHomeworkDetails) {
+  const questionSets = studentHomeworkDetails.questionSets;
+  // 过滤题型和统计各类型题目数
+  const quesCategory = [];
+  // 选择题，包括单、多选和判断
+  let choiceQuestions = questionSets[0].questions.filter(
+    (question) =>
+      question.type === "单选" ||
+      question.type === "多选" ||
+      question.type === "判断"
+  );
+  if (choiceQuestions.length > 0) {
+    quesCategory.push({
+      type: "选择题",
+      num: choiceQuestions.length,
+      submitedNum: choiceQuestions.filter((q) => q.studentQA.length > 0).length,
+    });
+  }
+  // 填空题
+  let fillBlankQuestions = questionSets[0].questions.filter(
+    (question) => question.type === "填空"
+  );
+  if (fillBlankQuestions.length > 0) {
+    quesCategory.push({
+      type: "填空题",
+      num: fillBlankQuestions.length,
+      submitedNum: fillBlankQuestions.filter((q) => q.studentQA.length > 0)
+        .length,
+    });
+  }
+  // 编程题
+  const programQuestions = questionSets[0].questions.filter(
+    (question) => question.type === "编程"
+  );
+  if (programQuestions.length > 0) {
+    quesCategory.push({
+      type: "编程题",
+      num: programQuestions.length,
+      submitedNum: programQuestions.filter((q) => q.studentQA.length > 0)
+        .length,
+    });
+  }
+  // 解答题
+  const jiedaQuestions = questionSets[0].questions.filter(
+    (question) => question.type === "解答"
+  );
+  if (jiedaQuestions.length > 0) {
+    quesCategory.push({
+      type: "解答题",
+      num: jiedaQuestions.length,
+      submitedNum: jiedaQuestions.filter((q) => q.studentQA.length > 0).length,
+    });
+  }
+
+  // 设置 hasObjQues 和 hasSubQues 和 correctMode
+  const hasObjQues = quesCategory.some(
+    (q) => q.type === "选择题" || q.type === "填空题"
+  );
+  const hasSubQues = quesCategory.some((q) => q.type === "解答题");
+
+  studentHomeworkDetails.hasObjQues = hasObjQues;
+  studentHomeworkDetails.hasSubQues = hasSubQues;
+
+  // 预处理选择题
+  choiceQuestions = pretreatmentChoiceQuestions(choiceQuestions);
+  // 预处理填空题
+  fillBlankQuestions = pretreatmentFillBlankQuestions(fillBlankQuestions);
+  // 预处理解答题
+  pretreatmentJiedaQuestions(jiedaQuestions);
+
+  const questions = [
+    ...choiceQuestions,
+    ...fillBlankQuestions,
+    ...programQuestions,
+    ...jiedaQuestions,
+  ];
+
+  const questionsMeta = questionSets[0].questionsMeta; // 题目元数据
+
+  if (questionsMeta.length > 0) {
+    // 把题目元数据拼接到题目上
+    questions.forEach((question) => {
+      const questionMeta = questionsMeta.find(
+        (meta) => meta._id === question._id
+      );
+      question.presetScore = questionMeta.presetScore;
+      question.creator = questionMeta.creator;
+    });
+  } else {
+    // TODO:为了兼容旧数据，这样处理
+    // 如果没有题目元数据，表明题目预设分是100
+    const baseScore = 100;
+    questions.forEach((q) => {
+      q.presetScore = baseScore;
+    });
+  }
+
+  studentHomeworkDetails.questions = questions;
+  studentHomeworkDetails.quesCategory = quesCategory;
+  studentHomeworkDetails.choiceQuestions = choiceQuestions;
+  studentHomeworkDetails.fillBlankQuestions = fillBlankQuestions;
+  studentHomeworkDetails.jiedaQuestions = jiedaQuestions;
+  studentHomeworkDetails.programQuestions = programQuestions;
+
+  return studentHomeworkDetails;
+}

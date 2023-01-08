@@ -93,6 +93,8 @@
 <script>
 import { apiGetHomeworkQuestionStatistics } from "src/api/teacher/homework";
 export default {
+  // 客观题作答统计卡片
+  // TODO: 暂不支持填空题
   name: "QuestionStatisticsCard",
   props: {
     homeworkId: {
