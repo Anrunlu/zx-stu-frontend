@@ -122,7 +122,6 @@
             <!-- 专注模式 -->
             <div v-show="mode == 'focus'">
               <!-- 非解答题 -->
-
               <div v-if="currQuestion.type != '解答'">
                 <QuestionViewCard
                   :index="currQuestionIndex + 1"
@@ -143,7 +142,6 @@
                   :homeworkId="homeworkId"
                 />
               </div>
-
               <!-- 解答题 -->
               <JiedaQuestionCard
                 v-else
@@ -164,98 +162,19 @@
       class="bg-white text-primary q-py-sm"
       v-if="!$q.platform.is.mobile"
     >
-      <div class="row q-gutter-lg q-ml-sm">
-        <div class="col-7 col-xl-5">
-          <div class="row q-gutter-sm">
-            <q-slider
-              class="col"
-              v-model="currQuestion.studentQA[0].score"
-              label
-              :marker-labels="sliderMarkerLabel"
-              :min="0"
-              :max="currQuestion.presetScore"
-              dense
-            />
-            <q-input
-              ref="scoreInput"
-              class="q-ml-lg"
-              clearable
-              clear-icon="close"
-              v-model.number="currQuestion.studentQA[0].score"
-              type="number"
-              label="输入成绩"
-              dense
-              outlined
-              @keypress.enter="handleSubmit"
-            />
-            <q-btn-group push>
-              <q-btn-dropdown
-                label="提交"
-                color="blue"
-                @click="handleSubmit"
-                split
-              >
-                <q-list>
-                  <q-item clickable v-close-popup>
-                    <q-item-section>
-                      <q-item-label>输入评语</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </q-btn-group>
-          </div>
-        </div>
-
-        <div class="col">
-          <q-btn-group outline>
-            <q-btn
-              outline
-              label="下一人"
-              icon="arrow_downward"
-              @click="handleNextStu"
-            />
-            <q-btn
-              outline
-              dense
-              :label="`${currStuInfoIndex + 1}/${overallAnswerStatus.length}`"
-              @click="handleDisplayStuList"
-            >
-              <q-tooltip
-                :delay="1000"
-                content-class="bg-white text-black shadow-1"
-              >
-                开启/关闭学生列表 <kbd style="margin-left: 5px">Tab</kbd>
-              </q-tooltip>
-            </q-btn>
-            <q-btn
-              outline
-              label="上一人"
-              icon-right="arrow_upward"
-              @click="handlePrevStu"
-            />
-            <q-btn
-              outline
-              label="上题"
-              icon="chevron_left"
-              @click="handlePrevQuestion"
-            />
-            <q-btn
-              outline
-              dense
-              :label="`${currQuestionIndex + 1}/${questions.length}`"
-            >
-              <q-tooltip> 开启/关闭题目列表 </q-tooltip>
-            </q-btn>
-            <q-btn
-              outline
-              label="下题"
-              icon-right="chevron_right"
-              @click="handleNextQuestion"
-            />
-          </q-btn-group>
-        </div>
-      </div>
+      <CorrectionToolbar
+        :homeworkId="homeworkId"
+        :currQuestion="currQuestion"
+        :currQuestionIndex="currQuestionIndex"
+        :totalQuestionNum="questions.length"
+        :currStuIndex="currStuInfoIndex"
+        :totalStuNum="overallAnswerStatus.length"
+        @nextStu="handleNextStu"
+        @prevStu="handlePrevStu"
+        @nextQuestion="handleNextQuestion"
+        @prevQuestion="handlePrevQuestion"
+        @switchDisplayStuList="handleSwitchDisplayStuList"
+      />
     </q-footer>
   </q-layout>
 </template>
@@ -321,6 +240,8 @@ export default {
       import(
         "src/components/teacher/studentHomework/QuestionStatisticsCard.vue"
       ),
+    CorrectionToolbar: () =>
+      import("src/components/teacher/studentHomework/CorrectionToolbar.vue"),
   },
 
   computed: {
@@ -328,18 +249,6 @@ export default {
       teaCourseList: "teaCourseList",
       currSelectedTeaCourse: "currSelectedTeaCourse",
     }),
-
-    sliderMarkerLabel() {
-      const level1 = this.currQuestion.presetScore * 0.6 || 60;
-      const level2 = this.currQuestion.presetScore * 0.85 || 85;
-      const level3 = this.currQuestion.presetScore * 1 || 100;
-      return [
-        { value: 0, label: `0分` },
-        { value: level1, label: `${level1}分` },
-        { value: level2, label: `${level2}分` },
-        { value: level3, label: `${level3}` },
-      ];
-    },
   },
 
   methods: {
@@ -471,32 +380,6 @@ export default {
         },
         () => {}
       );
-    },
-
-    // 提交
-    async handleSubmit() {
-      // 检查评分是否大于预设分
-      if (
-        this.currQuestion.studentQA[0].score > this.currQuestion.presetScore
-      ) {
-        this.$q.notify({
-          message: "评分不能大于预设分",
-          type: "negative",
-          position: "top",
-          timeout: 1000,
-        });
-        return;
-      }
-
-      // 分数输入框失焦
-      this.$refs.scoreInput.blur();
-
-      this.$q.notify({
-        message: "提交成功",
-        type: "positive",
-        position: "top",
-        timeout: 1000,
-      });
     },
 
     // 切换题目
@@ -655,7 +538,7 @@ export default {
     },
 
     // 切换学生列表显示
-    handleDisplayStuList() {
+    handleSwitchDisplayStuList() {
       this.displayStuList = !this.displayStuList;
     },
 
@@ -760,11 +643,6 @@ export default {
       }
     },
 
-    // 激活分数输入框
-    handleActivateScoreInput() {
-      this.$refs.scoreInput.focus();
-    },
-
     // 点击批改设置按钮
     handleSettingsBtnClick() {},
 
@@ -795,11 +673,7 @@ export default {
     // 切换模式
     this.$shortcut.bind("v", this.handleSwitchModeByShortcut);
     // 展开学生列表
-    this.$shortcut.bind("tab", this.handleDisplayStuList);
-    // 激活分数输入框
-    this.$shortcut.bind("space", this.handleActivateScoreInput);
-    // 提交
-    this.$shortcut.bind("enter", this.handleSubmit);
+    this.$shortcut.bind("tab", this.handleSwitchDisplayStuList);
   },
 
   created() {
