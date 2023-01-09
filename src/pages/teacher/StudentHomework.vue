@@ -99,7 +99,7 @@
                 :key="questionDetails._id"
               >
                 <!-- 非解答题 -->
-                <QuestionViewCard
+                <StudentQAViewCard
                   v-if="questionDetails.type != '解答'"
                   :index="index + 1"
                   :questionDetails="questionDetails"
@@ -108,7 +108,7 @@
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
                 <!-- 解答题 -->
-                <JiedaQuestionCard
+                <StudentQAJiedaViewCard
                   v-else
                   :index="index + 1"
                   :questionDetails="questionDetails"
@@ -123,7 +123,7 @@
             <div v-show="mode == 'focus'">
               <!-- 非解答题 -->
               <div v-if="currQuestion.type != '解答'">
-                <QuestionViewCard
+                <StudentQAViewCard
                   :index="currQuestionIndex + 1"
                   :questionDetails="currQuestion"
                   :currQuestionIndex="currQuestionIndex"
@@ -143,7 +143,7 @@
                 />
               </div>
               <!-- 解答题 -->
-              <JiedaQuestionCard
+              <StudentQAJiedaViewCard
                 v-else
                 :index="currQuestionIndex + 1"
                 :questionDetails="currQuestion"
@@ -235,10 +235,12 @@ export default {
   },
 
   components: {
-    QuestionViewCard: () =>
-      import("src/components/teacher/studentHomework/QuestionViewCard.vue"),
-    JiedaQuestionCard: () =>
-      import("src/components/teacher/studentHomework/JiedaQuestionCard.vue"),
+    StudentQAViewCard: () =>
+      import("src/components/teacher/studentHomework/StudentQAViewCard.vue"),
+    StudentQAJiedaViewCard: () =>
+      import(
+        "src/components/teacher/studentHomework/StudentQAJiedaViewCard.vue"
+      ),
     QuestionStatisticsCard: () =>
       import(
         "src/components/teacher/studentHomework/QuestionStatisticsCard.vue"

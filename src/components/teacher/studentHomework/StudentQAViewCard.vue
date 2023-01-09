@@ -124,7 +124,7 @@
 
 <script>
 export default {
-  name: "QuestionViewCardForStudentHomework", // 用于作业批改页面，仅展示选择和填空题目
+  name: "StudentQAViewCard", // 用于作业批改页面，仅展示选择和填空题目
   props: {
     index: {
       type: Number,
