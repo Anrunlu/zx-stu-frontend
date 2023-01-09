@@ -7,6 +7,11 @@ import { getObjectShortId } from "./common";
 import { marked } from "marked";
 import Vue from "vue";
 
+// markdown转换为html
+function markdownToHtml(value) {
+  return marked(value);
+}
+
 // 预处理作业详情
 export function preProcessHomeworkDetails(homeworkDetails) {
   homeworkDetails.shortId = getObjectShortId(homeworkDetails);
@@ -26,6 +31,7 @@ export function preProcessStuAnswerStatus(stuAnswerStatus) {
       : "未完成";
   stuAnswerStatus.state = state;
   stuAnswerStatus.isFinished = state == "已完成";
+  stuAnswerStatus.homeworkFinalScore = stuAnswerStatus.score;
 }
 
 // 预处理选择题
@@ -138,11 +144,6 @@ export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
     return q;
   });
   return res;
-}
-
-// markdown转换为html
-function markdownToHtml(value) {
-  return marked(value);
 }
 
 // 预处理解答题

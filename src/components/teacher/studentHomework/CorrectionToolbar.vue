@@ -86,14 +86,10 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { apiPostCorrectStudentQA } from "src/api/teacher/homework";
 export default {
   name: "CorrectionToolbar",
   props: {
-    homeworkId: {
-      type: String,
-      required: true,
-    },
     currQuestion: {
       type: Object,
       required: true,
@@ -135,6 +131,7 @@ export default {
           },
         ],
       },
+      comment: "",
     };
   },
 
@@ -148,11 +145,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters("teaCourse", {
-      teaCourseList: "teaCourseList",
-      currSelectedTeaCourse: "currSelectedTeaCourse",
-    }),
-
     sliderMarkerLabel() {
       const level1 = this.questionDetails.presetScore * 0.6 || 60;
       const level2 = this.questionDetails.presetScore * 0.85 || 85;
@@ -169,6 +161,17 @@ export default {
   methods: {
     // 提交
     async handleSubmit() {
+      // 检查是否未作答
+      if (!this.currQuestion.isSubmit) {
+        this.$q.notify({
+          message: "未作答无法评分",
+          type: "negative",
+          position: "top",
+          timeout: 1000,
+        });
+        return;
+      }
+
       // 检查评分是否大于预设分
       if (
         this.currQuestion.studentQA[0].score > this.currQuestion.presetScore
@@ -184,6 +187,30 @@ export default {
 
       // 分数输入框失焦
       this.$refs.scoreInput.blur();
+
+      const payload = {
+        studentQA_id: this.questionDetails.studentQA[0]._id,
+        comment: this.comment,
+        score: this.questionDetails.studentQA[0].score,
+      };
+
+      const { data } = await apiPostCorrectStudentQA(payload);
+
+      const rspStudentQA = data.data.studentQA;
+      const rspStudentHomework = data.data.studentHomework;
+
+      // 通知父组件更新数据
+      const payload2emit = {
+        score: rspStudentQA.score,
+        comment: rspStudentQA.comment,
+        corrected: rspStudentQA.corrected,
+        homeworkFinalScore: rspStudentHomework.finalScore,
+      };
+
+      this.$emit("submited", payload2emit);
+
+      // 评论内容置空
+      this.comment = "";
 
       this.$q.notify({
         message: "提交成功",

@@ -79,3 +79,12 @@ export function apiGetHomeworkQuestionStatistics(data) {
     data,
   });
 }
+
+// 批改学生作答
+export function apiPostCorrectStudentQA(data) {
+  return loadingFn(request)({
+    url: "/tea/question/correctStudentQA",
+    method: "POST",
+    data,
+  });
+}

@@ -60,7 +60,7 @@
             <q-item
               clickable
               v-ripple
-              v-for="student in overallAnswerStatus"
+              v-for="student in stuInfoList"
               :key="student.username"
               :id="student.username"
               :active="student.username === currStuInfo.username"
@@ -80,7 +80,7 @@
                   style="font-size: 0.5rem"
                   >未作答</span
                 >
-                <span v-else>{{ student.score }}</span>
+                <span v-else>{{ student.homeworkFinalScore }}</span>
               </q-item-section>
             </q-item>
           </q-list>
@@ -163,17 +163,17 @@
       v-if="!$q.platform.is.mobile"
     >
       <CorrectionToolbar
-        :homeworkId="homeworkId"
         :currQuestion="currQuestion"
         :currQuestionIndex="currQuestionIndex"
         :totalQuestionNum="questions.length"
         :currStuIndex="currStuInfoIndex"
-        :totalStuNum="overallAnswerStatus.length"
+        :totalStuNum="stuInfoList.length"
         @nextStu="handleNextStu"
         @prevStu="handlePrevStu"
         @nextQuestion="handleNextQuestion"
         @prevQuestion="handlePrevQuestion"
         @switchDisplayStuList="handleSwitchDisplayStuList"
+        @submited="handleCorrectionSubmited"
       />
     </q-footer>
   </q-layout>
@@ -205,7 +205,7 @@ export default {
       mode: "waterfall", // foucs: 专注模式, waterfall: 瀑布模式
       displayStuList: true,
       displayStatisticsCard: true,
-      overallAnswerStatus: [],
+      stuInfoList: [],
       currStuInfo: {},
       currStuInfoIndex: 0,
       currQuestion: {
@@ -214,6 +214,7 @@ export default {
         type: "",
         difficulty: 0,
         presetScore: 0,
+        getScore: 0,
         content: "",
         studentQA: [
           {
@@ -223,6 +224,8 @@ export default {
               },
             ],
             score: 0,
+            comment: "",
+            corrected: false,
           },
         ],
       },
@@ -286,7 +289,7 @@ export default {
           preProcessStuAnswerStatus(stuAnswerStatus);
         });
 
-        this.overallAnswerStatus = data.data;
+        this.stuInfoList = data.data;
 
         // 获取路由 query 参数
         const query = this.$route.query;
@@ -294,12 +297,10 @@ export default {
         // 如果有 u 参数，则定位到该学生
         let stuInfo = null;
         if (query.u) {
-          stuInfo = this.overallAnswerStatus.find(
-            (stu) => stu.username === query.u
-          );
+          stuInfo = this.stuInfoList.find((stu) => stu.username === query.u);
         } else {
           // 否则默认定位到第一个学生
-          stuInfo = this.overallAnswerStatus[0];
+          stuInfo = this.stuInfoList[0];
         }
         this.switchToStu(stuInfo);
         setTimeout(() => {
@@ -342,8 +343,8 @@ export default {
     // 切换学生
     async switchToStu(stuInfo) {
       this.currStuInfo = stuInfo;
-      // 获取学生在 overallAnswerStatus 中的索引
-      this.currStuInfoIndex = this.overallAnswerStatus.findIndex(
+      // 获取学生在 stuInfoList 中的索引
+      this.currStuInfoIndex = this.stuInfoList.findIndex(
         (stu) => stu._id === stuInfo._id
       );
 
@@ -558,7 +559,7 @@ export default {
 
     // 上一人
     handlePrevStu() {
-      const currStuIndex = this.overallAnswerStatus.findIndex(
+      const currStuIndex = this.stuInfoList.findIndex(
         (stu) => stu._id === this.currStuInfo._id
       );
       const prevStuIndex = currStuIndex - 1;
@@ -573,19 +574,19 @@ export default {
         return;
       }
 
-      this.switchToStu(this.overallAnswerStatus[prevStuIndex]);
+      this.switchToStu(this.stuInfoList[prevStuIndex]);
 
       // this.getStudentHomeworkDetail();
     },
 
     // 下一人
     handleNextStu() {
-      const currStuIndex = this.overallAnswerStatus.findIndex(
+      const currStuIndex = this.stuInfoList.findIndex(
         (stu) => stu._id === this.currStuInfo._id
       );
       const nextStuIndex = currStuIndex + 1;
       // 如果是最后一个学生，不做任何操作
-      if (nextStuIndex >= this.overallAnswerStatus.length) {
+      if (nextStuIndex >= this.stuInfoList.length) {
         this.$q.notify({
           message: "当前最后一个学生",
           type: "warning",
@@ -595,7 +596,7 @@ export default {
         return;
       }
 
-      this.switchToStu(this.overallAnswerStatus[nextStuIndex]);
+      this.switchToStu(this.stuInfoList[nextStuIndex]);
 
       // this.getStudentHomeworkDetail();
 
@@ -641,6 +642,15 @@ export default {
           timeout: 1000,
         });
       }
+    },
+
+    // 批改已提交事件
+    handleCorrectionSubmited(rspData) {
+      this.currQuestion.getScore = rspData.score;
+      this.currQuestion.studentQA[0].comment = rspData.comment;
+      this.currQuestion.studentQA[0].corrected = rspData.corrected;
+
+      this.currStuInfo.homeworkFinalScore = rspData.homeworkFinalScore;
     },
 
     // 点击批改设置按钮
