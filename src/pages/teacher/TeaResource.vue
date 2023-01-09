@@ -140,7 +140,7 @@
 
     <!-- 教学资源编辑对话框 -->
     <q-dialog v-model="teaResourceEditingDig">
-      <q-card style="width: 600px; max-width: 80vw">
+      <q-card style="width: 600px; max-width: 90vw">
         <q-form @submit="handleEditingTeaResourceFormSubmit">
           <CardBar title="编辑资源" icon="edit" />
           <q-card-section class="q-pa-sm">

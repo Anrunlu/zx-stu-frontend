@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 1100px; max-width: 80vw">
+  <q-card style="width: 1100px; max-width: 90vw">
     <!-- 标题栏 -->
     <CardBar
       :title="`题车(共${questionsCountInfo.total}题)`"

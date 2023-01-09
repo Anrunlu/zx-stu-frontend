@@ -1,6 +1,6 @@
 <template>
   <!-- 添加教学班 -->
-  <q-card style="width: 700px; max-width: 80vw">
+  <q-card style="width: 700px; max-width: 90vw">
     <!-- 标题栏 -->
     <CardBar title="添加教学班" icon="class" />
 

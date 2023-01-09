@@ -1,6 +1,6 @@
 <template>
   <!-- 编辑作业 -->
-  <q-card style="width: 700px; max-width: 80vw">
+  <q-card style="width: 700px; max-width: 90vw">
     <q-form @submit="handleEditingHomeworkFormSubmit">
       <!-- 标题栏 -->
       <CardBar title="编辑作业" icon="edit">

@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 800px; max-width: 80vw">
+  <q-card style="width: 800px; max-width: 90vw">
     <!-- 标题栏 -->
     <CardBar title="题目预览" icon="visibility">
       <template v-slot:left>

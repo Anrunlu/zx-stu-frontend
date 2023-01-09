@@ -1,5 +1,5 @@
 <template>
-  <q-card style="min-width: 500px; max-width: 80vw">
+  <q-card style="min-width: 500px; max-width: 90vw">
     <CardBar :title="title" icon="warning" bgColor="negative" />
     <q-card-section>
       <div class="q-mb-sm">

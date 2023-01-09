@@ -1,6 +1,6 @@
 <template>
   <!-- 创建作业 -->
-  <q-card style="width: 700px; max-width: 80vw">
+  <q-card style="width: 700px; max-width: 90vw">
     <q-form @submit="handlePublishHomeworkSubmit">
       <!-- 标题栏 -->
       <CardBar title="发布作业" icon="add" />

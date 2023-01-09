@@ -145,7 +145,7 @@
 
     <!-- 高级筛选对话框 -->
     <q-dialog v-model="questionTableFilterDig" persistent>
-      <q-card style="width: 600px; max-width: 80vw">
+      <q-card style="width: 600px; max-width: 90vw">
         <CardBar title="筛选题目" icon="filter_list" />
         <q-card-section>
           <q-list class="row">

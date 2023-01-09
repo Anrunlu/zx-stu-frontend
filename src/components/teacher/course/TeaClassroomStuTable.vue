@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 700px; max-width: 80vw">
+  <div style="width: 700px; max-width: 90vw">
     <!-- 教学班学生表格 -->
     <q-card>
       <!-- 标题栏 -->
@@ -89,7 +89,7 @@
 
     <!-- 向教学班添加学生对话框 -->
     <q-dialog v-model="showAddStuToTeaClassroomDig">
-      <q-card style="width: 600px; max-width: 80vw">
+      <q-card style="width: 600px; max-width: 90vw">
         <q-card-section>
           <div class="text-h5 q-ml-sm">
             添加学生到教学班
