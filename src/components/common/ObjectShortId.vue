@@ -21,6 +21,7 @@ export default {
   props: {
     id: {
       type: String,
+      default: "xxxxxx",
     },
     shortId: {
       type: String,

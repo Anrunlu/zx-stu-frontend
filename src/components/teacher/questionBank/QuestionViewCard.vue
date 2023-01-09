@@ -34,49 +34,7 @@
     </CardBar>
 
     <q-card-section style="max-height: 70vh" class="scroll">
-      <!-- 题干区域 -->
-      <div>
-        <QuestionChip :questionType="questionDetails.type" />
-        <div
-          class="text-subtitle1 q-pt-sm"
-          v-html="questionDetails.content"
-          v-katex
-        ></div>
-      </div>
-      <!-- 客观题选项区域 -->
-      <q-list v-if="questionDetails.type != '解答'">
-        <q-item
-          clickable
-          v-ripple
-          v-for="(option, index) in questionDetails.answer"
-          :key="index"
-        >
-          <q-item-section avatar v-if="questionDetails.type != '填空'">
-            <q-icon :color="option.isRight ? 'positive' : 'primary'">{{
-              option.mark
-            }}</q-icon>
-          </q-item-section>
-          <q-item-section avatar v-else>
-            <q-icon :color="option.isRight ? 'positive' : 'primary'">{{
-              option.mark.slice(1, 2)
-            }}</q-icon>
-          </q-item-section>
-          <q-item-section>
-            <div
-              class="text-body2 option"
-              v-katex
-              v-html="option.content"
-            ></div>
-          </q-item-section>
-        </q-item>
-      </q-list>
-      <!-- 解答题答案区域 -->
-      <div v-else>
-        <div
-          class="text-body2 q-pt-sm"
-          v-html="questionDetails.answer.content"
-        ></div>
-      </div>
+      <QuestionViewCommon :questionDetails="questionDetails" />
     </q-card-section>
 
     <q-card-actions align="right" v-if="!pure">
@@ -100,7 +58,6 @@
 
 <script>
 import { apiGetQuestionDetail } from "src/api/teacher/question";
-import QuestionChip from "src/components/common/QuestionChip.vue";
 import { preProcessQuestionDetails } from "src/utils/question";
 
 export default {
@@ -124,14 +81,14 @@ export default {
   data() {
     return {
       questionDetails: {},
-      questionEditDig: false,
     };
   },
 
   components: {
-    QuestionChip,
     CardBar: () => import("src/components/common/CardBar.vue"),
     ObjectShortId: () => import("src/components/common/ObjectShortId.vue"),
+    QuestionViewCommon: () =>
+      import("src/components/common/QuestionViewCommon.vue"),
   },
 
   watch: {
@@ -148,9 +105,9 @@ export default {
     async getQuestionDetail(questionId) {
       try {
         const { data } = await apiGetQuestionDetail(questionId);
-        this.questionDetails = data.data;
         // 预处理题目详细信息
-        preProcessQuestionDetails(this.questionDetails);
+        preProcessQuestionDetails(data.data);
+        this.questionDetails = data.data;
       } catch (error) {
         // 提示获取失败
         this.$q.notify({
