@@ -333,6 +333,17 @@ export function preProcessQuestionDetails(questionDetails) {
   questionDetails.shortId = getObjectShortId(questionDetails);
   // 格式化题目内容
   questionDetails.content = marked(questionDetails.content);
+  // 用于排序
+  questionDetails.sortOrder =
+    questionDetails.type === "单选"
+      ? 0
+      : questionDetails.type === "多选"
+      ? 1
+      : questionDetails.type === "判断"
+      ? 2
+      : questionDetails.type === "填空"
+      ? 3
+      : 4;
   // 格式化时间
   questionDetails.createdAt = formatTimeWithWeekDay(questionDetails.createdAt);
   questionDetails.updatedAt = formatTimeWithWeekDay(questionDetails.updatedAt);

@@ -64,6 +64,13 @@ module.exports = function (ctx) {
           ? "http://v2test.zxapi.anrunlu.net/"
           : "http://v2test.zxapi.anrunlu.net/",
       },
+
+      // env: {
+      //   API_URL: ctx.dev
+      //     ? "http://anrunlu-test.com/"
+      //     : "http://anrunlu-test.com/",
+      // },
+
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)

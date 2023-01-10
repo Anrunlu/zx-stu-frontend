@@ -64,6 +64,11 @@ export default {
     questionDetails: {
       type: Object,
       required: true,
+      default: () => {
+        return {
+          content: "",
+        };
+      },
     },
     showShortId: {
       type: Boolean,

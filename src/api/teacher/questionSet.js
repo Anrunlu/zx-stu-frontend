@@ -10,6 +10,14 @@ export function apiCreateQuestionSet(data) {
   });
 }
 
+// 获取试题集详情
+export function apiGetQuestionSetDetails(questionSetId) {
+  return loadingFn(request)({
+    url: `/tea/question-set/${questionSetId}`,
+    method: "GET",
+  });
+}
+
 // 过滤试题集
 export function apiFilterQuestionSets(data) {
   return loadingFn(request)({

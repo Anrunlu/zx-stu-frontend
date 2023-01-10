@@ -6,6 +6,7 @@ import {
 import { getObjectShortId } from "./common";
 import { marked } from "marked";
 import Vue from "vue";
+import { concatQuestionWithQuestionMeta } from "./questionSet";
 
 // markdown转换为html
 function markdownToHtml(value) {
@@ -258,23 +259,8 @@ export function pretreatmentStudentHomeworkDetails(studentHomeworkDetails) {
 
   const questionsMeta = questionSets[0].questionsMeta; // 题目元数据
 
-  if (questionsMeta.length > 0) {
-    // 把题目元数据拼接到题目上
-    questions.forEach((question) => {
-      const questionMeta = questionsMeta.find(
-        (meta) => meta._id === question._id
-      );
-      question.presetScore = questionMeta.presetScore;
-      question.creator = questionMeta.creator;
-    });
-  } else {
-    // TODO:为了兼容旧数据，这样处理
-    // 如果没有题目元数据，表明题目预设分是100
-    const baseScore = 100;
-    questions.forEach((q) => {
-      q.presetScore = baseScore;
-    });
-  }
+  // 合并题目和题目元数据
+  concatQuestionWithQuestionMeta(questions, questionsMeta);
 
   studentHomeworkDetails.questions = questions;
   studentHomeworkDetails.quesCategory = quesCategory;

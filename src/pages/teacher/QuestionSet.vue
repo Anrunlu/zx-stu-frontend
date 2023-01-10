@@ -346,6 +346,11 @@
         @createHomeworksSuccess="handleCreatedHomeworkSuccess"
       />
     </q-dialog>
+
+    <!-- 试题集预览对话框 -->
+    <q-dialog v-model="questionSetPreviewDig" persistent>
+      <QuestionSetViewCard :questionSetId="currClickedRowQuestionSet._id" />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -422,6 +427,7 @@ export default {
         creator: "",
         updatedAt: "",
         homeworks: [],
+        questions: [],
       },
       // 筛选条件
       questionSetTableFilterOptions: {
@@ -439,6 +445,8 @@ export default {
       removeQuestionSetDig: false,
       // 发布作业对话框
       homeworkAddDig: false,
+      // 试题集预览对话框
+      questionSetPreviewDig: false,
     };
   },
 
@@ -448,6 +456,8 @@ export default {
       import("src/components/common/ObjectConfirmRemoveCard.vue"),
     HomeworkAddCard: () =>
       import("src/components/teacher/homework/HomeworkAddCard.vue"),
+    QuestionSetViewCard: () =>
+      import("src/components/teacher/questionSet/QuestionSetViewCard.vue"),
   },
 
   computed: {
@@ -574,6 +584,8 @@ export default {
     // 点击题集列表的行
     handleQuestionTableRowClick(evt, row) {
       this.currClickedRowQuestionSet = row;
+      // 点击预览试题集
+      this.questionSetPreviewDig = true;
     },
 
     // 点击题集列表的发布按钮
