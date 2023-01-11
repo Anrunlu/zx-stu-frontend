@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- 题干区域 -->
+    <!-- 顶部信息区域 -->
     <div>
       <QuestionChip :questionType="questionDetails.type" />
       <ObjectShortId
@@ -10,13 +10,25 @@
         :color="'grey'"
         objectName="题目"
       />
-      <div
-        class="text-subtitle1 q-pt-sm"
-        v-html="questionDetails.content"
-        v-katex
-        v-viewer
-      ></div>
+      <!-- 序号 -->
+      <q-chip
+        v-if="showIndex"
+        class="float-right"
+        color="grey"
+        dense
+        outline
+        size="sm"
+        square
+        :label="index"
+      />
     </div>
+    <!-- 题干区域 -->
+    <div
+      class="text-subtitle1 q-pt-sm"
+      v-html="questionDetails.content"
+      v-katex
+      v-viewer
+    ></div>
     <!-- 客观题选项区域 -->
     <q-list v-if="questionDetails.type != '解答'">
       <q-item
@@ -61,6 +73,10 @@
 export default {
   name: "QuestionViewCommon",
   props: {
+    index: {
+      type: Number,
+      required: false,
+    },
     questionDetails: {
       type: Object,
       required: true,
@@ -75,6 +91,11 @@ export default {
       default: false,
       required: false,
     },
+    showIndex: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
 
   components: {
@@ -84,4 +105,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.option p {
+  margin: 0;
+}
+</style>

@@ -349,7 +349,10 @@
 
     <!-- 试题集预览对话框 -->
     <q-dialog v-model="questionSetPreviewDig" persistent>
-      <QuestionSetViewCard :questionSetId="currClickedRowQuestionSet._id" />
+      <QuestionSetViewCard
+        :questionSetId="currClickedRowQuestionSet._id"
+        @publish="handlePublishFromViewCard"
+      />
     </q-dialog>
   </q-page>
 </template>
@@ -591,6 +594,16 @@ export default {
     // 点击题集列表的发布按钮
     handleTableCellPublishBtnClick(row) {
       this.currClickedRowQuestionSet = row;
+      this.homeworkAddDig = true;
+    },
+
+    // 监听题集预览组件的发布事件
+    handlePublishFromViewCard(questionSetId) {
+      // 根据id查找试题集
+      this.currClickedRowQuestionSet = this.questionSetList.find(
+        (questionSet) => questionSet._id === questionSetId
+      );
+
       this.homeworkAddDig = true;
     },
 

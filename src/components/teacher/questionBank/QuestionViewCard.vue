@@ -144,8 +144,4 @@ export default {
 };
 </script>
 
-<style>
-.option p {
-  margin: 0;
-}
-</style>
+<style></style>

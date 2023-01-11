@@ -1,10 +1,26 @@
 <template>
   <q-card style="width: 900px; max-width: 90vw">
-    <CardBar title="题集预览" icon="list" />
+    <CardBar :title="questionSet.title" icon="topic">
+      <!-- 右侧按钮 -->
+      <template v-slot:right>
+        <q-btn
+          class="q-mr-sm"
+          dense
+          outline
+          icon="publish"
+          @click="handlePublishBtnClick"
+          label="发布"
+        >
+          <q-tooltip>发布</q-tooltip>
+        </q-btn>
+      </template>
+    </CardBar>
     <q-card-section style="max-height: 90vh" class="scroll">
       <div v-for="(questionDetails, index) in questions" :key="index">
         <QuestionViewCommon
           :questionDetails="questionDetails"
+          :index="index + 1"
+          :showIndex="true"
           :showShortId="true"
           class="q-my-sm"
         />
@@ -28,6 +44,9 @@ export default {
 
   data() {
     return {
+      questionSet: {
+        title: "",
+      },
       questions: [],
     };
   },
@@ -50,6 +69,7 @@ export default {
       try {
         const { data } = await apiGetQuestionSetDetails(this.questionSetId);
         const questionSet = data.data;
+        this.questionSet = questionSet;
         preProcessQuestionSetQuestions(questionSet);
         this.questions = questionSet.questions;
       } catch (e) {
@@ -59,6 +79,11 @@ export default {
           type: "negative",
         });
       }
+    },
+
+    // 点击发布按钮
+    handlePublishBtnClick() {
+      this.$emit("publish", this.questionSetId);
     },
   },
 
