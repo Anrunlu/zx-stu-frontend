@@ -171,7 +171,7 @@
         <q-list padding>
           <q-item
             v-for="link in links1"
-            :key="link.text"
+            :key="link.label"
             :to="link.to"
             clickable
             exact
@@ -181,7 +181,7 @@
               <q-icon :name="link.icon" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
+              <q-item-label>{{ link.label }}</q-item-label>
             </q-item-section>
           </q-item>
 
@@ -189,7 +189,7 @@
 
           <q-item
             v-for="link in links2"
-            :key="link.text"
+            :key="link.label"
             :to="link.to"
             clickable
             exact
@@ -199,7 +199,7 @@
               <q-icon :name="link.icon" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
+              <q-item-label>{{ link.label }}</q-item-label>
             </q-item-section>
           </q-item>
 
@@ -207,17 +207,19 @@
 
           <q-item
             v-for="link in links3"
-            :key="link.text"
+            :key="link.label"
             :to="link.to"
             clickable
             exact
             v-ripple.early
+            :href="link.href"
+            @click="handleLinkClick(link)"
           >
             <q-item-section avatar>
               <q-icon :name="link.icon" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
+              <q-item-label>{{ link.label }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -251,9 +253,9 @@
 
 <script>
 import { openAuthedSocket } from "src/utils/socketio";
-import ImmediatelyAncmt from "src/components/common/ImmediatelyAncmt";
 import { mapGetters } from "vuex";
 import { setLayout } from "src/utils/layout";
+import Tucao from "src/utils/tucao";
 export default {
   data() {
     return {
@@ -269,12 +271,14 @@ export default {
   },
 
   components: {
-    ImmediatelyAncmt,
+    ImmediatelyAncmt: () =>
+      import("src/components/common/ImmediatelyAncmt.vue"),
     ChangeTermCard: () => import("src/components/common/ChangeTermCard.vue"),
   },
 
   computed: {
     ...mapGetters("user", {
+      userId: "userId",
       username: "username",
       nickname: "nickname",
       avatar: "avatar",
@@ -317,6 +321,20 @@ export default {
       setLayout("TeacherLayoutOld");
       // 刷新页面
       window.location.reload();
+    },
+
+    // 点击链接
+    handleLinkClick(link) {
+      if (link.href && link.label === "问题反馈") {
+        const payload = {
+          // nickname,avatar,openid 必填
+          nickname: this.nickname,
+          avatar: this.avatar,
+          openid: this.userId,
+        };
+        const productId = "450375";
+        Tucao.request(productId, payload);
+      }
     },
   },
 
