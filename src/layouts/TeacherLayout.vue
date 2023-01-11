@@ -14,13 +14,9 @@
           class="q-mx-md"
         />
 
-        <q-toolbar-title
-          v-if="$q.screen.gt.sm"
-          shrink
-          class="row items-center no-wrap"
-        >
+        <q-toolbar-title shrink class="row items-center no-wrap">
           <img src="~assets/teacherLogo.png" width="130" />
-          <span class="q-ml-sm"
+          <span class="q-ml-sm" v-if="$q.screen.gt.sm"
             ><q-btn
               color="gray"
               flat
@@ -35,6 +31,7 @@
         <q-space />
 
         <q-input
+          v-if="$q.screen.gt.xs"
           class="GPL__toolbar-input"
           dense
           standout="bg-primary"
@@ -162,7 +159,7 @@
       side="left"
     >
       <q-scroll-area class="fit">
-        <q-toolbar class="GPL__toolbar mobile-only">
+        <q-toolbar class="GPL__toolbar" v-if="$q.screen.gt.sm">
           <q-toolbar-title class="row items-center text-grey-8">
             <img class="q-pl-md" src="~assets/logo.png" width="140" />
           </q-toolbar-title>
