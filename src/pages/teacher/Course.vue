@@ -74,6 +74,15 @@
       </q-card>
     </div>
 
+    <div v-if="teaCourseList.length == 0">
+      <div class="row flex-center q-mt-lg text-grey">
+        <span class="text-h3 text-center">
+          本学期您还未添加课程 <br />
+          点击 + 按钮以添加
+        </span>
+      </div>
+    </div>
+
     <!-- 添加课程按钮 -->
     <q-page-sticky position="top-right" :offset="[25, 10]">
       <q-btn
@@ -127,9 +136,6 @@ import {
   apiRenameTeaClsroom,
   apiRemoveTeaClsroom,
 } from "src/api/teacher/course";
-import AddTeaCourseCard from "src/components/teacher/course/AddTeaCourseCard.vue";
-import AddTeaClassroomCard from "src/components/teacher/course/AddTeaClassroomCard.vue";
-import TeaClassroomStuTable from "src/components/teacher/course/TeaClassroomStuTable.vue";
 import { mapGetters } from "vuex";
 export default {
   name: "Course",
@@ -166,9 +172,12 @@ export default {
   },
 
   components: {
-    AddTeaCourseCard,
-    AddTeaClassroomCard,
-    TeaClassroomStuTable,
+    AddTeaCourseCard: () =>
+      import("src/components/teacher/course/AddTeaCourseCard.vue"),
+    AddTeaClassroomCard: () =>
+      import("src/components/teacher/course/AddTeaClassroomCard.vue"),
+    TeaClassroomStuTable: () =>
+      import("src/components/teacher/course/TeaClassroomStuTable.vue"),
     ObjectConfirmRemoveCard: () =>
       import("src/components/common/ObjectConfirmRemoveCard.vue"),
   },
