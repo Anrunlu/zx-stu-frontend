@@ -167,6 +167,8 @@
             clickable
             exact
             v-ripple.early
+            :href="link.href"
+            @click="handleLinkClick(link)"
           >
             <q-item-section avatar>
               <q-icon :name="link.icon" />
@@ -185,6 +187,8 @@
             clickable
             exact
             v-ripple.early
+            :href="link.href"
+            @click="handleLinkClick(link)"
           >
             <q-item-section avatar>
               <q-icon :name="link.icon" />
