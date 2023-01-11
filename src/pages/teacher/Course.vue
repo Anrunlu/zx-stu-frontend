@@ -74,7 +74,7 @@
       </q-card>
     </div>
 
-    <div v-if="teaCourseList.length == 0">
+    <div v-if="teaCourseList.length == 0 && dataLodingFinished">
       <div class="row flex-center q-mt-lg text-grey">
         <span class="text-h3 text-center">
           本学期您还未添加课程 <br />
@@ -141,6 +141,7 @@ export default {
   name: "Course",
   data() {
     return {
+      dataLodingFinished: false,
       // 教学课程列表表头列表
       teaCourseClassroomColumns: [
         {
@@ -329,6 +330,9 @@ export default {
   created() {
     // 获取教师课程列表，store 事件
     this.$store.dispatch("teaCourse/getTeaCourseInfo");
+    setTimeout(() => {
+      this.dataLodingFinished = true;
+    }, 1000);
   },
 };
 </script>
