@@ -83,8 +83,12 @@
       </div>
     </div>
 
-    <!-- 添加课程按钮 -->
-    <q-page-sticky position="top-right" :offset="[25, 10]">
+    <!-- 添加课程按钮(大屏幕) -->
+    <q-page-sticky
+      v-if="$q.screen.gt.sm"
+      position="top-right"
+      :offset="[25, 10]"
+    >
       <q-btn
         class="q-ma-xs bg-purple"
         round
@@ -99,6 +103,18 @@
           >添加课程</q-tooltip
         ></q-btn
       >
+    </q-page-sticky>
+
+    <!-- 添加课程按钮(小屏幕|手机屏幕) -->
+    <q-page-sticky v-else position="bottom-right" :offset="[25, 25]">
+      <q-btn
+        class="q-ma-xs bg-purple"
+        round
+        icon="add"
+        size="20px"
+        color="primary"
+        @click="handleAddTeaCourseBtnClick"
+      ></q-btn>
     </q-page-sticky>
 
     <!-- 教学班学生列表对话框 -->

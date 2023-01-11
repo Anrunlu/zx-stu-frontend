@@ -136,7 +136,7 @@
       </template>
 
       <template v-slot:body-cell-citationTimes="props">
-        <q-td :props="props">
+        <q-td :props="props" @click.stop="">
           <q-chip
             class="cursor-pointer"
             size="sm"

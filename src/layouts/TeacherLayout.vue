@@ -159,12 +159,6 @@
       side="left"
     >
       <q-scroll-area class="fit">
-        <q-toolbar class="GPL__toolbar" v-if="$q.screen.gt.sm">
-          <q-toolbar-title class="row items-center text-grey-8">
-            <img class="q-pl-md" src="~assets/logo.png" width="140" />
-          </q-toolbar-title>
-        </q-toolbar>
-
         <q-list padding>
           <q-item
             v-for="link in links1"
