@@ -120,8 +120,9 @@
           </q-btn>
 
           <q-btn dense flat no-wrap>
-            <q-avatar rounded size="25px">
-              <img :src="avatar" />
+            <q-avatar rounded size="25px" color="primary" text-color="white">
+              <img v-if="avatar" :src="avatar" />
+              <span v-else>{{ nickname.slice(0, 1) }}</span>
             </q-avatar>
             <q-icon name="arrow_drop_down" size="16px" />
 
