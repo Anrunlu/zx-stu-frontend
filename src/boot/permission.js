@@ -51,9 +51,7 @@ export default ({ router, store, Vue }) => {
           // 如果用户类型和路由元信息中的用户类型不一致
           Notify.create({
             message: "无权限",
-            color: "red",
-            icon: "error",
-            position: "center",
+            type: "negative",
           }); // 则提示无权限，并跳转到来时的页面
           next({
             path: from.path,
