@@ -36,7 +36,6 @@ import * as qiniu from "qiniu-js";
 
 // 上传文件到七牛
 export default async function upload(file, key) {
-  // 用时间戳作为文件名
   const { data } = await getUploadToken();
   const token = data.uploadToken;
   return qiniu.upload(file, key, token, {

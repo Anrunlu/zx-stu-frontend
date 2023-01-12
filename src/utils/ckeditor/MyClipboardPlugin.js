@@ -1,4 +1,5 @@
-import { uploadWrapper } from "src/utils/qiniu";
+import uploadWrapper from "src/utils/qiniu";
+import { v4 as uuidv4 } from "uuid";
 
 // 剪切板适配器
 export function MyClipboardAdapterPlugin(editor) {
@@ -10,17 +11,14 @@ export function MyClipboardAdapterPlugin(editor) {
 
     let files = data.dataTransfer.files;
 
-    // const username = store.getters["user/username"];
-    const username = `test`;
-
     if (files.length != 0) {
       let content = "";
 
       files.forEach((file) => {
-        const fileRename = `${username}-${Date.now()}.${file.name.replace(
-          /.+\./,
-          ""
-        )}`;
+        // uuid
+        const uuid = uuidv4();
+
+        const fileRename = `${uuid}.${file.name.replace(/.+\./, "")}`;
 
         let url = "";
 
@@ -42,9 +40,17 @@ export function MyClipboardAdapterPlugin(editor) {
 
         content += `<a href='${url}'>${file.name}</a> &emsp;`;
 
-        // uploadWrapper(file, fileRename).then(() => {
-        //   console.log("123456");
-        // });
+        uploadWrapper(file, fileRename).then((uploader) => {
+          uploader.subscribe(
+            () => {},
+            (error) => {
+              console.error(error);
+            },
+            (data) => {
+              // console.log("上传成功");
+            }
+          );
+        });
       });
 
       data.content = editor.data.htmlProcessor.toView(content);

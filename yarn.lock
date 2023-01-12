@@ -1054,14 +1054,14 @@
     ckeditor5 "^35.3.0"
 
 "@ckeditor/ckeditor5-clipboard@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-clipboard/-/ckeditor5-clipboard-35.3.1.tgz"
-  integrity sha512-NWlkUoB6GO4EPIQ3gFAIg2pqy/BdIhFnpqOnqmXcjSFxoH6jL9700XJcdbkpAQFNU9RO2g2zIMg6TaWSUixHiw==
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-clipboard/-/ckeditor5-clipboard-35.4.0.tgz"
+  integrity sha512-B6rIQxvOrHvO9TZRC8JA0wKk+IfN880UJkYIg1qlhf9HFNVjdVbtHaiCsPD+TzGmQN3XHXfNjgjabGRIn0iZmw==
   dependencies:
-    "@ckeditor/ckeditor5-core" "^35.3.1"
-    "@ckeditor/ckeditor5-engine" "^35.3.1"
-    "@ckeditor/ckeditor5-utils" "^35.3.1"
-    "@ckeditor/ckeditor5-widget" "^35.3.1"
+    "@ckeditor/ckeditor5-core" "^35.4.0"
+    "@ckeditor/ckeditor5-engine" "^35.4.0"
+    "@ckeditor/ckeditor5-utils" "^35.4.0"
+    "@ckeditor/ckeditor5-widget" "^35.4.0"
     lodash-es "^4.17.11"
 
 "@ckeditor/ckeditor5-cloud-services@^35.3.0":
@@ -1071,14 +1071,14 @@
   dependencies:
     ckeditor5 "^35.3.0"
 
-"@ckeditor/ckeditor5-core@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-core/-/ckeditor5-core-35.3.1.tgz"
-  integrity sha512-vsguwwFEY4H96AmtXcgJErCCIjEfxEByAjlxIVsyAOBpIEPEX49r3WT0M1ALH2nWDlZ4zZPih2g/57S4Mn4E6g==
+"@ckeditor/ckeditor5-core@^35.3.1", "@ckeditor/ckeditor5-core@^35.4.0":
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-core/-/ckeditor5-core-35.4.0.tgz"
+  integrity sha512-Rf0H7C4inCj/YC8aii0cT7TC/IuBIQ+tXmu9qd8/1BJ/rz1MCHXtBPApjTbFp33OE3aOFB5+NUaKt05k/dL3OA==
   dependencies:
-    "@ckeditor/ckeditor5-engine" "^35.3.1"
-    "@ckeditor/ckeditor5-ui" "^35.3.1"
-    "@ckeditor/ckeditor5-utils" "^35.3.1"
+    "@ckeditor/ckeditor5-engine" "^35.4.0"
+    "@ckeditor/ckeditor5-ui" "^35.4.0"
+    "@ckeditor/ckeditor5-utils" "^35.4.0"
     lodash-es "^4.17.15"
 
 "@ckeditor/ckeditor5-easy-image@^35.3.0":
@@ -1096,21 +1096,21 @@
     ckeditor5 "^35.3.0"
     lodash-es "^4.17.15"
 
-"@ckeditor/ckeditor5-engine@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-engine/-/ckeditor5-engine-35.3.1.tgz"
-  integrity sha512-wJQm9RNQ37n7GZHZVo5lalB/flMc2DQBRx1iyjQXgJPs2OgpfA/lzJdQftudz+NV1++YULX/Ie+lXIm/cUi0Sg==
+"@ckeditor/ckeditor5-engine@^35.3.1", "@ckeditor/ckeditor5-engine@^35.4.0":
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-engine/-/ckeditor5-engine-35.4.0.tgz"
+  integrity sha512-67QKtUGJeLM072h9qURvzczYGU3ecuxR9LLmM4dffnV+PBNQ9e8RDCY7PuuEP0pplmAUI6/XqoZJIbk6h7ZV3Q==
   dependencies:
-    "@ckeditor/ckeditor5-utils" "^35.3.1"
+    "@ckeditor/ckeditor5-utils" "^35.4.0"
     lodash-es "^4.17.15"
 
-"@ckeditor/ckeditor5-enter@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-enter/-/ckeditor5-enter-35.3.1.tgz"
-  integrity sha512-aG/onqp9cCePmBgxCl4Bytfb0BdpHCFnKes4ZnxdSdiunB8CDabqbHi6510GrpD/kWmpqAKP9FclJ0G+MPPMRQ==
+"@ckeditor/ckeditor5-enter@^35.3.1", "@ckeditor/ckeditor5-enter@^35.4.0":
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-enter/-/ckeditor5-enter-35.4.0.tgz"
+  integrity sha512-y95RnA/Gw72e220PJKVwNbwPzX4SRs82/rXu1jVyJXty7CcEZqqfyRtW6odICAXr5eKI5XKgzFgpFYULL3D9Nw==
   dependencies:
-    "@ckeditor/ckeditor5-core" "^35.3.1"
-    "@ckeditor/ckeditor5-engine" "^35.3.1"
+    "@ckeditor/ckeditor5-core" "^35.4.0"
+    "@ckeditor/ckeditor5-engine" "^35.4.0"
 
 "@ckeditor/ckeditor5-essentials@^35.3.0":
   version "35.3.0"
@@ -1200,33 +1200,33 @@
     ckeditor5 "^35.3.0"
     lodash-es "^4.17.15"
 
-"@ckeditor/ckeditor5-typing@^35.3.0", "@ckeditor/ckeditor5-typing@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-typing/-/ckeditor5-typing-35.3.1.tgz"
-  integrity sha512-71v2dyoHkKpADJY/fA7WDu8sgvxnH1/+EyyRjmFbmfcCE3UaSUQEu4I0S1v+GraUx4jMwEUfegQ8dVd6llWZtw==
+"@ckeditor/ckeditor5-typing@^35.3.0", "@ckeditor/ckeditor5-typing@^35.3.1", "@ckeditor/ckeditor5-typing@^35.4.0":
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-typing/-/ckeditor5-typing-35.4.0.tgz"
+  integrity sha512-Ad/PHWbVWcnAj9oevkkfLqf6CmvCFOti466uhvfOCKRNVf2+/xuGwleOGr8W6Lir/x/qav7ojFjKPKDxqbPXhA==
   dependencies:
-    "@ckeditor/ckeditor5-core" "^35.3.1"
-    "@ckeditor/ckeditor5-engine" "^35.3.1"
-    "@ckeditor/ckeditor5-utils" "^35.3.1"
+    "@ckeditor/ckeditor5-core" "^35.4.0"
+    "@ckeditor/ckeditor5-engine" "^35.4.0"
+    "@ckeditor/ckeditor5-utils" "^35.4.0"
     lodash-es "^4.17.15"
 
-"@ckeditor/ckeditor5-ui@^35.3.0", "@ckeditor/ckeditor5-ui@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-ui/-/ckeditor5-ui-35.3.1.tgz"
-  integrity sha512-UI9/Ed3v4vJjhs2wWgv5pBeOplwhyEilRNPXgQ0lcawwKMiwlr5QCOSmd+/gCnjoapCDLvMueK78gvTAxpcyWg==
+"@ckeditor/ckeditor5-ui@^35.3.0", "@ckeditor/ckeditor5-ui@^35.3.1", "@ckeditor/ckeditor5-ui@^35.4.0":
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-ui/-/ckeditor5-ui-35.4.0.tgz"
+  integrity sha512-0SmYE+k1cYQPqyw2rQsPDV/RpudneBh1bNfiaTOz+rqViJIMe+TxiuK6Fz+znNZ05s0exr+ZHWvMttGqlVoQNw==
   dependencies:
-    "@ckeditor/ckeditor5-core" "^35.3.1"
-    "@ckeditor/ckeditor5-utils" "^35.3.1"
+    "@ckeditor/ckeditor5-core" "^35.4.0"
+    "@ckeditor/ckeditor5-utils" "^35.4.0"
     lodash-es "^4.17.15"
 
 "@ckeditor/ckeditor5-undo@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-undo/-/ckeditor5-undo-35.3.1.tgz"
-  integrity sha512-ML6bRPmTRIPNJLlznOgQXCo1jEOKpLwvsgRRmZenFgj6aEFyGGGyT64v9FT9LHlNw1C6kzvEdp7GaXClLHLQeA==
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-undo/-/ckeditor5-undo-35.4.0.tgz"
+  integrity sha512-0RhsK0f/pX/7KB/JXYTLiDOswmUTQ9EKIIuewAwr7LTsBf4Q309FZSFdbeTmc0wIyX33212Xh5xsi3LyG1VJRg==
   dependencies:
-    "@ckeditor/ckeditor5-core" "^35.3.1"
-    "@ckeditor/ckeditor5-engine" "^35.3.1"
-    "@ckeditor/ckeditor5-ui" "^35.3.1"
+    "@ckeditor/ckeditor5-core" "^35.4.0"
+    "@ckeditor/ckeditor5-engine" "^35.4.0"
+    "@ckeditor/ckeditor5-ui" "^35.4.0"
 
 "@ckeditor/ckeditor5-upload@^35.3.1":
   version "35.3.1"
@@ -1237,10 +1237,10 @@
     "@ckeditor/ckeditor5-ui" "^35.3.1"
     "@ckeditor/ckeditor5-utils" "^35.3.1"
 
-"@ckeditor/ckeditor5-utils@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-utils/-/ckeditor5-utils-35.3.1.tgz"
-  integrity sha512-0rin86ljziq8UUf5x1d1P2nfswJdrN8lAYTxWopN0lZZBk3Yk3ipMIcjxyN3IfygCWV76iEOhuKCs0Ce2yeY8g==
+"@ckeditor/ckeditor5-utils@^35.3.1", "@ckeditor/ckeditor5-utils@^35.4.0":
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-utils/-/ckeditor5-utils-35.4.0.tgz"
+  integrity sha512-sFjbb+1VYdLbELDLWVYk86WzVN7Lo3sXHbVhdr8+kc0Ufxdr3mTFHDAkiymFt2fs1FOB5gZyWJlJU+EeJnhKUw==
   dependencies:
     lodash-es "^4.17.15"
 
@@ -1249,17 +1249,17 @@
   resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-vue2/-/ckeditor5-vue2-3.0.1.tgz"
   integrity sha512-vS9ffP3rOFgM8oeG9XVFD+UtcYAhkgFDfBHjswJuCgUM0Iw8uqLlCiDPbs4PeJsend8GcmmtNeFdcQaSPkOtpw==
 
-"@ckeditor/ckeditor5-widget@^35.3.1":
-  version "35.3.1"
-  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-widget/-/ckeditor5-widget-35.3.1.tgz"
-  integrity sha512-jhNib79iUkyuOwxz0IVIJQiRdSYtiSoML3mW2JlhtEsf1UbGcq1gfCQ0XreOLxA313UD1leAyQ0AISg2qO0JAg==
+"@ckeditor/ckeditor5-widget@^35.3.1", "@ckeditor/ckeditor5-widget@^35.4.0":
+  version "35.4.0"
+  resolved "https://registry.npmmirror.com/@ckeditor/ckeditor5-widget/-/ckeditor5-widget-35.4.0.tgz"
+  integrity sha512-SNYOXXWu7XV1BZET+ar0Cea25836vzNtUqXlDPwBx/jrmK86b8GMbFR99P2bUG0NvtIsH5cSk7XCmnxb4ZQ6wA==
   dependencies:
-    "@ckeditor/ckeditor5-core" "^35.3.1"
-    "@ckeditor/ckeditor5-engine" "^35.3.1"
-    "@ckeditor/ckeditor5-enter" "^35.3.1"
-    "@ckeditor/ckeditor5-typing" "^35.3.1"
-    "@ckeditor/ckeditor5-ui" "^35.3.1"
-    "@ckeditor/ckeditor5-utils" "^35.3.1"
+    "@ckeditor/ckeditor5-core" "^35.4.0"
+    "@ckeditor/ckeditor5-engine" "^35.4.0"
+    "@ckeditor/ckeditor5-enter" "^35.4.0"
+    "@ckeditor/ckeditor5-typing" "^35.4.0"
+    "@ckeditor/ckeditor5-ui" "^35.4.0"
+    "@ckeditor/ckeditor5-utils" "^35.4.0"
     lodash-es "^4.17.15"
 
 "@electron/get@^1.3.1":
@@ -1967,7 +1967,7 @@ acorn@^8.0.4, acorn@^8.5.0, acorn@^8.8.0:
 
 after@0.8.2:
   version "0.8.2"
-  resolved "https://registry.npmmirror.com/after/-/after-0.8.2.tgz#fedb394f9f0e02aa9768e702bda23b505fae7e1f"
+  resolved "https://registry.npmmirror.com/after/-/after-0.8.2.tgz"
   integrity sha512-QbJ0NTQ/I9DI3uSJA4cbexiwQeRAfjPScqIbSjUDd9TOrcg6pTkdgziesOqxBMBzit8vFCTwrP27t13vFOORRA==
 
 aggregate-error@^3.0.0:
@@ -2191,7 +2191,7 @@ array.prototype.reduce@^1.0.5:
 
 arraybuffer.slice@~0.0.7:
   version "0.0.7"
-  resolved "https://registry.npmmirror.com/arraybuffer.slice/-/arraybuffer.slice-0.0.7.tgz#3bbc4275dd584cc1b10809b89d4e8b63a69e7675"
+  resolved "https://registry.npmmirror.com/arraybuffer.slice/-/arraybuffer.slice-0.0.7.tgz"
   integrity sha512-wGUIVQXuehL5TCqQun8OW81jGzAWycqzFF8lFp+GOM5BXLYj3bKNsYC4daB7n6XjCqxQA/qgTJ+8ANR3acjrog==
 
 arrify@^2.0.1:
@@ -2347,7 +2347,7 @@ babel-plugin-polyfill-regenerator@^0.4.1:
 
 backo2@1.0.2:
   version "1.0.2"
-  resolved "https://registry.npmmirror.com/backo2/-/backo2-1.0.2.tgz#31ab1ac8b129363463e35b3ebb69f4dfcfba7947"
+  resolved "https://registry.npmmirror.com/backo2/-/backo2-1.0.2.tgz"
   integrity sha512-zj6Z6M7Eq+PBZ7PQxl5NT665MvJdAkzp0f60nAJ+sLaSCBPMwVak5ZegFbgVCzFcCJTKFoMizvM5Ld7+JrRJHA==
 
 balanced-match@^1.0.0:
@@ -2357,12 +2357,12 @@ balanced-match@^1.0.0:
 
 base64-arraybuffer@0.1.4:
   version "0.1.4"
-  resolved "https://registry.npmmirror.com/base64-arraybuffer/-/base64-arraybuffer-0.1.4.tgz#9818c79e059b1355f97e0428a017c838e90ba812"
+  resolved "https://registry.npmmirror.com/base64-arraybuffer/-/base64-arraybuffer-0.1.4.tgz"
   integrity sha512-a1eIFi4R9ySrbiMuyTGx5e92uRH5tQY6kArNcFaKBUleIoLjdjBg7Zxm3Mqm3Kmkf27HLR/1fnxX9q8GQ7Iavg==
 
 base64-arraybuffer@^1.0.2:
   version "1.0.2"
-  resolved "https://registry.npmmirror.com/base64-arraybuffer/-/base64-arraybuffer-1.0.2.tgz#1c37589a7c4b0746e34bd1feb951da2df01c1bdc"
+  resolved "https://registry.npmmirror.com/base64-arraybuffer/-/base64-arraybuffer-1.0.2.tgz"
   integrity sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==
 
 base64-js@^1.0.2, base64-js@^1.3.1, base64-js@^1.5.1:
@@ -2421,7 +2421,7 @@ bl@^4.0.3:
 
 blob@0.0.5:
   version "0.0.5"
-  resolved "https://registry.npmmirror.com/blob/-/blob-0.0.5.tgz#d680eeef25f8cd91ad533f5b01eed48e64caf683"
+  resolved "https://registry.npmmirror.com/blob/-/blob-0.0.5.tgz"
   integrity sha512-gaqbzQPqOoamawKg0LGVd7SzLgXS+JH61oWprSLH+P+abTczqJbhTR8CmJ2u9/bUYNmHTGJx/UEmn6doAvvuig==
 
 bluebird@^3.1.1, bluebird@^3.5.0, bluebird@^3.5.5:
@@ -3073,7 +3073,7 @@ commander@^7.2.0:
 
 commander@^8.0.0:
   version "8.3.0"
-  resolved "https://registry.npmmirror.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
+  resolved "https://registry.npmmirror.com/commander/-/commander-8.3.0.tgz"
   integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
 
 commander@~2.1.0:
@@ -3093,7 +3093,7 @@ compare-version@^0.1.2:
 
 component-bind@1.0.0:
   version "1.0.0"
-  resolved "https://registry.npmmirror.com/component-bind/-/component-bind-1.0.0.tgz#00c608ab7dcd93897c0009651b1d3a8e1e73bbd1"
+  resolved "https://registry.npmmirror.com/component-bind/-/component-bind-1.0.0.tgz"
   integrity sha512-WZveuKPeKAG9qY+FkYDeADzdHyTYdIboXS59ixDeRJL5ZhxpqUnxSOwop4FQjMsiYm3/Or8cegVbpAHNA7pHxw==
 
 component-emitter@^1.2.1, component-emitter@~1.3.0:
@@ -3103,7 +3103,7 @@ component-emitter@^1.2.1, component-emitter@~1.3.0:
 
 component-inherit@0.0.3:
   version "0.0.3"
-  resolved "https://registry.npmmirror.com/component-inherit/-/component-inherit-0.0.3.tgz#645fc4adf58b72b649d5cae65135619db26ff143"
+  resolved "https://registry.npmmirror.com/component-inherit/-/component-inherit-0.0.3.tgz"
   integrity sha512-w+LhYREhatpVqTESyGFg3NlP6Iu0kEKUHETY9GoZP/pQyW4mHFZuFWRUCIqVPZ36ueVLtoOEZaAqbCF2RDndaA==
 
 compress-commons@^4.1.0:
@@ -3392,7 +3392,7 @@ css-declaration-sorter@^4.0.1:
 
 css-line-break@^2.1.0:
   version "2.1.0"
-  resolved "https://registry.npmmirror.com/css-line-break/-/css-line-break-2.1.0.tgz#bfef660dfa6f5397ea54116bb3cb4873edbc4fa0"
+  resolved "https://registry.npmmirror.com/css-line-break/-/css-line-break-2.1.0.tgz"
   integrity sha512-FHcKFCZcAha3LwfVBhCQbW2nCNbkZXn7KVUJcsT5/P8YmfsVja0FMPJr0B903j/E69HUphKiV9iQArX8SDYA4w==
   dependencies:
     utrie "^1.0.2"
@@ -3859,7 +3859,7 @@ dot-prop@5.3.0, dot-prop@^5.2.0:
 
 driver.js@^0.9.8:
   version "0.9.8"
-  resolved "https://registry.npmmirror.com/driver.js/-/driver.js-0.9.8.tgz#4b327f4537b1c9b9fb19419de86174be821ae32a"
+  resolved "https://registry.npmmirror.com/driver.js/-/driver.js-0.9.8.tgz"
   integrity sha512-bczjyKdX6XmFyCDkwtRmlaORDwfBk1xXmRO0CAe5VwNQTM98aWaG2LAIiIdTe53iV/B7W5lXlIy2xYtf0JRb7Q==
 
 duplexer3@^0.1.4:
@@ -3968,7 +3968,7 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0, end-of-stream@^1.4.1:
 
 engine.io-client@~3.5.0:
   version "3.5.3"
-  resolved "https://registry.npmmirror.com/engine.io-client/-/engine.io-client-3.5.3.tgz#3254f61fdbd53503dc9a6f9d46a52528871ca0d7"
+  resolved "https://registry.npmmirror.com/engine.io-client/-/engine.io-client-3.5.3.tgz"
   integrity sha512-qsgyc/CEhJ6cgMUwxRRtOndGVhIu5hpL5tR4umSpmX/MvkFoIxUTM7oFMDQumHNzlNLwSVy6qhstFPoWTf7dOw==
   dependencies:
     component-emitter "~1.3.0"
@@ -3985,7 +3985,7 @@ engine.io-client@~3.5.0:
 
 engine.io-parser@~2.2.0:
   version "2.2.1"
-  resolved "https://registry.npmmirror.com/engine.io-parser/-/engine.io-parser-2.2.1.tgz#57ce5611d9370ee94f99641b589f94c97e4f5da7"
+  resolved "https://registry.npmmirror.com/engine.io-parser/-/engine.io-parser-2.2.1.tgz"
   integrity sha512-x+dN/fBH8Ro8TFwJ+rkB2AmuVw9Yu2mockR/p3W8f8YtExwFgDvBDi0GWyb4ZLkpahtDGZgtr3zLovanJghPqg==
   dependencies:
     after "0.8.2"
@@ -4459,7 +4459,7 @@ file-loader@6.2.0:
 
 file-saver@^2.0.5:
   version "2.0.5"
-  resolved "https://registry.npmmirror.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  resolved "https://registry.npmmirror.com/file-saver/-/file-saver-2.0.5.tgz"
   integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
 
 file-uri-to-path@1.0.0:
@@ -4940,14 +4940,14 @@ has-bigints@^1.0.1, has-bigints@^1.0.2:
 
 has-binary2@~1.0.2:
   version "1.0.3"
-  resolved "https://registry.npmmirror.com/has-binary2/-/has-binary2-1.0.3.tgz#7776ac627f3ea77250cfc332dab7ddf5e4f5d11d"
+  resolved "https://registry.npmmirror.com/has-binary2/-/has-binary2-1.0.3.tgz"
   integrity sha512-G1LWKhDSvhGeAQ8mPVQlqNcOB2sJdwATtZKl2pDKKHfpf/rYj24lkinxf69blJbnsvtqqNU+L3SL50vzZhXOnw==
   dependencies:
     isarray "2.0.1"
 
 has-cors@1.1.0:
   version "1.1.0"
-  resolved "https://registry.npmmirror.com/has-cors/-/has-cors-1.1.0.tgz#5e474793f7ea9843d1bb99c23eef49ff126fff39"
+  resolved "https://registry.npmmirror.com/has-cors/-/has-cors-1.1.0.tgz"
   integrity sha512-g5VNKdkFuUuVCP9gYfDJHjK2nqdQJ7aDLTnycnc2+RvsOQbuLdF5pm7vuE5J76SEBIQjs4kQY/BWq74JUmjbXA==
 
 has-flag@^3.0.0:
@@ -5131,7 +5131,7 @@ html-webpack-plugin@4.5.0:
 
 html2canvas@^1.4.1:
   version "1.4.1"
-  resolved "https://registry.npmmirror.com/html2canvas/-/html2canvas-1.4.1.tgz#7cef1888311b5011d507794a066041b14669a543"
+  resolved "https://registry.npmmirror.com/html2canvas/-/html2canvas-1.4.1.tgz"
   integrity sha512-fPU6BHNpsyIhr8yyMpTLLxAbkaK8ArIBcmZIRiBLiDhjeqvXolaEmDGmELFuX9I4xDcaKKcJl+TKZLqruBbmWA==
   dependencies:
     css-line-break "^2.1.0"
@@ -5302,7 +5302,7 @@ indexes-of@^1.0.1:
 
 indexof@0.0.1:
   version "0.0.1"
-  resolved "https://registry.npmmirror.com/indexof/-/indexof-0.0.1.tgz#82dc336d232b9062179d05ab3293a66059fd435d"
+  resolved "https://registry.npmmirror.com/indexof/-/indexof-0.0.1.tgz"
   integrity sha512-i0G7hLJ1z0DE8dsqJa2rycj9dBmNKgXBvotXtZYXakU9oivfB9Uj2ZBC27qqef2U58/ZLwalxa1X/RDCdkHtVg==
 
 infer-owner@^1.0.3, infer-owner@^1.0.4:
@@ -5719,7 +5719,7 @@ isarray@1.0.0, isarray@^1.0.0, isarray@~1.0.0:
 
 isarray@2.0.1:
   version "2.0.1"
-  resolved "https://registry.npmmirror.com/isarray/-/isarray-2.0.1.tgz#a37d94ed9cda2d59865c9f76fe596ee1f338741e"
+  resolved "https://registry.npmmirror.com/isarray/-/isarray-2.0.1.tgz"
   integrity sha512-c2cu3UxbI+b6kR3fy0nRnAhodsvR9dx7U5+znCOzdj6IfP3upFURTr0Xl5BlQZNKZjEtxrmVyfSdeE3O57smoQ==
 
 isbinaryfile@4.0.8:
@@ -5899,21 +5899,21 @@ jsonfile@^6.0.1:
 
 katex@^0.11.1:
   version "0.11.1"
-  resolved "https://registry.npmmirror.com/katex/-/katex-0.11.1.tgz#df30ca40c565c9df01a466a00d53e079e84ffaa2"
+  resolved "https://registry.npmmirror.com/katex/-/katex-0.11.1.tgz"
   integrity sha512-5oANDICCTX0NqYIyAiFCCwjQ7ERu3DQG2JFHLbYOf+fXaMoH8eg/zOq5WSYJsKMi/QebW+Eh3gSM+oss1H/bww==
   dependencies:
     commander "^2.19.0"
 
-katex@^0.16.3:
+katex@^0.16.4:
   version "0.16.4"
-  resolved "https://registry.npmmirror.com/katex/-/katex-0.16.4.tgz#87021bc3bbd80586ef715aeb476794cba6a49ad4"
+  resolved "https://registry.npmmirror.com/katex/-/katex-0.16.4.tgz"
   integrity sha512-WudRKUj8yyBeVDI4aYMNxhx5Vhh2PjpzQw1GRu/LVGqL4m1AxwD1GcUp0IMbdJaf5zsjtj8ghP0DOQRYhroNkw==
   dependencies:
     commander "^8.0.0"
 
 keymaster@^1.6.2:
   version "1.6.2"
-  resolved "https://registry.npmmirror.com/keymaster/-/keymaster-1.6.2.tgz#e1ae54d0ea9488f9f60b66b668f02e9a1946c6eb"
+  resolved "https://registry.npmmirror.com/keymaster/-/keymaster-1.6.2.tgz"
   integrity sha512-OvA/AALN8IDKKkTk2Z+bDrzs/SQao4lo/QPbwSdDvm+frxfiYiYCSn1aHFUypJY3SruAO1y/c771agBmTXqUtg==
 
 keyv@^3.0.0:
@@ -6222,16 +6222,16 @@ map-visit@^1.0.0:
     object-visit "^1.0.0"
 
 marked-katex-extension@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmmirror.com/marked-katex-extension/-/marked-katex-extension-1.0.1.tgz#85eb1fc9330b1537f5c7c3088b69682868931f1f"
-  integrity sha512-yT9uy+p3zA+pHZnChCz++bALoI4H3nWJ6mSMc8TbllPJzldTL6WNKsKpbBkvwzk9AGby6FIoXagENtegOD3e3A==
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/marked-katex-extension/-/marked-katex-extension-1.0.2.tgz"
+  integrity sha512-u1CZeGzH0loLPgrp/QgNNREJsJMHIixGLh5uALbBOkG7PpT7Ro8QmM3gZL4JxVz6JnkuVWwQQK2wNQqJxUnsZw==
   dependencies:
-    katex "^0.16.3"
+    katex "^0.16.4"
 
 marked@^4.2.3:
-  version "4.2.3"
-  resolved "https://registry.npmmirror.com/marked/-/marked-4.2.3.tgz#bd76a5eb510ff1d8421bc6c3b2f0b93488c15bea"
-  integrity sha512-slWRdJkbTZ+PjkyJnE30Uid64eHwbwa1Q25INCAYfZlK4o6ylagBy/Le9eWntqJFoFT93ikUKMv47GZ4gTwHkw==
+  version "4.2.5"
+  resolved "https://registry.npmmirror.com/marked/-/marked-4.2.5.tgz"
+  integrity sha512-jPueVhumq7idETHkb203WDD4fMA3yV9emQ5vLwop58lu8bTclMghBWcYAavlDqIEMaisADinV1TooIFCfqOsYQ==
 
 matcher@^3.0.0:
   version "3.0.0"
@@ -6383,7 +6383,7 @@ mimic-response@^1.0.0, mimic-response@^1.0.1:
 
 mind-elixir@^1.1.3:
   version "1.1.3"
-  resolved "https://registry.npmmirror.com/mind-elixir/-/mind-elixir-1.1.3.tgz#fe6ad3a15eaef87a589b96220c936002e28ed8e3"
+  resolved "https://registry.npmmirror.com/mind-elixir/-/mind-elixir-1.1.3.tgz"
   integrity sha512-/S1adtMwLd2sUeVm0CDaMfXzQZYbEFTp3gnoharXt9hAc95M6RcknH4VXlDG9pDSXddbHazCqsYLeOB5Y8g60A==
 
 mini-css-extract-plugin@0.11.2:
@@ -7034,12 +7034,12 @@ parse-json@^5.0.0:
 
 parseqs@0.0.6:
   version "0.0.6"
-  resolved "https://registry.npmmirror.com/parseqs/-/parseqs-0.0.6.tgz#8e4bb5a19d1cdc844a08ac974d34e273afa670d5"
+  resolved "https://registry.npmmirror.com/parseqs/-/parseqs-0.0.6.tgz"
   integrity sha512-jeAGzMDbfSHHA091hr0r31eYfTig+29g3GKKE/PPbEQ65X0lmMwlEoqmhzu0iztID5uJpZsFlUPDP8ThPL7M8w==
 
 parseuri@0.0.6:
   version "0.0.6"
-  resolved "https://registry.npmmirror.com/parseuri/-/parseuri-0.0.6.tgz#e1496e829e3ac2ff47f39a4dd044b32823c4a25a"
+  resolved "https://registry.npmmirror.com/parseuri/-/parseuri-0.0.6.tgz"
   integrity sha512-AUjen8sAkGgao7UyCX6Ahv0gIK2fABKmYjvP4xmy5JaKvcbTRueIqIPHLAfq30xJddqSE033IOMUSOMCcK3Sow==
 
 parseurl@~1.3.2, parseurl@~1.3.3:
@@ -8457,7 +8457,7 @@ snapdragon@^0.8.1:
 
 socket.io-client@^2.1.1:
   version "2.5.0"
-  resolved "https://registry.npmmirror.com/socket.io-client/-/socket.io-client-2.5.0.tgz#34f486f3640dde9c2211fce885ac2746f9baf5cb"
+  resolved "https://registry.npmmirror.com/socket.io-client/-/socket.io-client-2.5.0.tgz"
   integrity sha512-lOO9clmdgssDykiOmVQQitwBAF3I6mYcQAo7hQ7AM6Ny5X7fp8hIJ3HcQs3Rjz4SoggoxA1OgrQyY8EgTbcPYw==
   dependencies:
     backo2 "1.0.2"
@@ -8474,7 +8474,7 @@ socket.io-client@^2.1.1:
 
 socket.io-parser@~3.3.0:
   version "3.3.3"
-  resolved "https://registry.npmmirror.com/socket.io-parser/-/socket.io-parser-3.3.3.tgz#3a8b84823eba87f3f7624e64a8aaab6d6318a72f"
+  resolved "https://registry.npmmirror.com/socket.io-parser/-/socket.io-parser-3.3.3.tgz"
   integrity sha512-qOg87q1PMWWTeO01768Yh9ogn7chB9zkKtQnya41Y355S0UmpXgpcrFwAgjYJxu9BdKug5r5e9YtVSeWhKBUZg==
   dependencies:
     component-emitter "~1.3.0"
@@ -8510,7 +8510,7 @@ sort-keys@^1.0.0:
 
 sortablejs@1.10.2:
   version "1.10.2"
-  resolved "https://registry.npmmirror.com/sortablejs/-/sortablejs-1.10.2.tgz#6e40364d913f98b85a14f6678f92b5c1221f5290"
+  resolved "https://registry.npmmirror.com/sortablejs/-/sortablejs-1.10.2.tgz"
   integrity sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A==
 
 source-list-map@^2.0.0:
@@ -8978,7 +8978,7 @@ terser@^5.3.2:
 
 text-segmentation@^1.0.3:
   version "1.0.3"
-  resolved "https://registry.npmmirror.com/text-segmentation/-/text-segmentation-1.0.3.tgz#52a388159efffe746b24a63ba311b6ac9f2d7943"
+  resolved "https://registry.npmmirror.com/text-segmentation/-/text-segmentation-1.0.3.tgz"
   integrity sha512-iOiPUo/BGnZ6+54OsWxZidGCsdU8YbE4PSpdPinp7DeMtUJNJBoJ/ouUSTJjHkh1KntHaltHl/gDs2FC4i5+Nw==
   dependencies:
     utrie "^1.0.2"
@@ -8990,7 +8990,7 @@ text-table@^0.2.0:
 
 throttle-debounce@^2.0.1:
   version "2.3.0"
-  resolved "https://registry.npmmirror.com/throttle-debounce/-/throttle-debounce-2.3.0.tgz#fd31865e66502071e411817e241465b3e9c372e2"
+  resolved "https://registry.npmmirror.com/throttle-debounce/-/throttle-debounce-2.3.0.tgz"
   integrity sha512-H7oLPV0P7+jgvrk+6mwwwBDmxTaxnu9HMXmloNLXwnNO0ZxZ31Orah2n8lU1eMPvsaowP2CX+USCgyovXfdOFQ==
 
 through2@^2.0.0:
@@ -9032,7 +9032,7 @@ tmp@^0.0.33:
 
 to-array@0.1.4:
   version "0.1.4"
-  resolved "https://registry.npmmirror.com/to-array/-/to-array-0.1.4.tgz#17e6c11f73dd4f3d74cda7a4ff3238e9ad9bf890"
+  resolved "https://registry.npmmirror.com/to-array/-/to-array-0.1.4.tgz"
   integrity sha512-LhVdShQD/4Mk4zXNroIQZJC+Ap3zgLcDuwEdcmLv9CCO73NWockQDwyUnW/m8VX/EElfL6FcYx7EeutN4HJA6A==
 
 to-arraybuffer@^1.0.0:
@@ -9374,7 +9374,7 @@ utils-merge@1.0.1:
 
 utrie@^1.0.2:
   version "1.0.2"
-  resolved "https://registry.npmmirror.com/utrie/-/utrie-1.0.2.tgz#d42fe44de9bc0119c25de7f564a6ed1b2c87a645"
+  resolved "https://registry.npmmirror.com/utrie/-/utrie-1.0.2.tgz"
   integrity sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw==
   dependencies:
     base64-arraybuffer "^1.0.2"
@@ -9391,12 +9391,12 @@ uuid@^8.3.2:
 
 uuid@^9.0.0:
   version "9.0.0"
-  resolved "https://registry.npmmirror.com/uuid/-/uuid-9.0.0.tgz"
+  resolved "https://registry.npmmirror.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
   integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 v-viewer@^1.6.4:
   version "1.6.4"
-  resolved "https://registry.npmmirror.com/v-viewer/-/v-viewer-1.6.4.tgz#39e36b534baab34076fb816704c6a734de0dc72f"
+  resolved "https://registry.npmmirror.com/v-viewer/-/v-viewer-1.6.4.tgz"
   integrity sha512-LVkiUHpmsbsZXebeNXnu8krRCi5i2n07FeLFxoIVGhw8lVvTBO0ffpbDC6mLEuacCjrIh09HjIqpciwUtWE8lQ==
   dependencies:
     throttle-debounce "^2.0.1"
@@ -9414,13 +9414,20 @@ vendors@^1.0.0:
 
 viewerjs@^1.5.0:
   version "1.11.2"
-  resolved "https://registry.npmmirror.com/viewerjs/-/viewerjs-1.11.2.tgz#18eb326188225461f85d1e6430f43ba90623b907"
+  resolved "https://registry.npmmirror.com/viewerjs/-/viewerjs-1.11.2.tgz"
   integrity sha512-z7N9R91ORhtLvOUxN7GoIl+MFVVMbtWNB1T2UmTKuMlzc4EevS+/bletZcIwDf8RIUzk2CFMdleQzcsjsfLl+A==
 
 vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.npmmirror.com/vm-browserify/-/vm-browserify-1.1.2.tgz"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
+
+vue-avatar-editor-improved@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npmmirror.com/vue-avatar-editor-improved/-/vue-avatar-editor-improved-1.0.7.tgz#781e336fdfc8974229317cc3f08dfe145acd7bce"
+  integrity sha512-zmHkXbyZtW51MdID8V6lO4hf4fFQrqLasTNZvlSfAmIfLVC4wAwsVsjt7y7m8BqwuE6nrEFYNlt4IA1VAJ3x9A==
+  dependencies:
+    vue "^2.4.1"
 
 vue-eslint-parser@^9.0.1:
   version "9.1.0"
@@ -9442,7 +9449,7 @@ vue-hot-reload-api@^2.3.0:
 
 vue-katex-auto-render@^0.1.3:
   version "0.1.3"
-  resolved "https://registry.npmmirror.com/vue-katex-auto-render/-/vue-katex-auto-render-0.1.3.tgz#6b64585fd6a25fa3c3b70cb13a223adb9d42c194"
+  resolved "https://registry.npmmirror.com/vue-katex-auto-render/-/vue-katex-auto-render-0.1.3.tgz"
   integrity sha512-r1TPyAgDDMCHZtb8EZcXkNmSL9xHmgGpTt5y3kDKWRc7SFZNU+ThUXPCnpqOtUdXV7qdbIbgVXclJYgBJwqxhw==
   dependencies:
     katex "^0.11.1"
@@ -9479,7 +9486,7 @@ vue-server-renderer@^2.7.1:
 
 vue-socket.io@^3.0.10:
   version "3.0.10"
-  resolved "https://registry.npmmirror.com/vue-socket.io/-/vue-socket.io-3.0.10.tgz#76135bf5043baf484c648636a7a9822b4c11c084"
+  resolved "https://registry.npmmirror.com/vue-socket.io/-/vue-socket.io-3.0.10.tgz"
   integrity sha512-XGYjD30Q9xAeHpBnp2SU+ljEe59qpGKaAQe4VOO9ezuly09MlzrT2ZZPJu3BVFpQwKdjQDz1I2fV9r4YjlZDCA==
   dependencies:
     socket.io-client "^2.1.1"
@@ -9505,7 +9512,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npmmirror.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@^2.7.1:
+vue@^2.4.1, vue@^2.7.1:
   version "2.7.14"
   resolved "https://registry.npmmirror.com/vue/-/vue-2.7.14.tgz"
   integrity sha512-b2qkFyOM0kwqWFuQmgd4o+uHGU7T+2z3T+WQp8UBjADfEv2n4FEMffzBmCKNP0IGzOEEfYjvtcC62xaSKeQDrQ==
@@ -9515,7 +9522,7 @@ vue@^2.7.1:
 
 vuedraggable@^2.24.3:
   version "2.24.3"
-  resolved "https://registry.npmmirror.com/vuedraggable/-/vuedraggable-2.24.3.tgz#43c93849b746a24ce503e123d5b259c701ba0d19"
+  resolved "https://registry.npmmirror.com/vuedraggable/-/vuedraggable-2.24.3.tgz"
   integrity sha512-6/HDXi92GzB+Hcs9fC6PAAozK1RLt1ewPTLjK0anTYguXLAeySDmcnqE8IC0xa7shvSzRjQXq3/+dsZ7ETGF3g==
   dependencies:
     sortablejs "1.10.2"
@@ -9800,12 +9807,13 @@ ws@^7.3.1:
 
 ws@~7.4.2:
   version "7.4.6"
-  resolved "https://registry.npmmirror.com/ws/-/ws-7.4.6.tgz#5654ca8ecdeee47c33a9a4bf6d28e2be2980377c"
+  resolved "https://registry.npmmirror.com/ws/-/ws-7.4.6.tgz"
   integrity sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==
 
 "xlsx@https://cdn.sheetjs.com/xlsx-0.19.1/xlsx-0.19.1.tgz":
   version "0.19.1"
-  resolved "https://cdn.sheetjs.com/xlsx-0.19.1/xlsx-0.19.1.tgz#26b48611bb82799de36add2f63b197bec4fc6a8d"
+  resolved "https://cdn.sheetjs.com/xlsx-0.19.1/xlsx-0.19.1.tgz"
+  integrity sha512-pPh/ybd1bChlhCrtQ9QmRUx2yjQwMbS4tfvV9MSA2Qmm7vRUHQtPDMlLjAvQ2A4v8G92i2RlrNkSOKb1bwY7ww==
 
 xml-name-validator@^4.0.0:
   version "4.0.0"
@@ -9819,7 +9827,7 @@ xmlbuilder@^15.1.1:
 
 xmlhttprequest-ssl@~1.6.2:
   version "1.6.3"
-  resolved "https://registry.npmmirror.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.6.3.tgz#03b713873b01659dfa2c1c5d056065b27ddc2de6"
+  resolved "https://registry.npmmirror.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.6.3.tgz"
   integrity sha512-3XfeQE/wNkvrIktn2Kf0869fC0BN6UpydVasGIeSm2B1Llihf7/0UfZM+eCkOw3P7bP4+qPgqhm7ZoxuJtFU0Q==
 
 xtend@^4.0.0, xtend@~4.0.1:
@@ -9878,7 +9886,7 @@ yargs@^13.3.2:
 
 yeast@0.1.2:
   version "0.1.2"
-  resolved "https://registry.npmmirror.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
+  resolved "https://registry.npmmirror.com/yeast/-/yeast-0.1.2.tgz"
   integrity sha512-8HFIh676uyGYP6wP13R/j6OJ/1HwJ46snpvzE7aHAN3Ryqh2yX6Xox2B4CUmTwwOIzlG3Bs7ocsP5dZH/R1Qbg==
 
 yocto-queue@^0.1.0:

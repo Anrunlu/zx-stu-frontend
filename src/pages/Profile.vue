@@ -13,6 +13,7 @@
               color="primary"
               icon="add_a_photo"
               label="头像上传"
+              @click="avatarUploadDig = true"
             />
           </q-card-actions>
         </q-card>
@@ -159,6 +160,11 @@
         </q-card>
       </div>
     </div>
+
+    <!-- 头像上传对话框 -->
+    <q-dialog v-model="avatarUploadDig">
+      <AvatarUploadCard />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -192,6 +198,8 @@ export default {
       oldPwd: "",
       // 新密码
       newPwd: "",
+      // 头像上传对话框
+      avatarUploadDig: false,
     };
   },
 
@@ -202,6 +210,11 @@ export default {
       avatar: "avatar",
       officeName: "officeName",
     }),
+  },
+
+  components: {
+    AvatarUploadCard: () =>
+      import("src/components/common/AvatarUploadCard.vue"),
   },
 
   methods: {

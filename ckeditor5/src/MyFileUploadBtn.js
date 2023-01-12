@@ -10,6 +10,7 @@ function getToken() {
   return Cookies.get("zx_token") || "";
 }
 
+// FIXME:baseURL 需要按需要修改
 const request = axios.create({
   baseURL: "https://v2.zxapi.anrunlu.net/",
   timeout: 150000,
