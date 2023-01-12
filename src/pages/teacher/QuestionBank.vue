@@ -583,7 +583,7 @@ export default {
       if (!this.currSelectedTeaCourse) {
         this.$q.notify({
           message: "请先选择课程",
-          type: "negative",
+          type: "warning",
         });
         return;
       }
@@ -598,7 +598,7 @@ export default {
       if (!this.currSelectedTeaCourse) {
         this.$q.notify({
           message: "请先选择课程",
-          type: "negative",
+          type: "warning",
         });
         return;
       }

@@ -35,8 +35,17 @@
           </q-btn-dropdown>
           <!-- 选择教学资源类型 -->
           <q-btn-dropdown
-            :label="!currSelectedCategory ? '资源类型' : currSelectedCategory"
+            :label="
+              !currSelectedCategory.value
+                ? '资源类型'
+                : currSelectedCategory.value
+            "
             color="positive"
+            :icon="
+              currSelectedCategory.icon
+                ? currSelectedCategory.icon
+                : 'touch_app'
+            "
           >
             <q-list>
               <q-item
@@ -46,8 +55,12 @@
                 :key="index"
                 v-for="(category, index) in teaResourceCategoryOptions"
               >
+                <q-item-section avatar>
+                  <q-icon :name="category.icon" />
+                </q-item-section>
+
                 <q-item-section>
-                  <q-item-label>{{ category }}</q-item-label>
+                  <q-item-label>{{ category.value }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -240,19 +253,6 @@ export default {
       teaResourceFilter: "",
       // 当前点击的那一会教学资源
       currClickedRowTeaResource: {},
-      // 教学资源类型选项
-      teaResourceCategoryOptions: [
-        "教案",
-        "教学日历",
-        "教学大纲",
-        "考试大纲",
-        "实验大纲",
-        "教学课件",
-        "常用工具",
-        "毕业设计",
-        "期末试题库",
-        "学生期末试卷",
-      ],
       // 教学资源编辑对话框
       teaResourceEditingDig: false,
     };
@@ -271,6 +271,7 @@ export default {
     ...mapGetters("settings", {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
+      teaResourceCategoryOptions: "teaResourceCategoryOptions",
     }),
   },
 
@@ -292,7 +293,7 @@ export default {
       if (!this.currSelectedTeaCourse) {
         this.$q.notify({
           message: "请先选择课程",
-          type: "negative",
+          type: "warning",
         });
         return;
       }
@@ -302,7 +303,7 @@ export default {
       // 构造请求参数
       const payload = {
         course_id: this.currSelectedTeaCourse.courseId,
-        filecategory: category,
+        filecategory: this.currSelectedCategory.value,
       };
 
       // 发送请求

@@ -89,10 +89,22 @@
                 label="作业类别"
                 :rules="[(val) => !!val || '请选择作业类别']"
                 hide-bottom-space
+                options-selected-class="text-deep-blue"
                 dense
                 ><template v-slot:prepend>
-                  <q-icon name="app_registration" /> </template
-              ></q-select>
+                  <q-icon name="app_registration" />
+                </template>
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                    <q-item-section avatar>
+                      <q-icon :name="scope.opt.icon" />
+                    </q-item-section>
+                    <q-item-section>
+                      {{ scope.opt.label }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </q-item-section>
           </q-item>
 

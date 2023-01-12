@@ -25,3 +25,7 @@ export function layoutLeftDrawerLinks3(state) {
 export function questionTypeOptions(state) {
   return state.questionTypeOptions;
 }
+
+export function teaResourceCategoryOptions(state) {
+  return state.teaResourceCategoryOptions;
+}
