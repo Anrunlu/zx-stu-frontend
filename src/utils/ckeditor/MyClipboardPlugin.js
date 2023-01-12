@@ -42,7 +42,10 @@ export function MyClipboardAdapterPlugin(editor) {
 
         uploadWrapper(file, fileRename).then((uploader) => {
           uploader.subscribe(
-            () => {},
+            (res) => {
+              // 用于显示上传进度
+              // console.log(res);
+            },
             (error) => {
               console.error(error);
             },

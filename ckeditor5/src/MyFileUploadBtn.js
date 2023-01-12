@@ -154,8 +154,19 @@ export class FileUploadBtn extends Plugin {
             });
 
             // 调用七牛云上传
-            uploadWrapper(file, fileRename).then(() => {
-              Swal.close();
+            uploadWrapper(file, fileRename).then((uploader) => {
+              uploader.subscribe(
+                (res) => {
+                  // 用于显示上传进度
+                  // console.log(res);
+                },
+                (error) => {
+                  console.error(error);
+                },
+                (data) => {
+                  Swal.close();
+                }
+              );
             });
           });
         }
