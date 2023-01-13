@@ -577,8 +577,6 @@ export default {
       }
 
       this.switchToStu(this.stuInfoList[prevStuIndex]);
-
-      // this.getStudentHomeworkDetail();
     },
 
     // 下一人
@@ -599,8 +597,6 @@ export default {
       }
 
       this.switchToStu(this.stuInfoList[nextStuIndex]);
-
-      // this.getStudentHomeworkDetail();
 
       this.locateStuNoFlash();
     },
