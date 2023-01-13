@@ -162,8 +162,8 @@
     </div>
 
     <!-- 头像上传对话框 -->
-    <q-dialog v-model="avatarUploadDig">
-      <AvatarUploadCard />
+    <q-dialog v-model="avatarUploadDig" persistent>
+      <AvatarUploadCard @avatarUploaded="modifyUserAvatar" />
     </q-dialog>
   </q-page>
 </template>
@@ -231,7 +231,40 @@ export default {
         qq: this.qq,
       };
 
-      await apiModifyProfile(payload);
+      try {
+        await apiModifyProfile(payload);
+        this.$q.notify({
+          message: "个人信息修改成功",
+          type: "positive",
+        });
+      } catch (error) {
+        this.$q.notify({
+          message: "个人信息修改失败",
+          type: "negative",
+        });
+      }
+    },
+
+    // 修改头像，接受子组件传递的头像地址
+    async modifyUserAvatar(avatar) {
+      const payload = {
+        avatar,
+      };
+
+      try {
+        await apiModifyProfile(payload);
+        // 设置 user.avatar
+        this.$store.commit("user/setAvatar", avatar);
+        this.$q.notify({
+          message: "头像修改成功",
+          type: "positive",
+        });
+      } catch (error) {
+        this.$q.notify({
+          message: "头像修改失败",
+          type: "negative",
+        });
+      }
     },
 
     // 发送验证码

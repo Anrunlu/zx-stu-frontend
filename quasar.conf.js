@@ -63,6 +63,7 @@ module.exports = function (ctx) {
         API_URL: ctx.dev
           ? "http://v2test.zxapi.anrunlu.net/"
           : "http://v2test.zxapi.anrunlu.net/",
+        QINIUCDN: "https://cyberdownload.anrunlu.net/",
       },
 
       // env: {

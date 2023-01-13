@@ -49,14 +49,14 @@
 <script>
 import { VueAvatar } from "vue-avatar-editor-improved";
 import { dataURItoBlob } from "src/utils/common";
-import qiniuUpload from "src/utils/qiniu";
+import uploadWrapper from "src/utils/qiniu";
+import { v4 as uuidv4 } from "uuid";
 export default {
   name: "AvatarUploadCard",
   data() {
     return {
       rotation: 0,
       scale: 1,
-      file: null,
     };
   },
   components: {
@@ -65,18 +65,30 @@ export default {
   },
 
   methods: {
-    async uploadAvatar() {
-      this.uploader = await qiniuUpload(file);
-      return new Promise((resolve, reject) => {
-        this.uploader.subscribe(
-          () => {},
+    async uploadAvatar(file) {
+      const uuid = uuidv4();
+      const fileRename = `${uuid}.${file.type.split("/").pop()}`;
+
+      uploadWrapper(file, fileRename).then((uploader) => {
+        uploader.subscribe(
+          (res) => {
+            // 用于显示上传进度
+            // console.log(res);
+          },
           (error) => {
             console.error(error);
-            return reject(error);
           },
           (data) => {
-            return resolve({
-              default: `https://cyberdownload.anrunlu.net/` + data.key,
+            // 上传成功，返回文件名，
+            const avatar = process.env.QINIUCDN + data.key;
+
+            // 告知父组件上传成功
+            this.$emit("avatarUploaded", avatar);
+
+            // 提示上传成功
+            this.$q.notify({
+              message: "头像上传成功",
+              type: "positive",
             });
           }
         );
@@ -86,7 +98,7 @@ export default {
     saveClicked() {
       let img = this.$refs.vueavatar.getImageScaled();
       const imgFile = dataURItoBlob(img.toDataURL());
-      console.log(imgFile);
+      this.uploadAvatar(imgFile);
     },
 
     onImageReady() {
