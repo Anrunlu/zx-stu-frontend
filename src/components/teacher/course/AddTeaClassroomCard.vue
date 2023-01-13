@@ -288,7 +288,8 @@ export default {
     // 点击下载花名册模版按钮
     handleDownloadOfficialFileTemplateBtnClick() {
       saveAs(
-        "https://cyberdownload.anrunlu.net/%E6%95%99%E5%B8%88%E5%88%9B%E5%BB%BA%E6%95%99%E5%AD%A6%E7%8F%AD%E6%A8%A1%E6%9D%BF.xls",
+        process.env.QINIUCDN +
+          "%E6%95%99%E5%B8%88%E5%88%9B%E5%BB%BA%E6%95%99%E5%AD%A6%E7%8F%AD%E6%A8%A1%E6%9D%BF.xls",
         "花名册模版.xls"
       );
     },

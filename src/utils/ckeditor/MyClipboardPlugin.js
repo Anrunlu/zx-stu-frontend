@@ -33,9 +33,9 @@ export function MyClipboardAdapterPlugin(editor) {
           file.type ===
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ) {
-          url = `https://view.officeapps.live.com/op/view.aspx?src=https://cyberdownload.anrunlu.net/${fileRename}`;
+          url = `https://view.officeapps.live.com/op/view.aspx?src=${process.env.QINIUCDN}${fileRename}`;
         } else {
-          url = `https://cyberdownload.anrunlu.net/${fileRename}`;
+          url = `${process.env.QINIUCDN}${fileRename}`;
         }
 
         content += `<a href='${url}'>${file.name}</a> &emsp;`;

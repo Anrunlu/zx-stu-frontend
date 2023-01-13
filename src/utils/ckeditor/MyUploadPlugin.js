@@ -20,7 +20,7 @@ export class MyUploadAdapter {
         },
         (data) => {
           return resolve({
-            default: `https://cyberdownload.anrunlu.net/` + data.key,
+            default: process.env.QINIUCDN + data.key,
           });
         }
       );
