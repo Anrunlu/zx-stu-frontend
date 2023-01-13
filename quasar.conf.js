@@ -64,6 +64,7 @@ module.exports = function (ctx) {
           ? "http://v2test.zxapi.anrunlu.net/"
           : "http://v2test.zxapi.anrunlu.net/",
         QINIUCDN: "https://cyberdownload.anrunlu.net/",
+        TOKEN_KEY: "zx_token",
       },
 
       // env: {

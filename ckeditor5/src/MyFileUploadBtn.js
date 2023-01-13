@@ -7,12 +7,12 @@ import { v4 as uuidv4 } from "uuid";
 import Cookies from "js-cookie";
 
 function getToken() {
-  return Cookies.get("zx_token") || "";
+  return Cookies.get(process.env.TOKEN_KEY) || "";
 }
 
 // FIXME:baseURL 需要按需要修改
 const request = axios.create({
-  baseURL: "https://v2.zxapi.anrunlu.net/",
+  baseURL: process.env.API_URL,
   timeout: 150000,
 });
 
@@ -122,9 +122,9 @@ export class FileUploadBtn extends Plugin {
               file.type ===
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             ) {
-              url = `https://view.officeapps.live.com/op/view.aspx?src=https://cyberdownload.anrunlu.net/${fileRename}`;
+              url = `https://view.officeapps.live.com/op/view.aspx?src=${process.env.QINIUCDN}${fileRename}`;
             } else {
-              url = `https://cyberdownload.anrunlu.net/${fileRename}`;
+              url = `${process.env.QINIUCDN}${fileRename}`;
             }
 
             editor.model.change((writer) => {
@@ -134,10 +134,13 @@ export class FileUploadBtn extends Plugin {
               editor.model.insertContent(writer.createText("    "));
             });
 
+            let alertTitle = "请稍后";
+
             Swal.fire({
               toast: true,
               icon: "info",
-              title: "文件上传中",
+              html: "文件上传中...<b></b>",
+              title: alertTitle,
               showConfirmButton: false,
               showClass: {
                 popup: "animate__animated animate__fadeIn",
@@ -158,7 +161,8 @@ export class FileUploadBtn extends Plugin {
               uploader.subscribe(
                 (res) => {
                   // 用于显示上传进度
-                  // console.log(res);
+                  const b = Swal.getHtmlContainer().querySelector("b");
+                  b.textContent = `${Math.floor(res.total.percent)}%`;
                 },
                 (error) => {
                   console.error(error);
