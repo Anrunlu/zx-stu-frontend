@@ -3,10 +3,11 @@ import {
   formatTimeWithWeekDay,
   formatTimeWithWeekDayAndSecond,
 } from "./time";
-import { getObjectShortId } from "./common";
+import { getObjectShortId, toFixed2 } from "./common";
 import { marked } from "marked";
 import Vue from "vue";
 import { concatQuestionWithQuestionMeta } from "./questionSet";
+import { apiGetHomeworkOverallAnswerStatus } from "src/api/teacher/homework";
 
 // markdown转换为html
 function markdownToHtml(value) {
@@ -31,6 +32,10 @@ export function preProcessHomeworkDetails(homeworkDetails) {
     homeworkDetails.endtime
   );
   homeworkDetails.statusByTime = computeHomeworkStatusByTime(homeworkDetails);
+
+  calcHomeworkCorrectProgress(homeworkDetails).then((res) => {
+    Vue.set(homeworkDetails, "correctProgress", res);
+  });
 }
 
 // 预处理学生作答概况
@@ -281,4 +286,33 @@ export function pretreatmentStudentHomeworkDetails(studentHomeworkDetails) {
   studentHomeworkDetails.programQuestions = programQuestions;
 
   return studentHomeworkDetails;
+}
+
+// 计算作业批改进度
+export async function calcHomeworkCorrectProgress(homeworkDetails) {
+  const getHomeworkOverallAnswerStatusDto = {
+    homework_id: homeworkDetails._id,
+    receiver_id: homeworkDetails.receiver._id,
+    receiver_type: "Classroom",
+    tcc_id: homeworkDetails.tcc,
+  };
+
+  const { data } = await apiGetHomeworkOverallAnswerStatus(
+    getHomeworkOverallAnswerStatusDto
+  );
+
+  const allStuAnswerStatus = data.data;
+
+  // 计算作业批改进度
+  const baseNum = allStuAnswerStatus.length;
+
+  let correctedSum = 0;
+
+  allStuAnswerStatus.forEach((status) => {
+    correctedSum += status.correctProgress;
+  });
+
+  const correctProgress = correctedSum / baseNum;
+
+  return toFixed2(correctProgress);
 }

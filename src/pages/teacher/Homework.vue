@@ -146,17 +146,19 @@
         </q-td>
       </template>
 
-      <!-- <template v-slot:body-cell-status="props">
-        <q-linear-progress size="25px" :value="props.row.status" color="accent">
-          <div class="absolute-full flex flex-center">
-            <q-badge
-              color="white"
-              text-color="accent"
-              :label="props.row.status"
-            />
-          </div>
-        </q-linear-progress>
-      </template> -->
+      <template v-slot:body-cell-correctProgress="props">
+        <q-td :props="props">
+          <q-chip
+            square
+            size="sm"
+            :icon="props.value >= 1 ? 'task_alt' : 'schedule'"
+            :color="props.value >= 1 ? 'positive' : 'primary'"
+            text-color="white"
+            dense
+            :label="`${props.value * 100}%`"
+          />
+        </q-td>
+      </template>
 
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
@@ -271,13 +273,13 @@ export default {
           align: "center",
           sortable: true,
         },
-        // {
-        //   name: "status",
-        //   label: "批改进度",
-        //   align: "center",
-        //   field: "status",
-        //   sortable: true,
-        // },
+        {
+          name: "correctProgress",
+          label: "批改进度",
+          align: "center",
+          field: "correctProgress",
+          sortable: true,
+        },
         {
           name: "action",
           align: "center",
