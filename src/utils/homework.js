@@ -304,12 +304,15 @@ export async function calcHomeworkCorrectProgress(homeworkDetails) {
   const allStuAnswerStatus = data.data;
 
   // 计算作业批改进度
-  const baseNum = allStuAnswerStatus.length;
+  let baseNum = 0;
 
   let correctedSum = 0;
 
   allStuAnswerStatus.forEach((status) => {
-    correctedSum += status.correctProgress;
+    if (status.answerProgress >= 1) {
+      baseNum += 1;
+      correctedSum += status.correctProgress;
+    }
   });
 
   const correctProgress = correctedSum / baseNum;

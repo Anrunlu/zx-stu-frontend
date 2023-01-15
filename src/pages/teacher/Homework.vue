@@ -152,7 +152,13 @@
             square
             size="sm"
             :icon="props.value >= 1 ? 'task_alt' : 'schedule'"
-            :color="props.value >= 1 ? 'positive' : 'primary'"
+            :color="
+              props.value >= 1
+                ? 'positive'
+                : props.value > 0
+                ? 'primary'
+                : 'grey-5'
+            "
             text-color="white"
             dense
             :label="`${props.value * 100}%`"
