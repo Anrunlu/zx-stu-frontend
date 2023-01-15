@@ -4,14 +4,6 @@ const defaultLayout = "TeacherLayout";
 
 const routes = [
   {
-    path: "/index",
-    component: () => import("pages/Index.vue"),
-    meta: {
-      isPublic: true,
-      title: "登录",
-    },
-  },
-  {
     path: "/login",
     component: () => import("pages/Login.vue"),
     meta: {
@@ -40,14 +32,6 @@ const routes = [
         },
       },
       {
-        path: "teaResource",
-        component: () => import("pages/teacher/TeaResource.vue"),
-        meta: {
-          type: "teacher",
-          title: "教学资源",
-        },
-      },
-      {
         path: "questionBank",
         component: () => import("pages/teacher/QuestionBank.vue"),
         meta: {
@@ -69,6 +53,54 @@ const routes = [
         meta: {
           type: "teacher",
           title: "作业管理",
+        },
+      },
+      {
+        path: "classwork",
+        component: () => import("pages/teacher/Classwork.vue"),
+        meta: {
+          type: "teacher",
+          title: "互动课堂",
+        },
+      },
+      {
+        path: "grade",
+        component: () => import("pages/teacher/Grade.vue"),
+        meta: {
+          type: "teacher",
+          title: "成绩管理",
+        },
+      },
+      {
+        path: "teaResource",
+        component: () => import("pages/teacher/TeaResource.vue"),
+        meta: {
+          type: "teacher",
+          title: "教学资源",
+        },
+      },
+      {
+        path: "exam",
+        component: () => import("pages/teacher/Exam.vue"),
+        meta: {
+          type: "teacher",
+          title: "考试系统",
+        },
+      },
+      {
+        path: "portrait",
+        component: () => import("pages/teacher/Portrait.vue"),
+        meta: {
+          type: "teacher",
+          title: "知识画像",
+        },
+      },
+      {
+        path: "notice",
+        component: () => import("pages/Notice.vue"),
+        meta: {
+          type: "teacher",
+          title: "消息中心",
         },
       },
       {

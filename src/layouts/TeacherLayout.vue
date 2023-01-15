@@ -36,7 +36,7 @@
           dense
           standout="bg-primary"
           v-model="search"
-          placeholder="Search"
+          placeholder="搜索"
         >
           <template v-slot:prepend>
             <q-icon v-if="search === ''" name="search" />

@@ -13,10 +13,9 @@ export default function () {
       { icon: "o_fact_check", label: "作业管理", to: "homework" },
       {
         icon: "o_cast_for_education",
-        label: "课堂互动",
+        label: "互动课堂",
         to: "classwork",
       },
-      { icon: "o_assignment", label: "考试系统", to: "" },
       { icon: "o_leaderboard", label: "成绩管理", to: "grade" },
     ],
     layoutLeftDrawerLinks2: [
@@ -30,14 +29,15 @@ export default function () {
         label: "教学资源",
         to: "teaResource",
       },
+      { icon: "o_assignment", label: "考试系统", to: "exam" },
       {
         icon: "flutter_dash",
         label: "知识画像",
-        to: "",
+        to: "portrait",
       },
     ],
     layoutLeftDrawerLinks3: [
-      { icon: "o_notifications", label: "消息中心", to: "announcement" },
+      { icon: "o_notifications", label: "消息中心", to: "notice" },
       { icon: "o_settings", label: "个人设置", to: "profile" },
       {
         icon: "o_quiz",
