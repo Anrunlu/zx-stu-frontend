@@ -665,7 +665,7 @@ export default {
 
     // 点击关闭按钮
     handleCloseBtnClick() {
-      this.$router.push(`/teacher/homework/${this.homeworkId}`);
+      this.$router.push(`/homework/${this.homeworkId}`);
     },
   },
 

@@ -536,7 +536,7 @@ export default {
     handleTableCellEditBtnClick(row) {
       this.currClickedRowQuestion = row;
       // 新标签页打开
-      const routeData = this.$router.resolve(`/teacher/question/${row._id}`);
+      const routeData = this.$router.resolve(`/question/${row._id}`);
       window.open(routeData.href, "_blank");
       return;
     },
@@ -605,7 +605,7 @@ export default {
 
       // 新标签页打开
       const routeData = this.$router.resolve(
-        `/teacher/question_add/${this.currSelectedTeaCourse.courseId}`
+        `/question_add/${this.currSelectedTeaCourse.courseId}`
       );
       window.open(routeData.href, "_blank");
     },

@@ -633,9 +633,7 @@ export default {
     // 点击引用试题集的作业
     handleQuestionSetTableCitationHomeworkBtnClick(homework) {
       // 跳转到作业详情页面
-      const routeData = this.$router.resolve(
-        `/teacher/homework/${homework._id}`
-      );
+      const routeData = this.$router.resolve(`/homework/${homework._id}`);
       window.open(routeData.href, "_blank");
     },
 

@@ -435,7 +435,7 @@ export default {
       // 跳转到作业概览页面
       // 在新标签页打开
       // 新标签页打开
-      const routeData = this.$router.resolve(`/teacher/homework/${row._id}`);
+      const routeData = this.$router.resolve(`/homework/${row._id}`);
       window.open(routeData.href, "_blank");
     },
 

@@ -131,7 +131,7 @@ export default {
     // 编辑题目按钮点击事件
     handleEditQuestionBtnClick() {
       const routeData = this.$router.resolve(
-        `/teacher/question/${this.questionDetails._id}`
+        `/question/${this.questionDetails._id}`
       );
       window.open(routeData.href, "_blank");
       return;

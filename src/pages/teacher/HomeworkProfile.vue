@@ -698,7 +698,7 @@ export default {
     // 点击学生视图表格行
     handleStuAnswerStatusViewTableRowClick(evt, row) {
       this.$router.push({
-        path: "/teacher/student_homework/" + this.homeworkId,
+        path: "/student_homework/" + this.homeworkId,
         query: {
           u: row.username,
         },
@@ -708,7 +708,7 @@ export default {
     // 点击题目视图表格行
     handleQuestionViewTableRowClick(evt, row) {
       this.$router.push({
-        path: "/teacher/student_homework/" + this.homeworkId,
+        path: "/student_homework/" + this.homeworkId,
         query: {
           u: row.username,
           m: "focus",

@@ -20,7 +20,7 @@ const routes = [
     },
   },
   {
-    path: "/teacher",
+    path: "",
     component: () => import(`layouts/${getLayout() || defaultLayout}.vue`),
     children: [
       // {
@@ -82,7 +82,7 @@ const routes = [
     ],
   },
   {
-    path: "/teacher/question/:questionId",
+    path: "/question/:questionId",
     component: () => import(`pages/teacher/QuestionEdit.vue`),
     props: true,
     meta: {
@@ -91,7 +91,7 @@ const routes = [
     },
   },
   {
-    path: "/teacher/course_mindmap/:courseId?",
+    path: "/course_mindmap/:courseId?",
     component: () => import(`pages/teacher/CourseMind.vue`),
     props: true,
     meta: {
@@ -100,7 +100,7 @@ const routes = [
     },
   },
   {
-    path: "/teacher/question_add/:courseId",
+    path: "/question_add/:courseId",
     component: () => import(`pages/teacher/QuestionAdd.vue`),
     props: true,
     meta: {
@@ -109,7 +109,7 @@ const routes = [
     },
   },
   {
-    path: "/teacher/homework/:homeworkId",
+    path: "/homework/:homeworkId",
     component: () => import(`pages/teacher/HomeworkProfile.vue`),
     props: true,
     meta: {
@@ -118,7 +118,7 @@ const routes = [
     },
   },
   {
-    path: "/teacher/student_homework/:homeworkId",
+    path: "/student_homework/:homeworkId",
     component: () => import(`pages/teacher/StudentHomework.vue`),
     props: true,
     meta: {
