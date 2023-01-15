@@ -22,6 +22,7 @@
           :index="index + 1"
           :showIndex="true"
           :showShortId="true"
+          :showPresetScore="true"
           class="q-my-sm"
         />
         <q-separator />

@@ -350,7 +350,9 @@ export function preProcessQuestionDetails(questionDetails) {
   // 处理上次更新人等信息
   if (!questionDetails.lastModifyBy) {
     questionDetails.lastModifyBy = {
-      nickname: questionDetails.creator.nickname,
+      nickname: questionDetails.creator
+        ? questionDetails.creator.nickname
+        : "未知",
     };
   }
   // 格式化客观题选项内容

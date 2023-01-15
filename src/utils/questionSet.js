@@ -6,7 +6,7 @@ export function concatQuestionWithQuestionMeta(questions, questionsMeta) {
     // 把题目元数据拼接到题目上
     questions.forEach((question) => {
       const questionMeta = questionsMeta.find(
-        (meta) => meta._id === question._id
+        (meta) => meta.question_id === question._id
       );
       question.presetScore = questionMeta.presetScore;
       question.creator = questionMeta.creator;

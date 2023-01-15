@@ -10,6 +10,14 @@
         :color="'grey'"
         objectName="题目"
       />
+      <!-- 预设分数 -->
+      <q-chip
+        v-if="showPresetScore"
+        dense
+        size="sm"
+        square
+        :label="`${questionDetails.presetScore}分`"
+      />
       <!-- 序号 -->
       <q-chip
         v-if="showIndex"
@@ -92,6 +100,11 @@ export default {
       required: false,
     },
     showIndex: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    showPresetScore: {
       type: Boolean,
       default: false,
       required: false,
