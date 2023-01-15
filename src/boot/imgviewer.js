@@ -4,6 +4,7 @@ export default async ({ Vue }) => {
   Vue.use(Viewer, {
     defaultOptions: {
       transition: false,
+      zIndex: 9999,
     },
   });
 };
