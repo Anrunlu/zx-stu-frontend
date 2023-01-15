@@ -10,7 +10,18 @@ import { concatQuestionWithQuestionMeta } from "./questionSet";
 
 // markdown转换为html
 function markdownToHtml(value) {
-  return marked(value);
+  let htmlContent = marked(value);
+
+  // 如果遇到 a 链接，改为 iframe
+  // htmlContent = htmlContent.replace(
+  //   /<a href="(.+?)" target="_blank">(.+?)<\/a>/g,
+  //   `
+  //   <iframe src="$1&amp;wdEmbedCode=0" width="100%" height="1000px" frameborder="0"></iframe>
+
+  //   `
+  // );
+
+  return htmlContent;
 }
 
 // 预处理作业详情
