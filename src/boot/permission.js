@@ -36,7 +36,7 @@ export default ({ router, store, Vue }) => {
       if (to.path === "/login" || to.path === "/") {
         // 如果是登录页或者首页
         next({
-          path: `/${userType}/dashboard`,
+          path: `/${userType}/course`,
         }); // 则放行并跳转到对应的用户首页
         LoadingBar.stop();
       } else {

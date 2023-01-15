@@ -2,7 +2,7 @@ export default function () {
   return {
     // 布局相关
     layoutLeftDrawerLinks1: [
-      { icon: "o_dashboard", label: "Dashboard", to: "dashboard" },
+      // { icon: "o_dashboard", label: "Dashboard", to: "dashboard" },
       {
         icon: "o_folder_shared",
         label: "课程管理",

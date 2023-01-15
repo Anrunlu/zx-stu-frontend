@@ -23,14 +23,14 @@ const routes = [
     path: "/teacher",
     component: () => import(`layouts/${getLayout() || defaultLayout}.vue`),
     children: [
-      {
-        path: "dashboard",
-        component: () => import("pages/teacher/Dashboard.vue"),
-        meta: {
-          type: "teacher",
-          title: "Dashboard",
-        },
-      },
+      // {
+      //   path: "dashboard",
+      //   component: () => import("pages/teacher/Dashboard.vue"),
+      //   meta: {
+      //     type: "teacher",
+      //     title: "Dashboard",
+      //   },
+      // },
       {
         path: "course",
         component: () => import("pages/teacher/Course.vue"),
