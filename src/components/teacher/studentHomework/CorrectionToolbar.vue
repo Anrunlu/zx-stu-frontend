@@ -87,6 +87,7 @@
 
 <script>
 import { apiPostCorrectStudentQA } from "src/api/teacher/homework";
+import { toFixed2 } from "src/utils/common";
 export default {
   name: "CorrectionToolbar",
   props: {
@@ -146,9 +147,9 @@ export default {
 
   computed: {
     sliderMarkerLabel() {
-      const level1 = this.questionDetails.presetScore * 0.6 || 60;
-      const level2 = this.questionDetails.presetScore * 0.85 || 85;
-      const level3 = this.questionDetails.presetScore * 1 || 100;
+      const level1 = toFixed2(this.questionDetails.presetScore * 0.6) || 60;
+      const level2 = toFixed2(this.questionDetails.presetScore * 0.85) || 85;
+      const level3 = toFixed2(this.questionDetails.presetScore * 1) || 100;
       return [
         { value: 0, label: `0分` },
         { value: level1, label: `${level1}分` },
