@@ -415,14 +415,10 @@ export default {
     },
 
     // 处理点击教学资源列表中的某一行
-    handleTeaResourceClick(row) {
+    handleTeaResourceClick(evt, row) {
       this.currClickedRowTeaResource = row;
-      // this.$router.push({
-      //   name: "teaResourceDetail",
-      //   params: {
-      //     teaResourceId: row.id,
-      //   },
-      // });
+      // 新页面打开
+      window.open(row.fileUrl);
     },
 
     // 处理更新教学资源对话框表单提交事件
