@@ -57,7 +57,7 @@
                   aria-hidden="true"
                 >
                   <q-item-section avatar>
-                    <q-icon name="forum" />
+                    <q-icon name="o_forum" />
                   </q-item-section>
                   <q-item-section>题库创建</q-item-section>
                 </q-item>
@@ -68,9 +68,9 @@
                   aria-hidden="true"
                 >
                   <q-item-section avatar>
-                    <q-icon name="title" />
+                    <q-icon name="o_auto_mode" />
                   </q-item-section>
-                  <q-item-section>题号导入</q-item-section>
+                  <q-item-section>自动组题</q-item-section>
                 </q-item>
                 <q-item
                   to="questionBank"
@@ -79,9 +79,9 @@
                   aria-hidden="true"
                 >
                   <q-item-section avatar>
-                    <q-icon name="auto_mode" />
+                    <q-icon name="o_title" />
                   </q-item-section>
-                  <q-item-section>自动组题</q-item-section>
+                  <q-item-section>题号导入</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
