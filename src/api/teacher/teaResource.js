@@ -10,6 +10,15 @@ export function apiGetTeaResources(data) {
   });
 }
 
+// 上传教学资源
+export function apiUploadResources(data) {
+  return loadingFn(request)({
+    url: "/tea/tearesource",
+    method: "POST",
+    data,
+  });
+}
+
 // 修改教学资源
 export function apiModifyTeaResource(data) {
   return loadingFn(request)({

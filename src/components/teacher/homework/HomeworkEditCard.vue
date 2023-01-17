@@ -269,9 +269,7 @@
         </q-list>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn type="submit" color="primary" class="q-px-sm" icon="cached">
-          更新
-        </q-btn>
+        <q-btn type="submit" color="primary" icon="sync"> 更新 </q-btn>
       </q-card-actions>
     </q-form>
   </q-card>

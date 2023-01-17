@@ -65,7 +65,7 @@ export default {
   },
 
   methods: {
-    async uploadAvatar(file) {
+    uploadAvatar(file) {
       const uuid = uuidv4();
       const fileRename = `${uuid}.${file.type.split("/").pop()}`;
 

@@ -4,6 +4,7 @@
       flat
       :data="teaResourceList"
       :columns="teaResourceColumns"
+      :visible-columns="teaResourceVisibleColumns"
       row-key="_id"
       @row-click="handleTeaResourceClick"
       :pagination="tablePagination"
@@ -51,7 +52,7 @@
               <q-item
                 clickable
                 v-close-popup
-                @click="handleGetTeaResourceList(category)"
+                @click="handleChangeTeaResourceCategory(category)"
                 :key="index"
                 v-for="(category, index) in teaResourceCategoryOptions"
               >
@@ -65,6 +66,14 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
+          <!-- 上传资源 -->
+          <q-btn
+            color="accent"
+            outline
+            icon="o_cloud_upload"
+            label="上传资源"
+            @click="teaResourceUploadDig = true"
+          />
         </div>
       </template>
 
@@ -105,16 +114,14 @@
         </q-td>
       </template>
 
-      <template v-slot:body-cell-status="props">
-        <q-linear-progress size="25px" :value="props.row.status" color="accent">
-          <div class="absolute-full flex flex-center">
-            <q-badge
-              color="white"
-              text-color="accent"
-              :label="props.row.status"
-            />
-          </div>
-        </q-linear-progress>
+      <template v-slot:body-cell-filename="props">
+        <q-td :props="props">
+          <q-icon
+            :name="`fa-regular ${props.row.resourceTypeAndIcon.icon}`"
+            size="xs"
+            color="grey"
+          />{{ props.value }}
+        </q-td>
       </template>
 
       <template v-slot:body-cell-action="props">
@@ -180,17 +187,18 @@
             </q-list>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn
-              type="submit"
-              color="primary"
-              class="q-px-sm"
-              icon="cloud_upload"
-            >
-              更新
-            </q-btn>
+            <q-btn type="submit" color="primary" icon="sync"> 更新 </q-btn>
           </q-card-actions>
         </q-form>
       </q-card>
+    </q-dialog>
+
+    <!-- 上传教学资源对话框 -->
+    <q-dialog v-model="teaResourceUploadDig" persistent>
+      <TeaResourceUploadCard
+        :category="currSelectedCategory"
+        @refreshTeaResourceList="handleGetTeaResourceList"
+      />
     </q-dialog>
   </q-page>
 </template>
@@ -203,8 +211,7 @@ import {
 } from "src/api/teacher/teaResource";
 import { mapGetters } from "vuex";
 import { copyToClipboard } from "quasar";
-import { formatTimeWithWeekDay } from "src/utils/time";
-import { getObjectShortId } from "src/utils/common";
+import { preProcessTeaResourceList } from "src/utils/teaResource";
 export default {
   name: "TeaResource",
   data() {
@@ -222,10 +229,21 @@ export default {
         },
         {
           name: "filename",
-          label: "文件名",
+          label: "资源名",
           field: "filename",
-          align: "center",
+          align: "left",
           sortable: true,
+        },
+        {
+          name: "resourceTypeAndIcon",
+          label: "资源类型和图标",
+          field: "resourceTypeAndIcon",
+        },
+        {
+          name: "description",
+          label: "资源描述",
+          field: "description",
+          align: "center",
         },
         {
           name: "creator",
@@ -247,19 +265,31 @@ export default {
           label: "操作",
         },
       ],
+      teaResourceVisibleColumns: [
+        "shortId",
+        "filename",
+        "description",
+        "creator",
+        "createdAt",
+        "action",
+      ],
       // 当前选中的教学资源分类
-      currSelectedCategory: "",
+      currSelectedCategory: {},
       // 教学资源过滤
       teaResourceFilter: "",
       // 当前点击的那一会教学资源
       currClickedRowTeaResource: {},
       // 教学资源编辑对话框
       teaResourceEditingDig: false,
+      // 上传教学资源对话框
+      teaResourceUploadDig: false,
     };
   },
 
   components: {
     CardBar: () => import("src/components/common/CardBar.vue"),
+    TeaResourceUploadCard: () =>
+      import("src/components/teacher/teaResource/teaResourceUploadCard.vue"),
   },
 
   computed: {
@@ -288,7 +318,7 @@ export default {
 
   methods: {
     // 获取资源列表
-    async handleGetTeaResourceList(category) {
+    async handleGetTeaResourceList() {
       // 校验是否选择了课程
       if (!this.currSelectedTeaCourse) {
         this.$q.notify({
@@ -298,7 +328,14 @@ export default {
         return;
       }
 
-      this.currSelectedCategory = category;
+      // 校验是否选择了资源分类
+      if (!this.currSelectedCategory.value) {
+        this.$q.notify({
+          message: "请先选择资源分类",
+          type: "warning",
+        });
+        return;
+      }
 
       // 构造请求参数
       const payload = {
@@ -309,14 +346,12 @@ export default {
       // 发送请求
       try {
         const { data } = await apiGetTeaResources(payload);
-        this.teaResourceList = data.data.map((teaResource) => {
-          teaResource.createdAt = formatTimeWithWeekDay(teaResource.createdAt);
-          return {
-            ...teaResource,
-            shortId: getObjectShortId(teaResource),
-          };
-        });
+
+        preProcessTeaResourceList(data.data);
+
+        this.teaResourceList = data.data;
       } catch (error) {
+        console.log(error);
         this.$q.notify({
           message: "获取教学资源列表失败",
           type: "negative",
@@ -398,12 +433,18 @@ export default {
       this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
 
       // 如果当前选中的教学资源分类不为空，则重新获取教学资源列表
-      if (this.currSelectedCategory) {
-        this.handleGetTeaResourceList(this.currSelectedCategory);
+      if (this.currSelectedCategory.value) {
+        this.handleGetTeaResourceList();
       }
     },
 
-    // 点击集=资源编号
+    // 设置当前选择的教学资源分类
+    handleChangeTeaResourceCategory(category) {
+      this.currSelectedCategory = category;
+      this.handleGetTeaResourceList();
+    },
+
+    // 点击集资源编号
     handleTableCellIdClick(row) {
       // 复制id到剪贴板
       copyToClipboard(row.id).then(() => {
@@ -417,8 +458,28 @@ export default {
     // 处理点击教学资源列表中的某一行
     handleTeaResourceClick(evt, row) {
       this.currClickedRowTeaResource = row;
+
+      let url = "";
+
+      // https://view.officeapps.live.com/op/view.aspx?src={fileUrl}
+
+      // 如果是常见的 office 类型且 fileUrl 不包含 view.officeapps.live.com，则构造新 url 使用 office 在线预览
+      if (
+        (row.filetype === "doc" ||
+          row.filetype === "docx" ||
+          row.filetype === "ppt" ||
+          row.filetype === "pptx" ||
+          row.filetype === "xls" ||
+          row.filetype === "xlsx") &&
+        !row.fileUrl.includes("view.officeapps.live.com")
+      ) {
+        url = `https://view.officeapps.live.com/op/view.aspx?src=${row.fileUrl}`;
+      } else {
+        url = row.fileUrl;
+      }
+
       // 新页面打开
-      window.open(row.fileUrl);
+      window.open(url, "_blank");
     },
 
     // 处理更新教学资源对话框表单提交事件

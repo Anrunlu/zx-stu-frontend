@@ -44,7 +44,7 @@ module.exports = function (ctx) {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v5',
-      // "fontawesome-v6",
+      "fontawesome-v6",
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
