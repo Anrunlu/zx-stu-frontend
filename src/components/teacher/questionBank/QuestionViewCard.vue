@@ -17,9 +17,11 @@
           dense
           icon="arrow_back"
           color="white"
-          @click="$emit('prevQuestion', questionId)"
+          @click="handlePrevQuestion"
         >
-          <q-tooltip> 上一题 </q-tooltip>
+          <q-tooltip>
+            上一题，快捷键<kbd style="margin-left: 5px">←</kbd>
+          </q-tooltip>
         </q-btn>
         <q-btn
           round
@@ -27,8 +29,10 @@
           dense
           icon="arrow_forward"
           color="white"
-          @click="$emit('nextQuestion', questionId)"
-          ><q-tooltip> 下一题 </q-tooltip></q-btn
+          @click="handleNextQuestion"
+          ><q-tooltip>
+            下一题，快捷键<kbd style="margin-left: 5px">→</kbd>
+          </q-tooltip></q-btn
         >
       </template>
     </CardBar>
@@ -136,10 +140,33 @@ export default {
       window.open(routeData.href, "_blank");
       return;
     },
+
+    // 上一题
+    handlePrevQuestion() {
+      this.$emit("prevQuestion", this.questionId);
+    },
+
+    // 下一题
+    handleNextQuestion() {
+      this.$emit("nextQuestion", this.questionId);
+    },
+  },
+
+  mounted() {
+    // 绑定按键，上一题
+    this.$shortcut.bind("left", this.handlePrevQuestion);
+    // 下一题
+    this.$shortcut.bind("right", this.handleNextQuestion);
   },
 
   created() {
     this.getQuestionDetail(this.questionId);
+  },
+
+  beforeDestroy() {
+    // 解绑按键
+    this.$shortcut.unbind("left", this.handlePrevQuestion);
+    this.$shortcut.unbind("right", this.handleNextQuestion);
   },
 };
 </script>

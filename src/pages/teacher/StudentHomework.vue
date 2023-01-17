@@ -701,14 +701,4 @@ export default {
 };
 </script>
 
-<style>
-kbd {
-  color: grey;
-  background-color: hsl(0deg, 0%, 99%);
-  border-radius: 5px;
-  border: 1px solid hsl(0deg, 0%, 80%);
-  padding: 4px 5px;
-  font-weight: bold;
-  box-shadow: inset 0 1px 0 hsl(0deg, 0%, 100%), 0 1px 0 hsl(0deg, 0%, 80%);
-}
-</style>
+<style></style>
