@@ -16,7 +16,11 @@
           clickable
           @click="switchMode()"
         >
-          <q-tooltip> 切换模式 <kbd>V</kbd></q-tooltip>
+          <q-tooltip>
+            {{
+              mode === "focus" ? "点击退出专注模式" : "点击进入专注模式"
+            }}</q-tooltip
+          >
         </q-chip>
         <q-btn dense flat icon="settings" @click="handleSettingsBtnClick">
           <q-tooltip>设置</q-tooltip>
