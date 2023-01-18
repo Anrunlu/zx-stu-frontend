@@ -235,8 +235,8 @@ export default {
         // 清空已上传队列
         this.$refs.uploader.removeUploadedFiles();
 
-        // 通知父组件刷新资源列表
-        this.$emit("refreshTeaResourceList");
+        // 通知父组件
+        this.$emit("uploadFinished");
       } catch (error) {
         console.log(error);
         // 提示上传失败

@@ -197,7 +197,7 @@
     <q-dialog v-model="teaResourceUploadDig" persistent>
       <TeaResourceUploadCard
         :category="currSelectedCategory"
-        @refreshTeaResourceList="handleGetTeaResourceList"
+        @uploadFinished="handleFileUploadComplete"
       />
     </q-dialog>
   </q-page>
@@ -498,6 +498,13 @@ export default {
       this.teaResourceEditingDig = false;
       // 刷新教学资源列表
       this.handleGetTeaResourceList(this.currSelectedCategory);
+    },
+
+    // 处理子组件文件上传完成
+    handleFileUploadComplete() {
+      this.teaResourceUploadDig = false;
+      // 刷新教学资源列表
+      this.handleGetTeaResourceList();
     },
   },
 
