@@ -72,6 +72,14 @@ const routes = [
         },
       },
       {
+        path: "course_mind",
+        component: () => import(`pages/teacher/CourseMind.vue`),
+        meta: {
+          type: "teacher",
+          title: "课程导图",
+        },
+      },
+      {
         path: "teaResource",
         component: () => import("pages/teacher/TeaResource.vue"),
         meta: {
@@ -123,12 +131,12 @@ const routes = [
     },
   },
   {
-    path: "/course_mindmap/:courseId?",
-    component: () => import(`pages/teacher/CourseMind.vue`),
+    path: "/course_mind_detail/:courseId?",
+    component: () => import(`pages/teacher/CourseMindDetail.vue`),
     props: true,
     meta: {
       type: "teacher",
-      title: "课程导图",
+      title: "导图详情",
     },
   },
   {

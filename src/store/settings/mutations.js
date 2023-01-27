@@ -25,3 +25,11 @@ export function layoutLeftDrawerLinks3(state, layoutLeftDrawerLinks3) {
 export function questionTypeOptions(state, questionTypeOptions) {
   state.questionTypeOptions = questionTypeOptions;
 }
+
+export function teaResourceCategoryOptions(state, teaResourceCategoryOptions) {
+  state.teaResourceCategoryOptions = teaResourceCategoryOptions;
+}
+
+export function courseMindCategoryOptions(state, courseMindCategoryOptions) {
+  state.courseMindCategoryOptions = courseMindCategoryOptions;
+}

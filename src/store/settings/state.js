@@ -22,7 +22,7 @@ export default function () {
       {
         icon: "o_schema",
         label: "课程导图",
-        to: "course_mindmap",
+        to: "course_mind",
       },
       {
         icon: "o_cloud",
@@ -90,6 +90,11 @@ export default function () {
       { icon: "o_design_services", value: "毕业设计", label: "毕业设计" },
       { icon: "o_forum", value: "期末试题库", label: "期末试题库" },
       { icon: "o_folder_shared", value: "学生期末试卷", label: "学生期末试卷" },
+    ],
+
+    // 课程导图类型选项
+    courseMindCategoryOptions: [
+      { icon: "o_schema", value: "课程大纲", label: "课程大纲" },
     ],
   };
 }

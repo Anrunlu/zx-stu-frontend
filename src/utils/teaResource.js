@@ -74,7 +74,7 @@ export function getResourceTypeAndIcon(FileType) {
     case "text/plain":
       return {
         type: "文本",
-        icon: "fa-memo",
+        icon: "fa-file-lines",
       };
     case "jpg":
     case "jpeg":

@@ -264,14 +264,7 @@
         </q-list>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn
-          type="submit"
-          color="primary"
-          class="q-px-sm"
-          icon="cloud_upload"
-        >
-          发布
-        </q-btn>
+        <q-btn type="submit" color="primary" icon="cloud_upload"> 发布 </q-btn>
       </q-card-actions>
     </q-form>
   </q-card>

@@ -29,3 +29,7 @@ export function questionTypeOptions(state) {
 export function teaResourceCategoryOptions(state) {
   return state.teaResourceCategoryOptions;
 }
+
+export function courseMindCategoryOptions(state) {
+  return state.courseMindCategoryOptions;
+}
