@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <h1>知识画像</h1>
+    <h1>知识画像，敬请期待...</h1>
   </div>
 </template>
 

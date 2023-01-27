@@ -36,7 +36,7 @@
             color="primary"
             icon="edit"
             label="批注"
-            @click="handleAnnotationBtnClick"
+            @click.stop="handleAnnotationBtnClick"
           >
           </q-btn>
           <q-space />
@@ -134,6 +134,14 @@ export default {
 
     // 点击批注按钮
     handleAnnotationBtnClick() {
+      // TODO:批注功能暂时不做
+      this.$q.notify({
+        message: "批注功能即将上线，敬请期待...",
+        type: "warning",
+      });
+
+      return;
+
       // 将 dom 及其子元素绘制到 canvas 上
       const capture = document.getElementById("studentqa");
       html2canvas(capture, { allowTaint: true }).then((canvas) => {
