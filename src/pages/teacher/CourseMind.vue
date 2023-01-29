@@ -107,7 +107,7 @@
           class="cursor-pointer"
         >
           <q-icon name="fingerprint" size="xs" color="grey-6" />{{
-            props.row.shortId
+            props.value
           }}
         </q-td>
       </template>
@@ -148,9 +148,14 @@
 
     <!-- 创建导图对话框 -->
     <q-dialog v-model="courseMindAddDig" persistent>
-      <CourseMindAddCard
-        :questionSet="currClickedRowQuestionSet"
-        @createHomeworksSuccess="handleCreatedHomeworkSuccess"
+      <CourseMindAddCard />
+    </q-dialog>
+
+    <!-- 编辑导图元数据对话框 -->
+    <q-dialog v-model="courseMindEditDig" persistent>
+      <CourseMindEditCard
+        :courseMindId="currClickedRowCourseMind._id"
+        @closeEditingCourseMindDialog="handleCloseEditingCourseMindDialog"
       />
     </q-dialog>
 
@@ -168,13 +173,13 @@
 
 <script>
 import {
+  apiDeleteCourseMind,
   apiGetCourseMinds,
-  apiRemoveCourseMind,
 } from "src/api/teacher/courseMind";
 import { mapGetters } from "vuex";
 import { copyToClipboard } from "quasar";
 import { formatTimeWithWeekDay } from "src/utils/time";
-import { preProcessCourseMindDetails } from "src/utils/courseMind";
+import { getObjectShortId } from "src/utils/common";
 
 export default {
   name: "CourseMind",
@@ -188,13 +193,20 @@ export default {
           name: "shortId",
           label: "导图编号",
           align: "left",
-          field: "shortId",
+          field: (row) => getObjectShortId(row),
           sortable: true,
         },
         {
           name: "title",
           label: "导图标题",
           field: "title",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "description",
+          label: "导图描述",
+          field: "description",
           align: "center",
           sortable: true,
         },
@@ -207,7 +219,7 @@ export default {
         },
         {
           name: "updatedAt",
-          label: "更新时间",
+          label: "创建/更新时间",
           align: "center",
           field: (row) => formatTimeWithWeekDay(row.updatedAt),
           sortable: true,
@@ -218,13 +230,23 @@ export default {
           label: "操作",
         },
       ],
+      // 筛选条件
+      courseMindTableFilterOptions: {
+        // 创建时间起止
+        createdAtfromTo: {
+          from: "",
+          to: "",
+        },
+        // 仅我创建的
+        isSelfOnly: false,
+      },
       // 当前选中的导图分类
       currSelectedCategory: { value: "", label: "", icon: "" },
       // 导图过滤
       courseMindFilter: "",
       // 当前点击的导图
       currClickedRowCourseMind: {},
-      // 导图编辑对话框
+      // 导图元数据编辑对话框
       courseMindEditDig: false,
       // 创建导图对话框
       courseMindAddDig: false,
@@ -236,6 +258,8 @@ export default {
   components: {
     CourseMindAddCard: () =>
       import("src/components/teacher/courseMind/CourseMindAddCard.vue"),
+    CourseMindEditCard: () =>
+      import("src/components/teacher/courseMind/CourseMindEditCard.vue"),
     ObjectConfirmRemoveCard: () =>
       import("src/components/common/ObjectConfirmRemoveCard.vue"),
   },
@@ -266,7 +290,7 @@ export default {
 
   methods: {
     // 获取导图列表
-    async handleGetCourseMindList() {
+    async getCourseMindList() {
       // 校验是否选择了课程
       if (!this.currSelectedTeaCourse) {
         this.$q.notify({
@@ -276,25 +300,39 @@ export default {
         return;
       }
 
-      // 构造请求参数
-      const payload = {
-        status: "正常",
-        teacourse_id: this.currSelectedTeaCourse.id,
+      // 构造查询条件
+      const queryCondition = {
+        isSelfOnly: this.courseMindTableFilterOptions.isSelfOnly,
         category: this.currSelectedCategory.value,
       };
 
-      // 发送请求
+      // 构造创建起止时间条件
+      if (
+        this.courseMindTableFilterOptions.createdAtfromTo.from &&
+        this.courseMindTableFilterOptions.createdAtfromTo.to
+      ) {
+        queryCondition.createdAtfromTo = [
+          new Date(this.courseMindTableFilterOptions.createdAtfromTo.from),
+          new Date(this.courseMindTableFilterOptions.createdAtfromTo.to),
+        ];
+      }
+
+      const payload = {
+        course_id: this.currSelectedTeaCourse.courseId,
+        ...queryCondition,
+      };
+
       try {
         const { data } = await apiGetCourseMinds(payload);
-        data.data.forEach((courseMind) => {
-          preProcessCourseMindDetails(courseMind);
+        const res = data.data;
+
+        res.forEach((courseMind) => {
+          courseMind.shortId = getObjectShortId(courseMind);
         });
-        this.courseMindList = data.data;
+
+        this.courseMindList = res;
       } catch (error) {
-        this.$q.notify({
-          message: "获取导图列表失败",
-          type: "negative",
-        });
+        console.log(error);
       }
     },
 
@@ -302,13 +340,13 @@ export default {
     async removeCourseMind() {
       // 移除导图
       try {
-        await apiRemoveCourseMind(this.currClickedRowCourseMind._id);
+        await apiDeleteCourseMind(this.currClickedRowCourseMind._id);
         this.$q.notify({
           message: "删除成功",
           type: "positive",
         });
         // 重新获取导图列表
-        this.handleGetCourseMindList();
+        this.getCourseMindList();
         this.removeCourseMindDig = false;
         this.currClickedRowCourseMind = {};
       } catch (error) {
@@ -325,14 +363,14 @@ export default {
 
       // 如果当前选中的导图分类不为空，则重新获取导图列表
       if (this.currSelectedCategory.value) {
-        this.handleGetCourseMindList(this.currSelectedCategory.value);
+        this.getCourseMindList(this.currSelectedCategory.value);
       }
     },
 
     // 处理导图分类选项改变
     handleChangeCourseMindCategory(category) {
       this.currSelectedCategory = category;
-      this.handleGetCourseMindList();
+      this.getCourseMindList();
     },
 
     // 处理点击新建导图按钮
@@ -351,11 +389,8 @@ export default {
     // 处理点击导图列表中的某一行
     handleCourseMindClick(evt, row) {
       this.currClickedRowCourseMind = row;
-      // 跳转到导图概览页面
-      // 在新标签页打开
-      // 新标签页打开
-      const routeData = this.$router.resolve(`/courseMind/${row._id}`);
-      window.open(routeData.href, "_blank");
+      this.$router.push(`/course_mind/${row._id}`);
+      // window.open(routeData.href, "_blank");
     },
 
     // 点击导图编号
@@ -381,11 +416,11 @@ export default {
       this.removeCourseMindDig = true;
     },
 
-    // 处理导图编辑对话框关闭事件
+    // 处理导图编辑元数据对话框关闭事件
     handleCloseEditingCourseMindDialog() {
       this.courseMindEditDig = false;
       // 刷新导图列表
-      this.handleGetCourseMindList();
+      this.getCourseMindList();
     },
   },
 
@@ -394,7 +429,7 @@ export default {
     this.$store.dispatch("teaCourse/getTeaCourseInfo");
 
     // 获取导图列表
-    this.handleGetCourseMindList();
+    this.getCourseMindList();
   },
 };
 </script>

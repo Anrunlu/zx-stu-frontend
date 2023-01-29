@@ -1,8 +1,8 @@
 <template>
-  <!-- 创建导图 -->
+  <!-- 编辑导图元数据 -->
   <q-card style="width: 600px; max-width: 90vw">
     <q-form @submit="handlePublishCourseMindSubmit">
-      <CardBar title="创建导图" icon="add" />
+      <CardBar title="编辑导图" icon="edit" />
       <q-card-section class="q-pa-sm">
         <q-list class="row">
           <q-item class="col-12">
@@ -89,21 +89,27 @@
         </q-list>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn type="submit" color="primary" icon="edit_square">
-          确定并开始编辑
-        </q-btn>
+        <q-btn type="submit" color="primary" icon="sync"> 更新 </q-btn>
       </q-card-actions>
     </q-form>
   </q-card>
 </template>
 
 <script>
-import { apiCreateCourseMinds } from "src/api/teacher/courseMind";
+import {
+  apiGetCourseMindDetails,
+  apiModifyCourseMind,
+} from "src/api/teacher/courseMind";
 import { mapGetters } from "vuex";
-import { v4 as uuidv4 } from "uuid";
 export default {
-  name: "CourseMindAddCard",
-  props: {},
+  name: "CourseMindEditCard",
+  props: {
+    // 导图id
+    courseMindId: {
+      type: String,
+      default: "",
+    },
+  },
 
   data() {
     return {
@@ -132,36 +138,43 @@ export default {
   },
 
   methods: {
-    // 发布导图
-    async createCourseMind() {
-      const root = {
-        nodeData: {
-          id: uuidv4(),
-          topic: this.currCourseMindDetails.title,
-          root: true,
-        },
-        linkData: {},
-        direction: 1,
-      };
+    // 获取导图详情
+    async getCourseMindDetails() {
+      try {
+        const { data } = await apiGetCourseMindDetails(this.courseMindId);
+        this.currCourseMindDetails = data.data;
+      } catch (error) {
+        console.log(error);
+        this.$q.notify({
+          type: "negative",
+          message: "获取导图详情失败",
+        });
+      }
+    },
 
-      const createCourseMindDto = {
+    // 更新导图元信息
+    async modifyCourseMindMetaInfo() {
+      const modifyCourseMindMetaInfoDto = {
         title: this.currCourseMindDetails.title,
         category: this.currCourseMindDetails.category,
-        content: root,
         description: this.currCourseMindDetails.description,
-        isShare: this.currCourseMindDetails.isShare,
-        course_id: this.currSelectedTeaCourse.courseId,
+        isShare: this.currCourseMindDetails.allowedEdit,
       };
 
       try {
-        const { data } = await apiCreateCourseMinds(createCourseMindDto);
-
-        const createdCourseMind = data.data;
-
-        this.$router.push(`course_mind/${createdCourseMind._id}`);
+        await apiModifyCourseMind(
+          this.courseMindId,
+          modifyCourseMindMetaInfoDto
+        );
+        this.$q.notify({
+          message: "修改成功",
+          type: "positive",
+        });
+        // 通知父组件关闭对话框
+        this.$emit("closeEditingCourseMindDialog");
       } catch (error) {
         this.$q.notify({
-          message: "创建失败",
+          message: "修改失败",
           type: "negative",
         });
       }
@@ -169,11 +182,13 @@ export default {
 
     // 处理表单提交
     handlePublishCourseMindSubmit() {
-      // 发布导图
-      this.createCourseMind();
+      // 修改导图
+      this.modifyCourseMindMetaInfo();
     },
   },
 
-  created() {},
+  created() {
+    this.getCourseMindDetails();
+  },
 };
 </script>

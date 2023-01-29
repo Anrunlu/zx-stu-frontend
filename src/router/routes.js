@@ -131,7 +131,7 @@ const routes = [
     },
   },
   {
-    path: "/course_mind_detail/:courseId?",
+    path: "/course_mind/:courseMindId?",
     component: () => import(`pages/teacher/CourseMindDetail.vue`),
     props: true,
     meta: {

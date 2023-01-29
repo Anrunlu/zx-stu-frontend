@@ -1,6 +1,10 @@
 // 获取对象的 shortId
 export function getObjectShortId(object) {
-  return object._id.slice(-5).toUpperCase();
+  return getShortId(object._id);
+}
+
+export function getShortId(_id) {
+  return _id.slice(-5).toUpperCase();
 }
 
 // 保留小数点后两位，返回数值类型

@@ -537,9 +537,9 @@ export default {
 
       const { data } = await apiFilterQuestionSets(payload);
 
-      const questions = data.data;
+      const res = data.data;
 
-      this.questionSetList = questions.map((questionSet, index) => {
+      this.questionSetList = res.map((questionSet, index) => {
         return {
           _id: questionSet._id,
           shortId: getObjectShortId(questionSet),

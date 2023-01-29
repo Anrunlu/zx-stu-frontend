@@ -1,45 +1,45 @@
 import { request } from "src/boot/axios";
 import { loadingFn } from "src/utils/loadingTools";
 
-// 获取作业列表
-export function apiGetHomeworks(data) {
+// 获取导图列表
+export function apiGetCourseMinds(data) {
   return loadingFn(request)({
-    url: "/tea/homework/queryByTeaCourse",
+    url: "/tea/courseMind/filter",
     method: "POST",
     data,
   });
 }
 
-// 获取作业详情
-export function apiGetHomeworkDetails(homeworkId) {
+// 获取导图详情
+export function apiGetCourseMindDetails(courseMindId) {
   return loadingFn(request)({
-    url: `/tea/homework/${homeworkId}`,
+    url: `/tea/courseMind/${courseMindId}`,
     method: "GET",
   });
 }
 
-// 创建作业
-export function apiCreateHomeworks(data) {
+// 创建导图
+export function apiCreateCourseMinds(data) {
   return loadingFn(request)({
-    url: `/tea/homework`,
+    url: `/tea/courseMind`,
     method: "POST",
     data,
   });
 }
 
-// 修改作业
-export function apiModifyHomework(homeworkId, data) {
+// 修改导图
+export function apiModifyCourseMind(courseMindId, data) {
   return loadingFn(request)({
-    url: `/tea/homework/${homeworkId}`,
+    url: `/tea/courseMind/${courseMindId}`,
     method: "PUT",
     data,
   });
 }
 
-// 删除作业
-export function apiRemoveHomework(homeworkId) {
+// 删除导图
+export function apiDeleteCourseMind(courseMindId) {
   return loadingFn(request)({
-    url: `/tea/homework/${homeworkId}`,
+    url: `/tea/courseMind/${courseMindId}`,
     method: "DELETE",
   });
 }
