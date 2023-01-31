@@ -335,8 +335,6 @@ import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiCreateQuestionSet } from "src/api/teacher/questionSet";
 import draggable from "vuedraggable";
-import QuestionChip from "src/components/common/QuestionChip.vue";
-import QuestionViewCard from "src/components/teacher/questionBank/QuestionViewCard.vue";
 export default {
   name: "QuestionCarCard",
   props: {
@@ -392,8 +390,9 @@ export default {
 
   components: {
     draggable,
-    QuestionChip,
-    QuestionViewCard,
+    QuestionChip: () => import("src/components/common/QuestionChip.vue"),
+    QuestionViewCard: () =>
+      import("src/components/teacher/questionBank/QuestionViewCard.vue"),
     CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
@@ -486,8 +485,10 @@ export default {
           message: "创建成功",
           type: "positive",
         });
-        // 关闭对话框
+        // 关闭确认对话框
         this.createQuestionSetDig = false;
+        // 通知父组件创建成功
+        this.$emit("createQuestionSetSuccess");
       } catch (e) {
         // 提示创建失败
         this.$q.notify({
@@ -673,6 +674,13 @@ export default {
     if (this.from === "autoCreateQuestionSet") {
       // 设置默认试题集标题，格式为：自动组题-时间
       this.questionSetName = `自动组题(${formatTimeWithWeekDay(new Date())})`;
+    }
+  },
+
+  destroyed() {
+    // 如果是自动组题，则重置题车
+    if (this.from === "autoCreateQuestionSet") {
+      this.$store.commit("questionCar/resetState");
     }
   },
 };

@@ -74,7 +74,7 @@
                 </q-item>
                 <q-item clickable v-close-popup aria-hidden="true">
                   <q-item-section avatar>
-                    <q-icon name="o_title" />
+                    <q-icon name="fingerprint" />
                   </q-item-section>
                   <q-item-section>题号导入</q-item-section>
                 </q-item>
@@ -352,7 +352,9 @@
 
     <!-- 自动组题设置对话框 -->
     <q-dialog v-model="autoCreateQuestionSetDig" persistent>
-      <AutoCreateQuestionSetCard />
+      <AutoCreateQuestionSetCard
+        @createQuestionSetSuccess="handleCreateQuestionSetSuccess"
+      />
     </q-dialog>
   </q-page>
 </template>
@@ -692,6 +694,13 @@ export default {
       }
 
       this.autoCreateQuestionSetDig = true;
+    },
+
+    handleCreateQuestionSetSuccess() {
+      // 关闭自动组题对话框
+      this.autoCreateQuestionSetDig = false;
+      // 重新获取题集列表
+      this.getQuestionSetList();
     },
 
     // 引导

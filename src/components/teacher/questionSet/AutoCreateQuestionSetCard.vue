@@ -121,6 +121,7 @@
       <QuestionCar
         :from="`autoCreateQuestionSet`"
         @refreshRandomQuestionList="getRandomQuestions"
+        @createQuestionSetSuccess="handleCreateQuestionSetSuccess"
       />
     </q-dialog>
   </q-card>
@@ -294,6 +295,16 @@ export default {
       // }
 
       this.getRandomQuestions();
+    },
+
+    handleCreateQuestionSetSuccess() {
+      // 清空题车
+      this.questionCar = [];
+      // 关闭题车对话框
+      this.questionCarDig = false;
+
+      // 通知父组件
+      this.$emit("createQuestionSetSuccess");
     },
   },
 
