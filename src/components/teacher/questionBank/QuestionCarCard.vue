@@ -186,10 +186,10 @@
                         round
                         icon="cached"
                         @click.stop="
-                          handleQuestionCarQuestionRemoveBtnClick(question._id)
+                          handleChangeQuestionCarQuestionBtnClick(question)
                         "
-                        ><q-tooltip> 更换题目 </q-tooltip></q-btn
-                      >
+                        ><q-tooltip> 更换题目 </q-tooltip>
+                      </q-btn>
                       <q-btn
                         size="12px"
                         color="red"
@@ -293,6 +293,40 @@
         @nextQuestion="handleNextQuestionReq"
       />
     </q-dialog>
+
+    <!-- 更换题目对话框 -->
+    <q-dialog v-model="changeQuestionDig">
+      <q-card style="min-width: 350px">
+        <CardBar title="更换题目" icon="cached" />
+
+        <q-card-section>
+          <q-input
+            dense
+            square
+            outlined
+            autofocus
+            label="请输入题目编号"
+            v-model="changeQuestionDto.newQuestionId"
+            :rules="[
+              (val) => val.length == 24 || '题目编号不合法(须为24位的字符串)',
+            ]"
+          >
+            <template v-slot:prepend>
+              <q-icon name="fingerprint" />
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            color="primary"
+            label="确定"
+            icon="done"
+            @click="handleChangeQuestionDigConfirmBtnClick"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-card>
 </template>
 
@@ -310,17 +344,13 @@ export default {
   },
   data() {
     return {
-      // 基于题车创建题集对话框
       createQuestionSetDig: false,
-      // 题目预览对话框
       questionViewDig: false,
+      changeQuestionDig: false,
       // 当前点击的题目
       currClickedQuestion: {},
-      // 试题集名称
       questionSetName: "",
-      // 是否共享试题集
       isShare: false,
-      // 题目类型
       questionTypes: [
         {
           label: "单选",
@@ -353,6 +383,10 @@ export default {
           lockScore: false,
         },
       ],
+      changeQuestionDto: {
+        oldQuestionId: "",
+        newQuestionId: "",
+      },
     };
   },
 
@@ -604,6 +638,34 @@ export default {
     handleAutoCreateQuestionSetRefreshBtnClick() {
       // 告知父组件(AutoCreateQuestionSetCard)刷新题目列表
       this.$emit("refreshRandomQuestionList");
+    },
+
+    // 题车更换题目按钮点击事件
+    handleChangeQuestionCarQuestionBtnClick(oldQuestion) {
+      this.changeQuestionDto.oldQuestionId = oldQuestion._id;
+      this.changeQuestionDig = true;
+    },
+
+    // 题车更换题目按钮点击事件
+    handleChangeQuestionDigConfirmBtnClick() {
+      this.$store
+        .dispatch("questionCar/changeQuestion", this.changeQuestionDto)
+        .then((res) => {
+          if (res.ok) {
+            this.$q.notify({
+              message: "更换题目成功",
+              type: "positive",
+            });
+
+            // 重置 changeQuestionDto
+            // 关闭对话框
+            this.changeQuestionDto = {
+              oldQuestionId: "",
+              newQuestionId: "",
+            };
+            this.changeQuestionDig = false;
+          }
+        });
     },
   },
 

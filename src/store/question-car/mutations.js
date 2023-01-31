@@ -1,5 +1,3 @@
-import { formatTimeWithWeekDay } from "src/utils/time";
-
 function getDefaultState() {
   return {
     questions: [], // 题车
