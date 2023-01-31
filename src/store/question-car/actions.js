@@ -3,12 +3,12 @@ import { preProcessQuestionList } from "src/utils/question";
 
 /**
  * 更换题目
- * @param {Object} changeInfo
- * @param {String} changeInfo.oldQuestionId
- * @param {String} changeInfo.newQuestionId
+ * @param {Object} changeQuestionDto
+ * @param {String} changeQuestionDto.oldQuestionId
+ * @param {String} changeQuestionDto.newQuestionId
  */
-export function changeQuestion({ commit, state }, changeInfo) {
-  const { oldQuestionId, newQuestionId } = changeInfo;
+export function changeQuestion({ commit, state }, changeQuestionDto) {
+  const { oldQuestionId, newQuestionId } = changeQuestionDto;
 
   return new Promise((resolve, reject) => {
     // 获取新的题目
