@@ -13,6 +13,15 @@
         <q-space />
         <!-- 关闭按钮 -->
         <q-btn
+          class="q-mr-xs"
+          dense
+          outline
+          icon="save"
+          label="保存"
+          @click="handleSaveBtnClick"
+        >
+        </q-btn>
+        <q-btn
           dense
           flat
           icon="close"
@@ -27,16 +36,6 @@
       <q-page class="q-my-sm">
         <div id="map" style="width: 100vw; height: 96vh"></div>
       </q-page>
-      <q-page-sticky position="top-right" :offset="[18, 18]" expand>
-        <q-btn
-          color="positive"
-          rounded
-          outline
-          icon="save"
-          label="保存"
-          @click="handleSaveBtnClick"
-        />
-      </q-page-sticky>
     </q-page-container>
   </q-layout>
 </template>
@@ -123,6 +122,8 @@ export default {
           message: "保存成功",
           type: "positive",
         });
+        // 重新获取导图详情
+        this.getCourseMindDetails();
       } catch (error) {
         console.log(error);
         this.$q.notify({
