@@ -310,9 +310,6 @@
 import { mapGetters } from "vuex";
 import { copyToClipboard } from "quasar";
 import { apiFilterQuestions } from "src/api/teacher/questionBank";
-import QuestionCar from "src/components/teacher/questionBank/QuestionCarCard.vue";
-import QuestionViewCard from "src/components/teacher/questionBank/QuestionViewCard.vue";
-import QuestionChip from "src/components/common/QuestionChip.vue";
 import { preProcessQuestionList } from "src/utils/question";
 import { apiRemoveQuestion } from "src/api/teacher/question";
 
@@ -401,9 +398,11 @@ export default {
   },
 
   components: {
-    QuestionCar,
-    QuestionViewCard,
-    QuestionChip,
+    QuestionCar: () =>
+      import("src/components/teacher/questionBank/QuestionCarCard.vue"),
+    QuestionViewCard: () =>
+      import("src/components/teacher/questionBank/QuestionViewCard.vue"),
+    QuestionChip: () => import("src/components/common/QuestionChip.vue"),
     CardBar: () => import("src/components/common/CardBar.vue"),
   },
 

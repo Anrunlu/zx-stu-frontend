@@ -4,7 +4,7 @@ export default async ({ Vue, store }) => {
   Vue.use(
     new VueSocketIO({
       debug: process.env.NODE_ENV === "development",
-      connection: "http://v2test.zxapi.anrunlu.net",
+      connection: process.env.API_URL,
       allowEIO3: true,
       options: {
         useConnectionNamespace: true,

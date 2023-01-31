@@ -68,14 +68,39 @@ export default function () {
     questionTypeOptions: [
       {
         value: "单选",
+        valueEn: "singleChoice",
         label: "单选",
         color: "blue",
         icon: "radio_button_checked",
       },
-      { value: "多选", label: "多选", color: "green", icon: "check_box" },
-      { value: "判断", label: "判断", color: "red", icon: "done" },
-      { value: "填空", label: "填空", color: "orange", icon: "border_color" },
-      { value: "解答", label: "解答", color: "purple", icon: "description" },
+      {
+        value: "多选",
+        valueEn: "multipleChoice",
+        label: "多选",
+        color: "green",
+        icon: "check_box",
+      },
+      {
+        value: "判断",
+        valueEn: "trueOrFalse",
+        label: "判断",
+        color: "red",
+        icon: "done",
+      },
+      {
+        value: "填空",
+        valueEn: "fillInBlank",
+        label: "填空",
+        color: "orange",
+        icon: "border_color",
+      },
+      {
+        value: "解答",
+        valueEn: "jieda",
+        label: "解答",
+        color: "purple",
+        icon: "description",
+      },
     ],
 
     // 教学资源类型选项

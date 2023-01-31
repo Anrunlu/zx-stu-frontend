@@ -2,12 +2,16 @@
   <q-card style="width: 1100px; max-width: 90vw">
     <!-- 标题栏 -->
     <CardBar
-      :title="`题车(共${questionsCountInfo.total}题)`"
+      :title="
+        from == 'autoCreateQuestionSet'
+          ? `题车自动组题(共${questionsCountInfo.total}题)`
+          : `题车(共${questionsCountInfo.total}题)`
+      "
       icon="add_shopping_cart"
     />
     <q-card-section class="q-pb-sm">
       <q-btn
-        outline
+        flat
         :color="questionsCountInfo.totalScore == 100 ? 'positive' : 'negative'"
         :icon="questionsCountInfo.totalScore == 100 ? 'check' : 'warning'"
         :label="`当前总分(${questionsCountInfo.totalScore})`"
@@ -19,6 +23,7 @@
       <q-list bordered class="rounded-borders">
         <div v-for="(qType, index) in questionTypes" :key="index">
           <q-expansion-item
+            default-opened
             expand-separator
             :class="questionClass[qType.label]"
             v-if="questionsCountInfo[qType.value] > 0"
@@ -54,7 +59,7 @@
                   >
                     平均化
                     <q-tooltip v-if="!qType.lockScore">
-                      锁定后，题目分数将平均化且不可修改
+                      将所设分数平均分配到每道题上
                     </q-tooltip>
                   </q-toggle>
                 </div>
@@ -175,6 +180,18 @@
                     <div class="text-grey-8 q-gutter-xs">
                       <q-btn
                         size="12px"
+                        color="primary"
+                        flat
+                        dense
+                        round
+                        icon="cached"
+                        @click.stop="
+                          handleQuestionCarQuestionRemoveBtnClick(question._id)
+                        "
+                        ><q-tooltip> 更换题目 </q-tooltip></q-btn
+                      >
+                      <q-btn
+                        size="12px"
                         color="red"
                         flat
                         dense
@@ -195,6 +212,13 @@
       </q-list>
     </q-card-section>
     <q-card-actions align="right">
+      <q-btn
+        v-if="from === 'autoCreateQuestionSet'"
+        color="positive"
+        label="换一批"
+        icon="auto_mode"
+        @click="handleAutoCreateQuestionSetRefreshBtnClick"
+      />
       <q-btn
         class="q-ml-sm"
         color="primary"
@@ -274,12 +298,16 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { formatTimeWithWeekDay } from "src/utils/time";
 import { apiCreateQuestionSet } from "src/api/teacher/questionSet";
 import draggable from "vuedraggable";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import QuestionViewCard from "src/components/teacher/questionBank/QuestionViewCard.vue";
 export default {
   name: "QuestionCarCard",
+  props: {
+    from: String, // 可取值:autoCreateQuestionSet
+  },
   data() {
     return {
       // 基于题车创建题集对话框
@@ -571,6 +599,19 @@ export default {
       // 切换到下一题
       this.currClickedQuestion = this.questions[nextQuestionIndex];
     },
+
+    // 自动组题换一批题目按钮点击事件
+    handleAutoCreateQuestionSetRefreshBtnClick() {
+      // 告知父组件(AutoCreateQuestionSetCard)刷新题目列表
+      this.$emit("refreshRandomQuestionList");
+    },
+  },
+
+  created() {
+    if (this.from === "autoCreateQuestionSet") {
+      // 设置默认试题集标题，格式为：自动组题-时间
+      this.questionSetName = `自动组题(${formatTimeWithWeekDay(new Date())})`;
+    }
   },
 };
 </script>

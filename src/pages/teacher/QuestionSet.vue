@@ -62,22 +62,17 @@
                   <q-item-section>题库创建</q-item-section>
                 </q-item>
                 <q-item
-                  to="questionBank"
                   clickable
                   v-close-popup
                   aria-hidden="true"
+                  @click="handleAutoCreateQuestionSetBtnClick"
                 >
                   <q-item-section avatar>
                     <q-icon name="o_auto_mode" />
                   </q-item-section>
                   <q-item-section>自动组题</q-item-section>
                 </q-item>
-                <q-item
-                  to="questionBank"
-                  clickable
-                  v-close-popup
-                  aria-hidden="true"
-                >
+                <q-item clickable v-close-popup aria-hidden="true">
                   <q-item-section avatar>
                     <q-icon name="o_title" />
                   </q-item-section>
@@ -354,6 +349,11 @@
         @publish="handlePublishFromViewCard"
       />
     </q-dialog>
+
+    <!-- 自动组题设置对话框 -->
+    <q-dialog v-model="autoCreateQuestionSetDig" persistent>
+      <AutoCreateQuestionSetCard />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -450,6 +450,8 @@ export default {
       homeworkAddDig: false,
       // 试题集预览对话框
       questionSetPreviewDig: false,
+      // 自动组题
+      autoCreateQuestionSetDig: false,
     };
   },
 
@@ -461,6 +463,10 @@ export default {
       import("src/components/teacher/homework/HomeworkAddCard.vue"),
     QuestionSetViewCard: () =>
       import("src/components/teacher/questionSet/QuestionSetViewCard.vue"),
+    AutoCreateQuestionSetCard: () =>
+      import(
+        "src/components/teacher/questionSet/AutoCreateQuestionSetCard.vue"
+      ),
   },
 
   computed: {
@@ -672,6 +678,20 @@ export default {
       this.getQuestionSetList();
       // 关闭高级筛选对话框
       this.questionSetTableFilterDig = false;
+    },
+
+    // 点击自动组题按钮
+    handleAutoCreateQuestionSetBtnClick() {
+      // 必须选择课程
+      if (!this.currSelectedTeaCourse) {
+        this.$q.notify({
+          message: "请先选择课程",
+          type: "warning",
+        });
+        return;
+      }
+
+      this.autoCreateQuestionSetDig = true;
     },
 
     // 引导

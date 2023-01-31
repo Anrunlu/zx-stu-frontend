@@ -34,3 +34,12 @@ export function apiRemoveQuestion(questionId) {
     method: "DELETE",
   });
 }
+
+// 获取随机题目(自动组题)
+export function apiGetRandomQuestions(data) {
+  return loadingFn(request)({
+    url: `/tea/question/random`,
+    method: "POST",
+    data,
+  });
+}
