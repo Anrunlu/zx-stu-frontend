@@ -2,7 +2,7 @@
   <q-layout view="hHr LpR lFf">
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
-        <q-icon name="add" />
+        <q-icon name="title" />
         <div>添加题目</div>
         <q-space />
         <!-- 关闭按钮 -->

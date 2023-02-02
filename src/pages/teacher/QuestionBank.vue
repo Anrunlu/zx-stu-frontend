@@ -44,12 +44,39 @@
           />
           <!-- 添加题目 -->
           <q-btn
+            id="create—questionset-btn"
             color="accent"
             outline
             icon="add"
             label="添加题目"
-            @click="handleQuestionTableAddQuestionBtnClick"
-          />
+          >
+            <q-menu anchor="bottom right" self="top right">
+              <q-list style="min-width: 100px">
+                <q-item
+                  clickable
+                  v-close-popup
+                  aria-hidden="true"
+                  @click="handleQuestionTableAddQuestionBtnClick"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="title" />
+                  </q-item-section>
+                  <q-item-section>单个添加</q-item-section>
+                </q-item>
+                <q-item
+                  clickable
+                  v-close-popup
+                  aria-hidden="true"
+                  @click="handleQuestionTableAddQuestionBtnClick"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="drive_folder_upload" />
+                  </q-item-section>
+                  <q-item-section>批量导入</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
         </div>
       </template>
 
