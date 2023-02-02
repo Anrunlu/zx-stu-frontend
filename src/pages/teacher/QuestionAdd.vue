@@ -290,7 +290,7 @@ import { checkQuestion } from "src/utils/question";
 import { apiCreateQuestion } from "src/api/teacher/question";
 
 export default {
-  name: "QuestionEdit",
+  name: "QuestionAdd",
   props: ["courseId"],
   data() {
     return {

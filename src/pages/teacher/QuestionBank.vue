@@ -67,7 +67,7 @@
                   clickable
                   v-close-popup
                   aria-hidden="true"
-                  @click="handleQuestionTableAddQuestionBtnClick"
+                  @click="handleQuestionTableImportQuestionBtnClick"
                 >
                   <q-item-section avatar>
                     <q-icon name="drive_folder_upload" />
@@ -632,6 +632,24 @@ export default {
       // 新标签页打开
       const routeData = this.$router.resolve(
         `/question_add/${this.currSelectedTeaCourse.courseId}`
+      );
+      window.open(routeData.href, "_blank");
+    },
+
+    // 点击表格上的导入题目按钮
+    handleQuestionTableImportQuestionBtnClick() {
+      // 校验是否选择了课程
+      if (!this.currSelectedTeaCourse) {
+        this.$q.notify({
+          message: "请先选择课程",
+          type: "warning",
+        });
+        return;
+      }
+
+      // 新标签页打开
+      const routeData = this.$router.resolve(
+        `/question_import/${this.currSelectedTeaCourse.courseId}`
       );
       window.open(routeData.href, "_blank");
     },

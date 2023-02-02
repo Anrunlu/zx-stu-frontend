@@ -23,7 +23,7 @@ D、混合编码
 */
 
 // 将批量题目分成一个个题目字符串
-export function getEachSub(whole) {
+export function parseQuestionContentToQuestion(whole) {
   // 替换所有的 <p> 和 </p> 标签
   whole = whole.replace(/<p>/g, "");
   whole = whole.replace(/<\/p>/g, "\n");
@@ -55,14 +55,16 @@ export function assembleSub(eachSub) {
     rightAns: "", // 正确答案
     answer: [], // 题目选项
     explain: "", // 解析
-    err: "", // 错误提示
+    isErr: false, // 是否错误
+    errMsg: "", // 错误提示信息
   };
   let ansArr = eachSub.match(/\n\s*答案[:：]/g);
 
   if (ansArr) {
     if (ansArr.length > 1) {
       // 匹配到多个答案
-      subObj.err = "每道题只能有一个答案";
+      subObj.isErr = true;
+      subObj.errMsg = "每道题只能有一个答案";
     } else {
       // 添加题目 解析 和 知识点 等题目公共字段
 
@@ -93,13 +95,14 @@ export function assembleSub(eachSub) {
           subObj.type = ans.length === 1 ? "单选" : "多选";
 
           let sourceTimu = eachSub.replace(selReg, "");
-          console.log(sourceTimu);
           // 拆分题干与选项
           let sourceTimuArr = sourceTimu.split(/[A-Z][、]/gi);
           if (sourceTimuArr.length == 1) {
-            subObj.err = "选项不能为空";
+            subObj.isErr = true;
+            subObj.errMsg = "选项不能为空";
           } else if (sourceTimuArr.length > 11) {
-            subObj.err = "选项数量不能大于10个";
+            subObj.isErr = true;
+            subObj.errMsg = "选项数量不能大于10个";
           }
 
           let valArr = [];
@@ -127,19 +130,22 @@ export function assembleSub(eachSub) {
           // 单选题
           if (subObj.rightAns.length === 1) {
             if (!valArr.includes(subObj.rightAns)) {
-              subObj.err = "答案选项不正确";
+              subObj.isErr = true;
+              subObj.errMsg = "答案选项不正确";
             }
           } else {
             // 多选题
             for (let a of subObj.rightAns) {
               if (!valArr.includes(a)) {
-                subObj.err = "答案选项不正确";
+                subObj.isErr = true;
+                subObj.errMsg = "答案选项不正确";
                 break;
               }
             }
           }
         } else {
-          subObj.err = "选择题答案不正确";
+          subObj.isErr = true;
+          subObj.errMsg = "选择题答案不正确";
         }
       } else {
         // 非单选多选题
@@ -158,18 +164,21 @@ export function assembleSub(eachSub) {
             for (let i = 0; i < len; i++) {
               if (fillinAns[i].includes("&&")) {
                 subObj.answer.push({
-                  mark: `${i + 1}`,
+                  mark: `第${i + 1}空`,
                   content: fillinAns[i],
+                  isRight: true,
                 });
               } else {
                 subObj.answer.push({
-                  mark: `${i + 1}`,
+                  mark: `第${i + 1}空`,
                   content: fillinAns[i],
+                  isRight: true,
                 });
               }
             }
           } else {
-            subObj.err = "填空题答案个数错误";
+            subObj.isErr = true;
+            subObj.errMsg = "填空题答案个数错误";
           }
         } else if (
           // 判断题
@@ -210,7 +219,8 @@ export function assembleSub(eachSub) {
     }
   } else {
     // 未匹配到则为null
-    subObj.err = "题目缺少答案";
+    subObj.isErr = true;
+    subObj.errMsg = "题目缺少答案";
   }
 
   return subObj;

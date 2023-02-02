@@ -1,11 +1,11 @@
 <template>
   <q-chip
-    :color="`${questionBadgeColor[questionType]}-3`"
+    :color="colorization ? `${questionBadgeColor[questionType]}-3` : 'primary'"
     text-color="white"
     :label="questionType"
     :icon="questionIcon[questionType]"
-    square
     :size="size"
+    square
   />
 </template>
 
@@ -19,6 +19,12 @@ export default {
     size: {
       type: String,
       default: "sm",
+    },
+    // 是否进行颜色化
+    colorization: {
+      type: Boolean,
+      default: true,
+      required: false,
     },
   },
   data() {

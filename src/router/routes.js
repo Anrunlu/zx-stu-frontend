@@ -149,6 +149,15 @@ const routes = [
     },
   },
   {
+    path: "/question_import/:courseId",
+    component: () => import(`pages/teacher/QuestionImport.vue`),
+    props: true,
+    meta: {
+      type: "teacher",
+      title: "题目导入",
+    },
+  },
+  {
     path: "/homework/:homeworkId",
     component: () => import(`pages/teacher/HomeworkProfile.vue`),
     props: true,

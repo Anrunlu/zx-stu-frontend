@@ -2,7 +2,10 @@
   <div>
     <!-- 顶部信息区域 -->
     <div>
-      <QuestionChip :questionType="questionDetails.type" />
+      <QuestionChip
+        :questionType="questionDetails.type"
+        :colorization="questionChipColorization"
+      />
       <ObjectShortId
         v-if="showShortId"
         :shortId="questionDetails.shortId"
@@ -74,6 +77,16 @@
         v-html="questionDetails.answer.content"
       ></div>
     </div>
+    <!-- 题目解析区域 -->
+    <div class="q-mt-md" v-if="showExplain && questionDetails.explain">
+      <q-badge outline color="primary" label="解析" />
+      <div
+        class="text-body2 q-mt-sm"
+        v-viewer
+        v-katex
+        v-html="questionDetails.explain"
+      ></div>
+    </div>
   </div>
 </template>
 
@@ -107,6 +120,16 @@ export default {
     showPresetScore: {
       type: Boolean,
       default: false,
+      required: false,
+    },
+    showExplain: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    questionChipColorization: {
+      type: Boolean,
+      default: true,
       required: false,
     },
   },
