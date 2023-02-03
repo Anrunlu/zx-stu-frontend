@@ -57,12 +57,15 @@
           </template>
 
           <template v-slot:separator>
-            <q-avatar
-              color="primary"
-              text-color="white"
-              size="30px"
-              icon="drag_indicator"
-            />
+            <q-btn
+              color="accent"
+              icon="swap_horiz"
+              size="md"
+              round
+              @click="handleParseQuestion"
+            >
+              <q-tooltip> 识别题目 </q-tooltip>
+            </q-btn>
           </template>
 
           <template v-slot:after>
@@ -103,7 +106,7 @@
                 class="scroll q-mt-sm q-pb-xl q-gutter-md"
               >
                 <div
-                  v-for="(questionDetails, index) in questionList"
+                  v-for="(questionDetails, index) in currSelectedQuestionList"
                   :key="index"
                 >
                   <q-card
@@ -111,7 +114,9 @@
                     v-if="questionDetails.isErr"
                   >
                     <q-card-section>
-                      <div class="text-h6">第 {{ index + 1 }} 题</div>
+                      <div class="text-h6">
+                        第 {{ questionDetails.index }} 题
+                      </div>
                       <div class="text-h6">
                         解析出错，错误信息：{{ questionDetails.errMsg }}
                       </div>
@@ -122,7 +127,7 @@
                     <q-card-section>
                       <QuestionViewCommon
                         :questionDetails="questionDetails"
-                        :index="index + 1"
+                        :index="questionDetails.index"
                         :showIndex="true"
                         :showExplain="true"
                         :questionChipColorization="false"
@@ -140,8 +145,8 @@
                     <li>请在左侧编辑框中按规定格式录入题目文本</li>
                     <li>
                       录入完毕后请点击&nbsp;
-                      <span class="text-primary">
-                        <q-icon name="visibility" />
+                      <span class="text-accent">
+                        <q-icon name="swap_horiz" />
                         识别题目
                       </span>
                       &nbsp;按钮进行题目识别
@@ -174,9 +179,8 @@
         <q-btn
           flat
           square
-          label="识别题目"
-          icon="visibility"
-          @click="handleParseQuestion"
+          label="重置编辑框"
+          @click="handleRestEditorContent"
         />
         <q-btn
           flat
@@ -184,6 +188,7 @@
           color="positive"
           label="确定导入"
           icon="cloud_upload"
+          @click="handleConfirmImportBtnClick"
         />
       </div>
     </q-footer>
@@ -195,7 +200,12 @@ import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 import { mapGetters } from "vuex";
-import { parseQuestionContentToQuestion } from "src/utils/question";
+import {
+  checkQuestion,
+  parseQuestionContentToQuestion,
+  standardizeQuestionToUpload,
+} from "src/utils/question";
+import { apiImportQuestions } from "src/api/teacher/question";
 
 export default {
   name: "QuestionImport",
@@ -205,8 +215,9 @@ export default {
       splitterModel: 40,
       editor: Editor,
       importQuestionContent: "",
-      importQuestionContentExample: `<p>表达式<code>type(3+4j) in (int, float, complex)</code>的值为？</p><p>A、True</p><p>B、False</p><p>C、1</p><p>D、0</p><p>解析：这是解析，解析是可选值哦！</p><p>答案：A</p><p>&nbsp;</p><p>语音编码有哪些？</p><p>A、波形编码</p><p>B、参量编码</p><p>C、音源编码</p><p>D、混合编码</p><p>答案：ABCD</p><p>&nbsp;</p><p>我国第一部编年史是《资治通鉴》。</p><p>解析：《资治通鉴》是北宋时期司马光编纂的一本编年体史书。这套书在中国史书中具有十分突出和特殊的地位。</p><p>答案：对</p><p>&nbsp;</p><p>我国的四大发明是____,____,____,____。</p><p>答案：造纸术|火药|指南针|印刷术</p><p>&nbsp;</p><p>格式化输出杨辉三角，运行效果图如下，可用字符串格式化输出。（注：这是简单解答题录入，如需录入复杂解答题，请使用复杂解答题录入功能）<br><img src="https://cyberdownload.anrunlu.net/Frbl7jNFT06tZADvT_T2MoB1Laep"><br>答案：无</p>`,
+      importQuestionContentExample: `<p>表达式<code>type(3+4j) in (int, float, complex)</code>的值为？</p><p>A、True</p><p>B、False</p><p>C、1</p><p>D、0</p><p>解析：这是解析，解析是可选值哦！</p><p>答案：A</p><p>&nbsp;</p><p><span class=\"math-tex\">\\(x_1,x_2\\)</span>是方程<span class=\"math-tex\">\\(x^2+x+k=0\\)</span>的两个实根，若恰<span class=\"math-tex\">\\({x_1}^2+x_1x_2+{x_2}^2=2k^2\\)</span>成立，<span class=\"math-tex\">\\(k\\)</span>的值为？</p><p>a、<span class=\"math-tex\">\\(-1\\)</span></p><p>b、<span class=\"math-tex\">\\(\\frac{1}{2}\\)</span>或<span class=\"math-tex\">\\(-1\\)</span></p><p>C、<span class=\"math-tex\">\\(\\frac{1}{2}\\)</span></p><p>d、<span class=\"math-tex\">\\(-\\frac{1}{2}\\)</span>或<span class=\"math-tex\">\\(1\\)</span></p><p>答案：A</p><p>&nbsp;</p><p>语音编码有哪些？</p><p>A、波形编码</p><p>B、参量编码</p><p>C、音源编码</p><p>D、混合编码</p><p>答案：ABCD</p><p>&nbsp;</p><p>我国第一部编年史是《资治通鉴》。</p><p>解析：《资治通鉴》是北宋时期司马光编纂的一本编年体史书。这套书在中国史书中具有十分突出和特殊的地位。</p><p>答案：对</p><p>&nbsp;</p><p>我国的四大发明是____,____,____,____。</p><p>答案：造纸术|火药|指南针|印刷术</p><p>&nbsp;</p><p>格式化输出杨辉三角，运行效果图如下，可用字符串格式化输出。（注：如需录入复杂解答题，请使用题目单个添加功能）<br><img src=\"https://cyberdownload.anrunlu.net/Frbl7jNFT06tZADvT_T2MoB1Laep\"><br>答案：无</p>`,
       questionList: [],
+      currSelectedQuestionList: [],
       currSelectedQuestionType: "成功",
       // 数量统计
       amount: {
@@ -226,7 +237,7 @@ export default {
     editorConfig() {
       return {
         toolbar: {
-          items: ["imageUpload", "code", "|", "undo", "redo"],
+          items: ["imageUpload", "math", "code", "|", "undo", "redo"],
         },
         extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
       };
@@ -247,9 +258,112 @@ export default {
       import("src/components/common/QuestionViewCommon.vue"),
   },
 
-  watch: {},
+  watch: {
+    questionList: {
+      handler() {
+        this.amount.total = this.questionList.length;
+        this.amount.err = this.questionList.filter((item) => item.isErr).length;
+        this.amount.success = this.questionList.filter(
+          (item) => !item.isErr
+        ).length;
+        this.amount.单选 = this.questionList.filter(
+          (item) => item.type === "单选"
+        ).length;
+        this.amount.多选 = this.questionList.filter(
+          (item) => item.type === "多选"
+        ).length;
+        this.amount.判断 = this.questionList.filter(
+          (item) => item.type === "判断"
+        ).length;
+        this.amount.填空 = this.questionList.filter(
+          (item) => item.type === "填空"
+        ).length;
+        this.amount.解答 = this.questionList.filter(
+          (item) => item.type === "解答"
+        ).length;
+      },
+      deep: true,
+    },
+
+    currSelectedQuestionType: {
+      handler(newVal) {
+        if (newVal === "成功") {
+          this.currSelectedQuestionList = this.questionList.filter(
+            (item) => !item.isErr
+          );
+        } else if (newVal === "失败") {
+          this.currSelectedQuestionList = this.questionList.filter(
+            (item) => item.isErr
+          );
+        } else {
+          this.currSelectedQuestionList = this.questionList.filter(
+            (item) => item.type === newVal
+          );
+        }
+      },
+      deep: true,
+    },
+  },
 
   methods: {
+    // 导入题目
+    async importQuestion() {
+      const questionsToImport = [];
+
+      // 处理解析后的题目列表，准备上传导入
+      this.questionList
+        .filter((q) => !q.isErr)
+        .forEach((q) => {
+          // 检查题目
+          const checked = checkQuestion(q);
+          if (!checked) {
+            return;
+          }
+
+          const question = {
+            type: q.type,
+            content: q.content,
+            answer: q.answer,
+            explain: q.explain,
+            difficulty: 0, // TODO: 难度暂时设置为0
+            strict: false, // TODO: 严格模式暂时设置为false
+            subjective: q.type == "解答" ? true : false, // TODO: 是否主观批阅暂时根据题目类型判断
+          };
+          questionsToImport.push(standardizeQuestionToUpload(question));
+        });
+
+      const importQuestionsDto = {
+        course_id: this.courseId,
+        questions: questionsToImport,
+      };
+
+      // 导入前确认提示
+      this.$q
+        .dialog({
+          title: "请确认",
+          message: `即将导入${questionsToImport.length}道题目，是否继续？`,
+          persistent: true,
+          ok: "继续",
+          cancel: "取消",
+        })
+        .onOk(async () => {
+          try {
+            const { data } = await apiImportQuestions(importQuestionsDto);
+            console.log(data.data);
+            this.$q.notify({
+              message: "导入成功",
+              type: "positive",
+            });
+          } catch (e) {
+            console.log(e);
+            this.$q.notify({
+              message: "导入失败",
+              type: "negative",
+            });
+          }
+        });
+    },
+
     // 查看示例
     handleViewExampleBtnClick() {
       this.importQuestionContent = this.importQuestionContentExample;
@@ -269,33 +383,70 @@ export default {
         };
       });
 
-      // 统计数量
-      const amount = {
-        total: questionList.length,
-        err: questionList.filter((item) => item.isErr).length,
-        success: questionList.filter((item) => !item.isErr).length,
-        单选: questionList.filter((item) => item.type === "单选").length,
-        多选: questionList.filter((item) => item.type === "多选").length,
-        判断: questionList.filter((item) => item.type === "判断").length,
-        填空: questionList.filter((item) => item.type === "填空").length,
-        解答: questionList.filter((item) => item.type === "解答").length,
-      };
-
-      this.amount = amount;
       this.questionList = questionList;
+      this.currSelectedQuestionType = "成功";
+      this.currSelectedQuestionList = questionList.filter(
+        (item) => !item.isErr
+      );
 
-      this.$q.dialog({
-        title: "识别结果",
-        message: `<p style='line-height:2rem'>
-                  共识别&nbsp;<b>${amount.total}</b>&nbsp;题目<br/>
-                  解析成功&nbsp;<b>${amount.success}</b>&nbsp;题目<br/>
-                  解析失败&nbsp;<b>${amount.err}</b>&nbsp;题目<br/>
-                  请查验无误后点击&nbsp;<b>确定导入</b>&nbsp;按钮进行导入
+      setTimeout(() => {
+        this.$q.dialog({
+          title: "识别结果",
+          message: `<p style='line-height:2rem'>
+                  共识别&nbsp;<b>${this.amount.total}</b>&nbsp;题目<br/>
+                  解析成功&nbsp;<b>${this.amount.success}</b>&nbsp;题目<br/>
+                  解析失败&nbsp;<b>${this.amount.err}</b>&nbsp;题目<br/>
+                  查验无误后请点击&nbsp;<b>确定导入</b>&nbsp;按钮进行导入
                   </p>`,
-        persistent: true,
-        html: true,
-        ok: "知道了",
-      });
+          persistent: true,
+          html: true,
+          ok: "知道了",
+        });
+      }, 200);
+    },
+
+    // 重置编辑框
+    handleRestEditorContent() {
+      // 提示
+      this.$q
+        .dialog({
+          title: "提示",
+          message: "确定要重置编辑框吗？",
+          persistent: true,
+          ok: "确定",
+          cancel: "取消",
+        })
+        .onOk(() => {
+          this.importQuestionContent = "";
+          this.questionList = [];
+          this.currSelectedQuestionList = [];
+          this.currSelectedQuestionType = "成功";
+        });
+    },
+
+    // 确定导入按钮点击
+    handleConfirmImportBtnClick() {
+      // 如果有 err 题目未处理，进行提示
+      const errQuestionList = this.questionList.filter((item) => item.isErr);
+
+      if (errQuestionList.length > 0) {
+        this.$q
+          .dialog({
+            title: "提示",
+            message:
+              "还有解析失败的题目未处理，确定导入将会忽略这些题目，是否继续？",
+            persistent: true,
+            ok: "继续",
+            cancel: "取消",
+          })
+          .onOk(() => {
+            // 导入
+            this.importQuestion();
+          });
+      } else {
+        // 导入
+        this.importQuestion();
+      }
     },
 
     // 关闭页面
@@ -311,9 +462,6 @@ export default {
 <style>
 .ck-math-form {
   padding: 10px !important;
-}
-.option p {
-  margin: 0;
 }
 
 .ck.ck-content:not(.ck-comment__input *) {

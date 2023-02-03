@@ -286,7 +286,7 @@ import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 import QuestionChip from "src/components/common/QuestionChip.vue";
 import { mapGetters } from "vuex";
-import { checkQuestion } from "src/utils/question";
+import { checkQuestion, standardizeQuestionToUpload } from "src/utils/question";
 import { apiCreateQuestion } from "src/api/teacher/question";
 
 export default {
@@ -439,7 +439,7 @@ export default {
   },
 
   methods: {
-    // 修改题目信息
+    // 保存题目
     async createQuestion() {
       // 检查题目
       const checked = checkQuestion(this.questionDetails);
@@ -450,12 +450,7 @@ export default {
       // 构造请求参数
       const addQuestionDto = {
         course_id: this.courseId,
-        type: this.questionDetails.type,
-        content: this.questionDetails.content,
-        difficulty: this.questionDetails.difficulty,
-        answer: this.questionDetails.answer,
-        explain: this.questionDetails.explain,
-        subjective: this.questionDetails.subjective,
+        ...standardizeQuestionToUpload(this.questionDetails),
       };
 
       try {

@@ -43,3 +43,12 @@ export function apiGetRandomQuestions(data) {
     data,
   });
 }
+
+// 批量导入题目
+export function apiImportQuestions(data) {
+  return loadingFn(request)({
+    url: `/tea/question/import`,
+    method: "POST",
+    data,
+  });
+}

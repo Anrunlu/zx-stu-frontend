@@ -38,9 +38,9 @@ export function parseQuestionContentToQuestion(whole) {
   let eachSourceQues = whole.trim().split(/\n\s*\n\s*/g);
 
   if (eachSourceQues.length) {
-    eachSourceQues.forEach((item) => {
+    eachSourceQues.forEach((item, index) => {
       // assembleSub就是把每个题目的字符串转换成题目对象，保存到previewSubjects数组里
-      previewQuestions.push(assembleSub(item.trim()));
+      previewQuestions.push(assembleSub(item.trim(), index));
     });
   }
 
@@ -48,8 +48,9 @@ export function parseQuestionContentToQuestion(whole) {
 }
 
 // 将一个个题目字符串拆解/组合成题目对象
-export function assembleSub(eachSub) {
+export function assembleSub(eachSub, index) {
   let subObj = {
+    index: index + 1,
     type: "", // 类型
     content: "", // 题干
     rightAns: "", // 正确答案
@@ -371,4 +372,52 @@ export function preProcessQuestionDetails(questionDetails) {
       option.content = marked(option.content);
     });
   }
+}
+
+/**
+ * 标准化要上传的题目
+ * @param {*} questionDetails
+ * @returns { Object } 标准化后的题目 { content, type, difficulty, answer, subjective, explain }
+ */
+export function standardizeQuestionToUpload(questionDetails) {
+  // 题干
+  questionDetails.content = questionDetails.content.trim();
+  // 判断是否有 <p> 标签，如果没有则添加
+  if (!questionDetails.content.startsWith("<p>")) {
+    questionDetails.content = "<p>" + questionDetails.content;
+  }
+
+  if (!questionDetails.content.endsWith("</p>")) {
+    questionDetails.content = questionDetails.content + "</p>";
+  }
+
+  // 选项
+  questionDetails.answer.forEach((option) => {
+    option.content = option.content.trim();
+    // 判断是否有 <p> 标签，如果没有则添加
+    if (!option.content.startsWith("<p>")) {
+      option.content = "<p>" + option.content;
+    }
+
+    if (!option.content.endsWith("</p>")) {
+      option.content = option.content + "</p>";
+    }
+  });
+
+  questionDetails.difficulty = questionDetails.difficulty
+    ? questionDetails.difficulty
+    : 0;
+  questionDetails.strict = questionDetails.strict
+    ? questionDetails.strict
+    : false;
+  questionDetails.subjective = questionDetails.subjective
+    ? questionDetails.subjective
+    : questionDetails.type == "解答"
+    ? true
+    : false;
+  questionDetails.explain = questionDetails.explain
+    ? questionDetails.explain
+    : "";
+
+  return questionDetails;
 }
