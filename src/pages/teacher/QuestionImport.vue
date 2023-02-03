@@ -349,7 +349,6 @@ export default {
         .onOk(async () => {
           try {
             const { data } = await apiImportQuestions(importQuestionsDto);
-            console.log(data.data);
             this.$q.notify({
               message: "导入成功",
               type: "positive",
