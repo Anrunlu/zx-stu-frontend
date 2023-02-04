@@ -49,7 +49,7 @@
           </template>
         </q-input>
 
-        <q-btn
+        <!-- <q-btn
           v-if="$q.screen.gt.xs"
           flat
           dense
@@ -76,7 +76,7 @@
               </q-item>
             </q-list>
           </q-menu>
-        </q-btn>
+        </q-btn> -->
 
         <q-btn
           v-if="$q.screen.gt.xs"
@@ -84,7 +84,7 @@
           dense
           no-wrap
           color="primary"
-          icon="topic"
+          icon="o_forum"
           label="题库管理"
           class="q-ml-sm q-px-md"
           to="questionBank"

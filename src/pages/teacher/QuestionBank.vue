@@ -301,7 +301,7 @@
           >
         </q-btn>
         <q-btn
-          icon="clear_all"
+          icon="delete_sweep"
           color="red-5"
           @click="handleQuestionCarClearBtnClick"
         >

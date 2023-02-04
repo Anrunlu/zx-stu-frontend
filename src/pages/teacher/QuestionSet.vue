@@ -72,12 +72,12 @@
                   </q-item-section>
                   <q-item-section>自动组题</q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup aria-hidden="true">
+                <!-- <q-item clickable v-close-popup aria-hidden="true">
                   <q-item-section avatar>
                     <q-icon name="fingerprint" />
                   </q-item-section>
                   <q-item-section>题号导入</q-item-section>
-                </q-item>
+                </q-item> -->
               </q-list>
             </q-menu>
           </q-btn>
