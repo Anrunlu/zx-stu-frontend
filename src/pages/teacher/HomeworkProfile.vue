@@ -134,7 +134,12 @@
                       </q-item>
                     </q-list>
                   </q-btn-dropdown>
-                  <q-btn color="positive" icon="download" label="导出"></q-btn>
+                  <q-btn
+                    color="positive"
+                    icon="download"
+                    label="导出"
+                    @click="handleExportClick"
+                  ></q-btn>
                   <q-btn
                     outline
                     color="secondary"
@@ -755,6 +760,14 @@ export default {
           message: "题目编号已复制到剪贴板",
           type: "positive",
         });
+      });
+    },
+
+    // 点击导出按钮
+    handleExportClick() {
+      this.$q.notify({
+        message: "导出功能暂未开放",
+        type: "negative",
       });
     },
 

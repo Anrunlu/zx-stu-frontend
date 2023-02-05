@@ -458,7 +458,6 @@ export default {
     // 查看示例
     handleViewExampleBtnClick() {
       this.importQuestionContent = this.importQuestionContentExample;
-      // this.handleParseQuestion();
       this.handleStartGuide();
     },
 
@@ -521,8 +520,7 @@ export default {
           element: "#import-question-confirm-import-btn",
           popover: {
             title: "确定导入",
-            description:
-              "题目预览无误后，点击此按钮进行导入，导入成功后将会跳转到题目列表页面",
+            description: "题目预览无误后，点击此按钮进行导入",
             position: "top-right",
           },
         },

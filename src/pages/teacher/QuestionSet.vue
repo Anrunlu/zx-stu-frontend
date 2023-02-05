@@ -185,7 +185,7 @@
             >
               <q-tooltip> 发布为作业 </q-tooltip>
             </q-btn>
-            <q-btn
+            <!-- <q-btn
               id="edit-questionset-btn"
               flat
               dense
@@ -195,7 +195,7 @@
               @click.stop=""
             >
               <q-tooltip> 编辑题集 </q-tooltip>
-            </q-btn>
+            </q-btn> -->
             <q-btn
               id="remove-questionset-btn"
               flat

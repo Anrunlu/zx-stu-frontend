@@ -394,13 +394,17 @@ export function standardizeQuestionToUpload(questionDetails) {
   // 选项
   questionDetails.answer.forEach((option) => {
     option.content = option.content.trim();
-    // 判断是否有 <p> 标签，如果没有则添加
-    if (!option.content.startsWith("<p>")) {
-      option.content = "<p>" + option.content;
-    }
+    // 如果非一般填空题，判断是否有 <p> 标签，如果没有则添加
+    if (
+      !(questionDetails.type == "填空" && questionDetails.subjective == false)
+    ) {
+      if (!option.content.startsWith("<p>")) {
+        option.content = "<p>" + option.content;
+      }
 
-    if (!option.content.endsWith("</p>")) {
-      option.content = option.content + "</p>";
+      if (!option.content.endsWith("</p>")) {
+        option.content = option.content + "</p>";
+      }
     }
   });
 
