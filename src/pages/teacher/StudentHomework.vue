@@ -3,7 +3,9 @@
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit_note" />
-        <div>{{ currStuInfo.nickname }} {{ currStuInfo.username }}</div>
+        <div @click="handleSwitchDisplayStuList">
+          {{ currStuInfo.nickname }} {{ currStuInfo.username }}
+        </div>
         <q-space />
         <q-chip
           text-color="white"
@@ -459,36 +461,38 @@ export default {
           () => {}
         );
 
-        // 提示用户
-        this.$q.notify({
-          message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的批阅体验？`,
-          position: "top",
-          icon: "notifications",
-          progress: true,
-          color: "accent",
-          textColor: "white",
-          classes: "glossy",
-          timeout: 10000,
-          html: true,
-          actions: [
-            {
-              label: "全屏",
-              color: "white",
-              handler: () => {
-                this.$q.fullscreen.request().catch(() => {
-                  setTimeout(() => {
-                    this.$q.notify({
-                      message:
-                        "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的批阅体验。",
-                      position: "top",
-                      type: "warning",
-                    });
-                  }, 7000);
-                });
+        // 如果是桌面端，则提示用户
+        if (!this.$q.platform.is.mobile) {
+          this.$q.notify({
+            message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的批阅体验？`,
+            position: "top",
+            icon: "notifications",
+            progress: true,
+            color: "accent",
+            textColor: "white",
+            classes: "glossy",
+            timeout: 10000,
+            html: true,
+            actions: [
+              {
+                label: "全屏",
+                color: "white",
+                handler: () => {
+                  this.$q.fullscreen.request().catch(() => {
+                    setTimeout(() => {
+                      this.$q.notify({
+                        message:
+                          "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的批阅体验。",
+                        position: "top",
+                        type: "warning",
+                      });
+                    }, 7000);
+                  });
+                },
               },
-            },
-          ],
-        });
+            ],
+          });
+        }
       }
       this.mode = _mode;
     },
@@ -686,6 +690,10 @@ export default {
 
   created() {
     this.getHomeworkDetail();
+    // 如果是移动端，隐藏学生列表
+    if (this.$q.platform.is.mobile) {
+      this.displayStuList = false;
+    }
   },
 
   beforeDestroy() {
