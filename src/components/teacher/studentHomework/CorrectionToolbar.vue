@@ -1,8 +1,11 @@
 <template>
-  <div class="row q-gutter-lg q-ml-sm">
+  <div
+    class="row q-ml-sm"
+    :class="$q.platform.is.mobile ? 'q-gutter-sm' : 'q-gutter-lg'"
+  >
     <div class="col-7 col-xl-5">
       <!-- 大屏幕 -->
-      <div class="row q-gutter-sm" v-if="!$q.screen.xs">
+      <div class="row q-gutter-sm" v-if="!$q.platform.is.mobile">
         <q-slider
           class="col"
           v-model="questionDetails.studentQA[0].score"
@@ -41,7 +44,7 @@
       </div>
 
       <!-- 小屏幕 -->
-      <div class="row q-gutter-sm" v-else>
+      <div class="row q-gutter-md" v-else>
         <q-input
           ref="scoreInput"
           class="col-10"
@@ -61,6 +64,7 @@
           color="positive"
           @click="handleSubmit"
           split
+          menu-self="top left"
         >
           <q-list>
             <q-item clickable v-close-popup @click="handleCommentBtnClick">
@@ -75,7 +79,7 @@
 
     <div class="row">
       <!-- 大屏幕 -->
-      <q-btn-group outline v-if="!$q.screen.xs">
+      <q-btn-group outline v-if="!$q.platform.is.mobile">
         <q-btn
           outline
           label="下一人"
@@ -119,7 +123,7 @@
         />
       </q-btn-group>
       <!-- 小屏幕 -->
-      <q-btn-group outline v-else>
+      <!-- <q-btn-group outline v-else>
         <q-btn outline label="下一人" @click="handleNextStu" />
         <q-btn
           outline
@@ -141,7 +145,7 @@
           <q-tooltip> 开启/关闭题目列表 </q-tooltip>
         </q-btn>
         <q-btn outline label="下题" @click="handleNextQuestion" />
-      </q-btn-group>
+      </q-btn-group> -->
     </div>
 
     <!-- 输入评语对话框 -->

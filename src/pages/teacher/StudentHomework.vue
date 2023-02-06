@@ -161,11 +161,7 @@
       </q-page>
     </q-page-container>
 
-    <q-footer
-      bordered
-      class="bg-white text-primary q-py-sm"
-      v-if="!$q.platform.is.mobile"
-    >
+    <q-footer bordered class="bg-white text-primary q-py-sm">
       <CorrectionToolbar
         :currQuestion="currQuestion"
         :currQuestionIndex="currQuestionIndex"
