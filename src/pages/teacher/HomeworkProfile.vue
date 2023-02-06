@@ -316,7 +316,12 @@
                       </q-item>
                     </q-list>
                   </q-btn-dropdown>
-                  <q-btn color="positive" icon="download" label="导出"></q-btn>
+                  <q-btn
+                    color="positive"
+                    icon="download"
+                    label="导出"
+                    @click="handleExportClick"
+                  ></q-btn>
                   <q-btn
                     outline
                     color="secondary"
@@ -432,6 +437,7 @@ import {
   preProcessStuAnswerStatus,
 } from "src/utils/homework";
 import { toFixed2 } from "src/utils/common";
+import ExportJsonExcel from "js-export-excel";
 
 export default {
   name: "HomeworkProfile",
@@ -765,10 +771,51 @@ export default {
 
     // 点击导出按钮
     handleExportClick() {
-      this.$q.notify({
-        message: "导出功能暂未开放",
-        type: "negative",
-      });
+      let option = {};
+
+      let fileName = `${this.homeworkDetails.title}-${this.homeworkDetails.receiver.name}-作业统计信息`;
+      let sheetData = [];
+      let sheetName = "";
+      let sheetHeader = [];
+
+      // 判断视图
+      if (this.currentView == "stuAnswerStatusView") {
+        sheetData = this.stuAnswerStatus.map((stuAnswerStatus) => {
+          return {
+            学号: stuAnswerStatus.username,
+            姓名: stuAnswerStatus.nickname,
+            作答状态: stuAnswerStatus.isFinished ? "已完成" : "未完成",
+            批阅状态:
+              stuAnswerStatus.correctProgress === 1 ? "已完成" : "未完成",
+            得分: stuAnswerStatus.score,
+          };
+        });
+        sheetName = "学生作答情况";
+        sheetHeader = ["学号", "姓名", "作答状态", "批阅状态", "得分"];
+      } else {
+        sheetData = this.questionList.map((question) => {
+          return {
+            题目编号: question._id,
+            题目内容: question.content,
+            得分率: question.scoringRateLabel,
+          };
+        });
+        sheetName = "题目得分率";
+        sheetHeader = ["题目编号", "题目内容", "得分率"];
+      }
+
+      option.fileName = fileName;
+      option.datas = [
+        {
+          sheetData: sheetData,
+          sheetName: sheetName,
+          sheetFilter: sheetHeader,
+          sheetHeader: sheetHeader,
+        },
+      ];
+
+      const toExcel = new ExportJsonExcel(option);
+      toExcel.saveExcel();
     },
 
     // 关闭页面
