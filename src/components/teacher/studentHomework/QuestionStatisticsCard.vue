@@ -82,7 +82,7 @@
       </q-list>
       <!-- 底部信息区域 -->
       <div>
-        <span class="q-mt-sm text-grey" style="font-size: 0.3rem"
+        <span class="q-mt-sm text-grey" style="font-size: 0.6rem"
           >共 {{ questionStatistics.totalAnsweredStudentNum }} 人作答</span
         >
       </div>

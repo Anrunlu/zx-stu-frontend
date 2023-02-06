@@ -111,7 +111,7 @@
           :color="questionDetails.getScore > 0 ? 'green-5' : 'grey'"
           :label="`${questionDetails.getScore}分`"
         />
-        <span class="float-right q-mt-sm text-grey" style="font-size: 0.3rem"
+        <span class="float-right q-mt-sm text-grey" style="font-size: 0.6rem"
           >{{
             questionDetails.submited
               ? `${questionDetails.lastSubmitedTime}`
