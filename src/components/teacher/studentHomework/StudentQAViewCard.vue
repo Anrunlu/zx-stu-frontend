@@ -13,7 +13,10 @@
       <!-- 题干区域 -->
       <div>
         <div>
-          <QuestionChip :questionType="questionDetails.type" />
+          <QuestionChip
+            :questionType="questionDetails.type"
+            :colorization="false"
+          />
           <ObjectShortId
             :id="questionDetails._id"
             :color="'grey'"
