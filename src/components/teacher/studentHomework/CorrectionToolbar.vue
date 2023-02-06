@@ -1,7 +1,8 @@
 <template>
   <div class="row q-gutter-lg q-ml-sm">
     <div class="col-7 col-xl-5">
-      <div class="row q-gutter-sm">
+      <!-- 大屏幕 -->
+      <div class="row q-gutter-sm" v-if="!$q.screen.xs">
         <q-slider
           class="col"
           v-model="questionDetails.studentQA[0].score"
@@ -23,22 +24,58 @@
           outlined
           @keypress.enter="handleSubmit"
         />
-        <q-btn-group push>
-          <q-btn-dropdown label="提交" color="blue" @click="handleSubmit" split>
-            <q-list>
-              <q-item clickable v-close-popup>
-                <q-item-section>
-                  <q-item-label>输入评语</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </q-btn-group>
+        <q-btn-dropdown
+          label="提交"
+          color="primary"
+          @click="handleSubmit"
+          split
+        >
+          <q-list>
+            <q-item clickable v-close-popup @click="handleCommentBtnClick">
+              <q-item-section>
+                <q-item-label>输入评语</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+      </div>
+
+      <!-- 小屏幕 -->
+      <div class="row q-gutter-sm" v-else>
+        <q-input
+          ref="scoreInput"
+          class="col-10"
+          clearable
+          clear-icon="close"
+          v-model.number="questionDetails.studentQA[0].score"
+          type="number"
+          label="输入成绩"
+          dense
+          outlined
+          @keypress.enter="handleSubmit"
+        />
+        <q-btn-dropdown
+          outline
+          class="col"
+          label="提交"
+          color="positive"
+          @click="handleSubmit"
+          split
+        >
+          <q-list>
+            <q-item clickable v-close-popup @click="handleCommentBtnClick">
+              <q-item-section>
+                <q-item-label>输入评语</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </div>
     </div>
 
-    <div class="col">
-      <q-btn-group outline>
+    <div class="row">
+      <!-- 大屏幕 -->
+      <q-btn-group outline v-if="!$q.screen.xs">
         <q-btn
           outline
           label="下一人"
@@ -81,7 +118,52 @@
           @click="handleNextQuestion"
         />
       </q-btn-group>
+      <!-- 小屏幕 -->
+      <q-btn-group outline v-else>
+        <q-btn outline label="下一人" @click="handleNextStu" />
+        <q-btn
+          outline
+          dense
+          :label="`${currStuIndex + 1}/${totalStuNum}`"
+          @click="handleSwitchDisplayStuList"
+        >
+          <q-tooltip :delay="1000" content-class="bg-white text-black shadow-1">
+            开启/关闭学生列表 <kbd style="margin-left: 5px">Tab</kbd>
+          </q-tooltip>
+        </q-btn>
+        <q-btn outline label="上一人" @click="handlePrevStu" />
+        <q-btn outline label="上题" @click="handlePrevQuestion" />
+        <q-btn
+          outline
+          dense
+          :label="`${currQuestionIndex + 1}/${totalQuestionNum}`"
+        >
+          <q-tooltip> 开启/关闭题目列表 </q-tooltip>
+        </q-btn>
+        <q-btn outline label="下题" @click="handleNextQuestion" />
+      </q-btn-group>
     </div>
+
+    <!-- 输入评语对话框 -->
+    <q-dialog v-model="commentsDig" persistent>
+      <q-card style="width: 600px; max-width: 90vw">
+        <CardBar title="评语" icon="edit" />
+        <q-card-section class="row items-center">
+          <q-input
+            class="fit"
+            outlined
+            square
+            dense
+            v-model="questionDetails.studentQA[0].comment"
+            type="textarea"
+            label="输入评语"
+          />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn label="确定" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -129,10 +211,11 @@ export default {
               },
             ],
             score: 0,
+            comment: "",
           },
         ],
       },
-      comment: "",
+      commentsDig: false,
     };
   },
 
@@ -143,6 +226,10 @@ export default {
       },
       deep: true,
     },
+  },
+
+  components: {
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {
@@ -191,7 +278,7 @@ export default {
 
       const payload = {
         studentQA_id: this.questionDetails.studentQA[0]._id,
-        comment: this.comment,
+        comment: this.questionDetails.studentQA[0].comment,
         score: this.questionDetails.studentQA[0].score,
       };
 
@@ -240,6 +327,11 @@ export default {
     // 激活分数输入框
     handleActivateScoreInput() {
       this.$refs.scoreInput.focus();
+    },
+
+    // 打开输入评语对话框
+    handleCommentBtnClick() {
+      this.commentsDig = true;
     },
   },
 

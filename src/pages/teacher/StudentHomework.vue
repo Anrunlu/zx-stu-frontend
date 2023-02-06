@@ -22,9 +22,9 @@
             }}</q-tooltip
           >
         </q-chip>
-        <q-btn dense flat icon="settings" @click="handleSettingsBtnClick">
+        <!-- <q-btn dense flat icon="settings" @click="handleSettingsBtnClick">
           <q-tooltip>设置</q-tooltip>
-        </q-btn>
+        </q-btn> -->
         <q-btn
           v-if="!$q.platform.is.mobile"
           dense
