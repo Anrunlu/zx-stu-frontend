@@ -237,7 +237,7 @@
                       icon="update"
                       @click.stop=""
                     >
-                      <q-tooltip> 作业延期 </q-tooltip>
+                      <q-tooltip> 作业延期(功能即将上线...) </q-tooltip>
                     </q-btn>
                     <q-btn
                       flat
@@ -245,8 +245,9 @@
                       size="sm"
                       color="red-4"
                       icon="published_with_changes"
+                      @click.stop=""
                     >
-                      <q-tooltip> 客观题重新评判</q-tooltip>
+                      <q-tooltip> 客观题重新评判(功能即将上线...)</q-tooltip>
                     </q-btn>
                   </div>
                 </q-td>
