@@ -113,7 +113,7 @@
           dense
           :label="`${currQuestionIndex + 1}/${totalQuestionNum}`"
         >
-          <q-tooltip> 开启/关闭题目列表 </q-tooltip>
+          <!-- <q-tooltip> 开启/关闭题目列表 </q-tooltip> -->
         </q-btn>
         <q-btn
           outline
@@ -122,7 +122,7 @@
           @click="handleNextQuestion"
         />
       </q-btn-group>
-      <!-- 小屏幕 -->
+      <!-- TODO:小屏幕暂时不显示上一人下一人工具条 -->
       <!-- <q-btn-group outline v-else>
         <q-btn outline label="下一人" @click="handleNextStu" />
         <q-btn

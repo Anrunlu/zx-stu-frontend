@@ -38,7 +38,13 @@
             {{ $q.fullscreen.isActive ? "退出全屏" : "全屏" }}
           </q-tooltip>
         </q-btn>
-        <q-btn dense flat icon="help" v-if="!$q.platform.is.mobile">
+        <q-btn
+          dense
+          flat
+          icon="help"
+          v-if="!$q.platform.is.mobile"
+          @click.stop="handleHelpBtnClick"
+        >
           <q-tooltip>帮助</q-tooltip>
         </q-btn>
         <q-btn
@@ -657,6 +663,9 @@ export default {
 
     // 点击批改设置按钮
     handleSettingsBtnClick() {},
+
+    // 帮助按钮点击
+    handleHelpBtnClick() {},
 
     // 通过快捷键切换模式
     handleSwitchModeByShortcut() {
