@@ -121,8 +121,8 @@ export default {
       isRemeberMe: false,
       // 登录信息
       userLoginDto: {
-        username: "19970746",
-        password: "19970746",
+        username: "",
+        password: "",
       },
     };
   },
