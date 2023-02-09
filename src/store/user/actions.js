@@ -46,11 +46,13 @@ export function termList({ commit, state }) {
         commit("setCollegeCurrTermName", collegeCurrTermName);
 
         // 设置用户当前学期名
-        const termName = termList.find(
-          (term) => term._id === state.termId
-        ).name;
-        commit("setTermName", termName);
+        const term = termList.find((term) => term._id === state.termId);
 
+        if (term) {
+          commit("setTermName", term.name);
+        } else {
+          commit("setTermName", collegeCurrTermName);
+        }
         resolve();
       })
       .catch((error) => {
