@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <h1>考试系统，即将上线...</h1>
+    <h1>考试系统，敬请期待...</h1>
   </div>
 </template>
 
