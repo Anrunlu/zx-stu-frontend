@@ -1,6 +1,6 @@
-# 知新2 (zx-frontend)
+# 知新2 (zx-student_frontend)
 
-知新2
+知新2学生端
 
 ## Install the dependencies
 ```bash
@@ -13,19 +13,3 @@ npm install
 ```bash
 quasar dev
 ```
-
-
-### Lint the files
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://v1.quasar.dev/quasar-cli/quasar-conf-js).
