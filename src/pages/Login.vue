@@ -153,7 +153,7 @@ export default {
         });
       }, 500);
 
-      this.$router.push(this.$route.query.redirect || "/").catch((e) => {});
+      this.$router.push(this.$route.query.redirect || "/index").catch((e) => {});
     },
   },
 };

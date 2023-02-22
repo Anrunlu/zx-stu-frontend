@@ -5,7 +5,7 @@ import socketio from "./socketio";
 import teaCourse from "./tea-course";
 import questionCar from "./question-car";
 import settings from "./settings";
-
+import student from "./student";
 Vue.use(Vuex);
 
 /*
@@ -25,6 +25,7 @@ export default function (/* { ssrContext } */) {
       teaCourse,
       questionCar,
       settings,
+      student
     },
 
     // enable strict mode (adds overhead!)

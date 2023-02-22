@@ -2,38 +2,32 @@ export default function () {
   return {
     // 布局相关
     layoutLeftDrawerLinks1: [
-      // { icon: "o_dashboard", label: "Dashboard", to: "dashboard" },
       {
         icon: "o_folder_shared",
-        label: "课程管理",
-        to: "course",
+        label: "我的课程",
+        to: "index",
       },
-      { icon: "o_forum", label: "题库管理", to: "questionBank" },
-      { icon: "o_topic", label: "题集管理", to: "questionSet" },
-      { icon: "o_fact_check", label: "作业管理", to: "homework" },
       {
         icon: "o_cast_for_education",
         label: "互动课堂",
         to: "classwork",
       },
-      { icon: "o_leaderboard", label: "成绩管理", to: "grade" },
     ],
     layoutLeftDrawerLinks2: [
       {
         icon: "o_schema",
-        label: "课程导图",
-        to: "course_mind",
+        label: "我的作业",
+        to: "homework",
       },
       {
         icon: "o_cloud",
-        label: "教学资源",
-        to: "teaResource",
+        label: "我的学习",
+        to: "studybygraph",
       },
-      { icon: "o_assignment", label: "考试系统", to: "exam" },
       {
         icon: "flutter_dash",
-        label: "知识画像",
-        to: "portrait",
+        label: "学习资源",
+        to: "resources",
       },
     ],
     layoutLeftDrawerLinks3: [

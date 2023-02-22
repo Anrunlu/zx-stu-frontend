@@ -1,6 +1,6 @@
 import { getLayout } from "src/utils/layout";
 
-const defaultLayout = "TeacherLayout";
+const defaultLayout = "StudentLayout";
 
 const routes = [
   {
@@ -15,99 +15,115 @@ const routes = [
     path: "",
     component: () => import(`layouts/${getLayout() || defaultLayout}.vue`),
     children: [
-      // {
-      //   path: "dashboard",
-      //   component: () => import("pages/teacher/Dashboard.vue"),
-      //   meta: {
-      //     type: "teacher",
-      //     title: "Dashboard",
-      //   },
-      // },
       {
-        path: "course",
-        component: () => import("pages/teacher/Course.vue"),
+        path: "index",
+        component: () => import("pages/student/Index.vue"),
         meta: {
-          type: "teacher",
-          title: "课程管理",
-        },
-      },
-      {
-        path: "questionBank",
-        component: () => import("pages/teacher/QuestionBank.vue"),
-        meta: {
-          type: "teacher",
-          title: "题库管理",
-        },
-      },
-      {
-        path: "questionSet",
-        component: () => import("pages/teacher/QuestionSet.vue"),
-        meta: {
-          type: "teacher",
-          title: "题集管理",
-        },
-      },
-      {
-        path: "homework",
-        component: () => import("pages/teacher/Homework.vue"),
-        meta: {
-          type: "teacher",
-          title: "作业管理",
+          type: "student",
+          title: "我的课程",
         },
       },
       {
         path: "classwork",
-        component: () => import("pages/teacher/Classwork.vue"),
+        component: () => import("pages/student/Classwork.vue"),
         meta: {
-          type: "teacher",
+          type: "student",
           title: "互动课堂",
         },
       },
       {
-        path: "grade",
-        component: () => import("pages/teacher/Grade.vue"),
+        path: "homework",
+        component: () => import("pages/student/Homework.vue"),
         meta: {
-          type: "teacher",
-          title: "成绩管理",
+          type: "student",
+          title: "作业管理",
         },
       },
+      // {
+      //   path: "course",
+      //   component: () => import("pages/student/Course.vue"),
+      //   meta: {
+      //     type: "student",
+      //     title: "课程管理",
+      //   },
+      // },
+      // {
+      //   path: "questionBank",
+      //   component: () => import("pages/student/QuestionBank.vue"),
+      //   meta: {
+      //     type: "student",
+      //     title: "题库管理",
+      //   },
+      // },
+      // {
+      //   path: "questionSet",
+      //   component: () => import("pages/student/QuestionSet.vue"),
+      //   meta: {
+      //     type: "student",
+      //     title: "题集管理",
+      //   },
+      // },
       {
-        path: "course_mind",
-        component: () => import(`pages/teacher/CourseMind.vue`),
+        path: "studybygraph",
+        component: () => import("pages/student/StudyByGraph.vue"),
         meta: {
-          type: "teacher",
-          title: "课程导图",
+          type: "student",
+          title: "我的学习",
         },
       },
+      // {
+      //   path: "grade",
+      //   component: () => import("pages/student/Grade.vue"),
+      //   meta: {
+      //     type: "student",
+      //     title: "成绩管理",
+      //   },
+      // },
       {
-        path: "teaResource",
-        component: () => import("pages/teacher/TeaResource.vue"),
+        path: "resources",
+        component: () => import("pages/student/Resources.vue"),
         meta: {
-          type: "teacher",
-          title: "教学资源",
+          type: "student",
+          title: "我的资源",
         },
       },
-      {
-        path: "exam",
-        component: () => import("pages/teacher/Exam.vue"),
-        meta: {
-          type: "teacher",
-          title: "考试系统",
-        },
-      },
-      {
-        path: "portrait",
-        component: () => import("pages/teacher/Portrait.vue"),
-        meta: {
-          type: "teacher",
-          title: "知识画像",
-        },
-      },
+      // {
+      //   path: "course_mind",
+      //   component: () => import(`pages/student/CourseMind.vue`),
+      //   meta: {
+      //     type: "student",
+      //     title: "课程导图",
+      //   },
+      // },
+      // {
+      //   path: "teaResource",
+      //   component: () => import("pages/student/TeaResource.vue"),
+      //   meta: {
+      //     type: "student",
+      //     title: "教学资源",
+      //   },
+      // },
+      // {
+      //   path: "exam",
+      //   component: () => import("pages/student/Exam.vue"),
+      //   meta: {
+      //     type: "student",
+      //     title: "考试系统",
+      //   },
+      // },
+      // {
+      //   path: "portrait",
+      //   component: () => import("pages/student/Portrait.vue"),
+      //   meta: {
+      //     type: "student",
+      //     title: "知识画像",
+      //   },
+      // },
       {
         path: "notice",
         component: () => import("pages/Notice.vue"),
         meta: {
-          type: "teacher",
+          type: "student",
           title: "消息中心",
         },
       },
@@ -115,7 +131,7 @@ const routes = [
         path: "profile",
         component: () => import("pages/Profile.vue"),
         meta: {
-          type: "teacher",
+          type: "student",
           title: "个人设置",
         },
       },
@@ -123,55 +139,55 @@ const routes = [
   },
   {
     path: "/question/:questionId",
-    component: () => import(`pages/teacher/QuestionEdit.vue`),
+    component: () => import(`pages/student/QuestionEdit.vue`),
     props: true,
     meta: {
-      type: "teacher",
+      type: "student",
       title: "题目编辑",
     },
   },
   {
     path: "/course_mind/:courseMindId?",
-    component: () => import(`pages/teacher/CourseMindDetail.vue`),
+    component: () => import(`pages/student/CourseMindDetail.vue`),
     props: true,
     meta: {
-      type: "teacher",
+      type: "student",
       title: "导图详情",
     },
   },
   {
     path: "/question_add/:courseId",
-    component: () => import(`pages/teacher/QuestionAdd.vue`),
+    component: () => import(`pages/student/QuestionAdd.vue`),
     props: true,
     meta: {
-      type: "teacher",
+      type: "student",
       title: "添加题目",
     },
   },
   {
     path: "/question_import/:courseId",
-    component: () => import(`pages/teacher/QuestionImport.vue`),
+    component: () => import(`pages/student/QuestionImport.vue`),
     props: true,
     meta: {
-      type: "teacher",
+      type: "student",
       title: "题目导入",
     },
   },
   {
     path: "/homework/:homeworkId",
-    component: () => import(`pages/teacher/HomeworkProfile.vue`),
+    component: () => import(`pages/student/HomeworkProfile.vue`),
     props: true,
     meta: {
-      type: "teacher",
+      type: "student",
       title: "作业概览",
     },
   },
   {
     path: "/student_homework/:homeworkId",
-    component: () => import(`pages/teacher/StudentHomework.vue`),
+    component: () => import(`pages/student/StudentHomework.vue`),
     props: true,
     meta: {
-      type: "teacher",
+      type: "student",
       title: "学生作业",
     },
   },
