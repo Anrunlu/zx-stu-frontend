@@ -14,9 +14,7 @@
             }}</q-badge>
             <span class="float-right q-mt-sm"
               >剩余作业
-              <q-icon v-if="!c.unfinishedHomeworkNum" name="more_horiz" />
               <q-badge
-                v-else
                 :color="c.unfinishedHomeworkNum == 0 ? 'green' : 'red'"
                 class="q-ml-sm"
                 >{{ c.unfinishedHomeworkNum }}</q-badge
