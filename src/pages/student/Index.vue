@@ -2,7 +2,7 @@
   <q-page>
     <div class="row q-gutter-md q-ma-sm justify-center">
       <div class="col-11 col-md-3" v-for="(c, i) in courseList" :key="i">
-        <q-card class="course-card shadow-4">
+        <q-card class="course-card shadow-4" @click="toHomework">
           <q-card-section class="text-h3"> {{ c.name }} </q-card-section>
           <q-card-section>
             <q-avatar size="40px" color="primary" text-color="white">
@@ -40,6 +40,11 @@ export default {
     }),
   },
   methods: {
+    //跳转作业
+    toHomework() {
+      this.$router.push({ path: "/homework" });
+    },
+
     // 获取课程
     async handleGetCourse() {
       await this.$store.dispatch("student/getCourseList");

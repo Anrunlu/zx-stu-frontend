@@ -39,30 +39,6 @@ const routes = [
           title: "作业管理",
         },
       },
-      // {
-      //   path: "course",
-      //   component: () => import("pages/student/Course.vue"),
-      //   meta: {
-      //     type: "student",
-      //     title: "课程管理",
-      //   },
-      // },
-      // {
-      //   path: "questionBank",
-      //   component: () => import("pages/student/QuestionBank.vue"),
-      //   meta: {
-      //     type: "student",
-      //     title: "题库管理",
-      //   },
-      // },
-      // {
-      //   path: "questionSet",
-      //   component: () => import("pages/student/QuestionSet.vue"),
-      //   meta: {
-      //     type: "student",
-      //     title: "题集管理",
-      //   },
-      // },
       {
         path: "studybygraph",
         component: () => import("pages/student/StudyByGraph.vue"),
@@ -71,14 +47,6 @@ const routes = [
           title: "我的学习",
         },
       },
-      // {
-      //   path: "grade",
-      //   component: () => import("pages/student/Grade.vue"),
-      //   meta: {
-      //     type: "student",
-      //     title: "成绩管理",
-      //   },
-      // },
       {
         path: "resources",
         component: () => import("pages/student/Resources.vue"),
@@ -87,38 +55,6 @@ const routes = [
           title: "我的资源",
         },
       },
-      // {
-      //   path: "course_mind",
-      //   component: () => import(`pages/student/CourseMind.vue`),
-      //   meta: {
-      //     type: "student",
-      //     title: "课程导图",
-      //   },
-      // },
-      // {
-      //   path: "teaResource",
-      //   component: () => import("pages/student/TeaResource.vue"),
-      //   meta: {
-      //     type: "student",
-      //     title: "教学资源",
-      //   },
-      // },
-      // {
-      //   path: "exam",
-      //   component: () => import("pages/student/Exam.vue"),
-      //   meta: {
-      //     type: "student",
-      //     title: "考试系统",
-      //   },
-      // },
-      // {
-      //   path: "portrait",
-      //   component: () => import("pages/student/Portrait.vue"),
-      //   meta: {
-      //     type: "student",
-      //     title: "知识画像",
-      //   },
-      // },
       {
         path: "notice",
         component: () => import("pages/Notice.vue"),
