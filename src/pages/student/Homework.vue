@@ -6,7 +6,6 @@
       :columns="homeworkColumns"
       row-key="_id"
       @row-click="handleHomeworkClick"
-      :filter="homeworkFilter"
       :pagination="tablePagination"
       :dense="tableDense"
     >
@@ -37,6 +36,7 @@
           </q-btn-dropdown>
           <!-- 选择作业类型 -->
           <q-btn-dropdown
+            v-if="optCourse"
             :icon="optHomeworkType.icon ? optHomeworkType.icon : 'touch_app'"
             :label="!optHomeworkType.value ? '作业类型' : optHomeworkType.label"
             color="positive"
@@ -62,17 +62,6 @@
       </template>
 
       <template v-slot:top-right="props">
-        <q-input
-          dense
-          debounce="300"
-          v-model="homeworkFilter"
-          placeholder="搜索作业"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-
         <q-btn
           flat
           round
@@ -194,21 +183,12 @@
         </div>
       </template>
     </q-table>
-
-    <!-- 作业编辑对话框 -->
-    <q-dialog v-model="homeworkEditDig" persistent>
-      <HomeworkEditCard
-        :homeworkId="currClickedRowHomework._id"
-        @closeEditingHomeworkDialog="handleCloseEditingHomeworkDialog"
-      />
-    </q-dialog>
   </q-page>
 </template>
 
 <script>
 import { apiGetCourses } from "src/api/student";
 import { apiGetHomeworks } from "src/api/student/homework";
-import { mapGetters } from "vuex";
 import { formatTimeWithWeekDay } from "src/utils/time";
 export default {
   name: "Homework",
@@ -251,14 +231,8 @@ export default {
       ],
       //课程列表
       courseList: [],
-      // 当前选中的作业分类
-      currSelectedCategory: { value: "", label: "", icon: "" },
-      // 作业过滤
-      homeworkFilter: "",
       // 当前点击的作业
       currClickedRowHomework: {},
-      // 作业编辑对话框
-      homeworkEditDig: false,
       //作业类型
       courseTypeList: [
         { value: "课前预习", label: "课前预习", icon: "o_auto_stories" },
@@ -270,129 +244,13 @@ export default {
       ],
     };
   },
-
-  components: {
-    HomeworkEditCard: () =>
-      import("src/components/teacher/homework/HomeworkEditCard.vue"),
-  },
-
   computed: {
-    ...mapGetters("teaCourse", {
-      teaCourseList: "teaCourseList",
-      currSelectedTeaCourse: "currSelectedTeaCourse",
-    }),
-
     ...mapGetters("settings", {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
-      homeworkCategoryOptions: "homeworkCategoryOptions",
     }),
   },
-
-  watch: {
-    currSelectedTeaCourse: {
-      handler: function (newVal, oldVal) {
-        if (!newVal) {
-          this.homeworkList = [];
-        }
-      },
-      deep: true,
-    },
-  },
-
   methods: {
-    // 获取作业列表
-    // async handleGetHomeworkList() {
-    //   // 校验是否选择了课程
-    //   if (!this.currSelectedTeaCourse) {
-    //     this.$q.notify({
-    //       message: "请先选择课程",
-    //       type: "warning",
-    //     });
-    //     return;
-    //   }
-
-    //   // 构造请求参数
-    //   const payload = {
-    //     status: "正常",
-    //     teacourse_id: this.currSelectedTeaCourse.id,
-    //     category: this.currSelectedCategory.value,
-    //   };
-
-    //   // 发送请求
-    //   try {
-    //     const { data } = await apiGetHomeworks(payload);
-    //     data.data.forEach((homework) => {
-    //       preProcessHomeworkDetails(homework);
-    //     });
-    //     this.homeworkList = data.data;
-    //   } catch (error) {
-    //     this.$q.notify({
-    //       message: "获取作业列表失败",
-    //       type: "negative",
-    //     });
-    //   }
-    // },
-
-    // // 删除作业
-    // async removeHomework() {
-    //   // 移除作业
-    //   try {
-    //     await apiRemoveHomework(this.currClickedRowHomework._id);
-    //     this.$q.notify({
-    //       message: "删除成功",
-    //       type: "positive",
-    //     });
-    //     // 重新获取作业列表
-    //     this.handleGetHomeworkList();
-    //     this.removeHomeworkDig = false;
-    //     this.currClickedRowHomework = {};
-    //   } catch (error) {
-    //     this.$q.notify({
-    //       message: "删除失败",
-    //       type: "negative",
-    //     });
-    //   }
-    // },
-
-    // // 设置当前选中的教学课程
-    // handleChangeTeaCourse(teaCourse) {
-    //   this.$store.commit("teaCourse/setCurrSelectedTeaCourse", teaCourse);
-
-    //   // 如果当前选中的作业分类不为空，则重新获取作业列表
-    //   if (this.currSelectedCategory.value) {
-    //     this.handleGetHomeworkList(this.currSelectedCategory.value);
-    //   }
-    // },
-
-    // 处理作业分类选项改变
-    handleChangeHomeworkCategory(category) {
-      this.currSelectedCategory = category;
-      this.handleGetHomeworkList();
-    },
-
-    // // 处理点击发布作业按钮
-    // handlePublishHomeworkBtnClick() {
-    //   // 校验是否选择了课程
-    //   if (!this.currSelectedTeaCourse) {
-    //     this.$q.notify({
-    //       message: "请先选择课程",
-    //       type: "warning",
-    //     });
-    //     return;
-    //   }
-    //   this.$q.notify({
-    //     message: "已跳转到题集管理页面，请点击试题集发布按钮完成作业发布",
-    //     position: "top",
-    //     icon: "announcement",
-    //     progress: true,
-    //     color: "accent",
-    //     textColor: "white",
-    //     classes: "glossy",
-    //   });
-    //   this.$router.push("questionSet");
-    // },
-
     // 处理点击作业列表中的某一行
     handleHomeworkClick(evt, row) {
       this.currClickedRowHomework = row;
@@ -401,13 +259,6 @@ export default {
       // 新标签页打开
       const routeData = this.$router.resolve(`/homework/${row._id}`);
       window.open(routeData.href, "_blank");
-    },
-
-    // 处理作业编辑对话框关闭事件
-    handleCloseEditingHomeworkDialog() {
-      this.homeworkEditDig = false;
-      // 刷新作业列表
-      this.handleGetHomeworkList();
     },
 
     //获取所有课程
@@ -462,7 +313,6 @@ export default {
         student_id: this.$store.getters["user/studentId"][0]._id,
       };
       const { data } = await apiGetHomeworks(payload);
-      console.log(data.data);
       if (data.code === 2000) {
         data.data.forEach((element) => {
           element.isEnd = false;
