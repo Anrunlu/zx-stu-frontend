@@ -14,16 +14,18 @@
         <div class="q-gutter-sm">
           <!-- 选择课程 -->
           <q-btn-dropdown
-            :label="
-              !currSelectedTeaCourse ? '选择课程' : currSelectedTeaCourse.name
-            "
+            :label="!optCourse.name ? '选择课程' : optCourse.name"
             color="primary"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
-                @click="handleChangeTeaCourse(teaCourse)"
+                @click="
+                  (optCourse = course),
+                    (optHomeworkType = ''),
+                    (homeworkList = [])
+                "
                 :key="index"
                 v-for="(course, index) in courseList"
               >
@@ -35,25 +37,17 @@
           </q-btn-dropdown>
           <!-- 选择作业类型 -->
           <q-btn-dropdown
-            :icon="
-              currSelectedCategory.icon
-                ? currSelectedCategory.icon
-                : 'touch_app'
-            "
-            :label="
-              !currSelectedCategory.value
-                ? '作业类型'
-                : currSelectedCategory.label
-            "
+            :icon="optHomeworkType.icon ? optHomeworkType.icon : 'touch_app'"
+            :label="!optHomeworkType.value ? '作业类型' : optHomeworkType.label"
             color="positive"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
-                @click="handleChangeHomeworkCategory(category)"
+                @click="(optHomeworkType = category), handleGetHomeworks()"
                 :key="index"
-                v-for="(category, index) in homeworkCategoryOptions"
+                v-for="(category, index) in courseTypeList"
               >
                 <q-item-section avatar>
                   <q-icon :name="category.icon" />
@@ -64,14 +58,6 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <!-- 发布作业 -->
-          <!-- <q-btn
-            color="accent"
-            outline
-            icon="publish"
-            label="发布作业"
-            @click="handlePublishHomeworkBtnClick"
-          /> -->
         </div>
       </template>
 
@@ -100,40 +86,17 @@
         </q-btn>
       </template>
 
-      <template v-slot:body-cell-shortId="props">
-        <q-td
-          :props="props"
-          @click.stop="handleTableCellIdClick(props.row)"
-          class="cursor-pointer"
-        >
-          <q-icon name="fingerprint" size="xs" color="grey-6" />{{
-            props.row.shortId
-          }}
-        </q-td>
-      </template>
-
+      <!-- 时间状态 -->
       <template v-slot:body-cell-status="props">
         <q-td :props="props">
           <q-chip
             square
             size="sm"
-            :icon="
-              props.row.statusByTime == '已截止'
-                ? 'alarm_off'
-                : props.row.statusByTime == '未开始'
-                ? 'alarm_add'
-                : 'alarm'
-            "
-            :color="
-              props.row.statusByTime == '已截止'
-                ? ''
-                : props.row.statusByTime == '未开始'
-                ? 'primary'
-                : 'positive'
-            "
-            :text-color="props.row.statusByTime == '已截止' ? 'grey' : 'white'"
+            :icon="props.row.isEnd === true ? 'alarm_off' : 'alarm'"
+            :color="props.row.isEnd === true ? 'grey-4' : 'positive'"
+            :text-color="props.row.isEnd === true ? 'grey' : 'white'"
             dense
-            :label="props.row.statusByTime"
+            :label="props.row.isEnd === true ? '已截止' : '未截止'"
           />
 
           <q-tooltip
@@ -141,64 +104,86 @@
             v-close-popup
             :label="props.row.endtime"
           >
-            截止时间{{ props.row.endtimeFormatted }}
+            截止时间{{ props.row.endtime }}
           </q-tooltip>
         </q-td>
       </template>
 
-      <template v-slot:body-cell-correctProgress="props">
-        <q-td :props="props">
-          <q-chip
-            square
-            size="sm"
-            :icon="props.value >= 1 ? 'task_alt' : 'schedule'"
-            :color="
-              props.value >= 1
-                ? 'positive'
-                : props.value > 0
-                ? 'primary'
-                : 'grey-5'
-            "
-            text-color="white"
-            dense
-            :label="`${props.value * 100}%`"
-          />
-        </q-td>
-      </template>
-
+      <!-- 完成状态 -->
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
           <div class="q-gutter-sm">
-            <q-btn
-              flat
-              dense
-              size="sm"
-              color="primary"
-              icon="edit"
-              @click.stop="handleModifyHomeworkClick(props.row)"
-            >
-              <q-tooltip> 修改作业 </q-tooltip>
-            </q-btn>
-            <!-- <q-btn
-              flat
-              dense
-              size="sm"
-              color="primary"
-              icon="fact_check"
-              @click.stop="isReCriticismFn(props.row), (reCriticismDig = true)"
-            >
-              <q-tooltip> 重新批判该次作业 </q-tooltip>
-            </q-btn> -->
-            <q-btn
+            <q-chip
+              v-if="
+                props.row.studentHomework == null ||
+                (props.row.studentHomework.answerProgress === 0 &&
+                  props.row.isEnd === true)
+              "
               flat
               dense
               size="sm"
               color="red"
-              icon="delete_outline"
-              @click.stop="handleRemoveHomeworkClick(props.row)"
-            >
-              <q-tooltip> 删除作业 </q-tooltip>
-            </q-btn>
+              icon="work"
+              label="未作答"
+              text-color="white"
+            ></q-chip>
+            <q-btn
+              v-else-if="
+                props.row.studentHomework == null ||
+                (props.row.studentHomework.answerProgress === 0 &&
+                  props.row.isEnd === false)
+              "
+              flat
+              dense
+              size="md"
+              color="primary"
+              icon="work"
+              label="未作答"
+            ></q-btn>
+            <q-chip
+              v-else-if="
+                props.row.studentHomework.answerProgress < 1 &&
+                props.row.isEnd === false
+              "
+              flat
+              dense
+              size="sm"
+              color="primary"
+              icon="pending"
+              text-color="white"
+              :label="
+                '已完成(' +
+                (props.row.studentHomework.answerProgress * 100).toFixed(0) +
+                '%)'
+              "
+            ></q-chip>
+            <q-chip
+              v-else-if="
+                props.row.studentHomework.answerProgress < 1 &&
+                props.row.isEnd === true
+              "
+              flat
+              dense
+              size="sm"
+              color="primary"
+              icon="work"
+              text-color="white"
+              :label="
+                '仅完成(' +
+                (props.row.studentHomework.answerProgress * 100).toFixed(0) +
+                '%)'
+              "
+            ></q-chip>
+            <q-chip
+              v-else
+              flat
+              dense
+              size="sm"
+              color="positive"
+              icon="fas fa-award"
+              label="已完成"
+              text-color="white"
+            ></q-chip>
           </div>
         </q-td>
       </template>
@@ -224,11 +209,15 @@
 import { apiGetCourses } from "src/api/student";
 import { apiGetHomeworks } from "src/api/student/homework";
 import { mapGetters } from "vuex";
-import { copyToClipboard } from "quasar";
+import { formatTimeWithWeekDay } from "src/utils/time";
 export default {
   name: "Homework",
   data() {
     return {
+      //选中课程名称
+      optCourse: "",
+      //选中作业类型
+      optHomeworkType: "",
       // 作业列表
       homeworkList: [],
       // 作业列表表头
@@ -270,16 +259,14 @@ export default {
       currClickedRowHomework: {},
       // 作业编辑对话框
       homeworkEditDig: false,
-      //未完成作业
-      UnfinishedCourseTypeHomework: [],
       //作业类型
       courseTypeList: [
-        "课前预习",
-        "互动课堂",
-        "课后作业",
-        "课程实验",
-        "期中考试",
-        "期末考试",
+        { value: "课前预习", label: "课前预习", icon: "o_auto_stories" },
+        { value: "课堂作业", label: "互动课堂", icon: "o_cast_for_education" },
+        { value: "课后作业", label: "课后作业", icon: "o_home_work" },
+        { value: "课程实验", label: "课程实验", icon: "o_science" },
+        { value: "期中考试", label: "期中考试", icon: "o_assignment" },
+        { value: "期末考试", label: "期末考试", icon: "o_assignment" },
       ],
     };
   },
@@ -416,17 +403,6 @@ export default {
       window.open(routeData.href, "_blank");
     },
 
-    // 点击作业编号
-    handleTableCellIdClick(row) {
-      // 复制id到剪贴板
-      copyToClipboard(row._id).then(() => {
-        this.$q.notify({
-          message: "作业编号已复制到剪贴板",
-          type: "positive",
-        });
-      });
-    },
-
     // 处理作业编辑对话框关闭事件
     handleCloseEditingHomeworkDialog() {
       this.homeworkEditDig = false;
@@ -450,64 +426,47 @@ export default {
           return item.course;
         });
       }
-      console.log(this.courseList);
-      this.handleGetAllCourseTypeHomeworks();
     },
 
-    //获取所有课程未完成作业
-    async handleGetAllCourseTypeHomeworks() {
-      this.UnfinishedCourseTypeHomework = [];
-      this.courseList.forEach(async (element) => {
-        this.courseTypeList.forEach(async (eleme) => {
-          const payload = {
-            tcc_id: element.tcc_id,
-            category: eleme,
-            student_id: this.$store.getters["user/studentId"][0]._id,
-          };
-          const { data } = await apiGetHomeworks(payload);
-
-          if (data.data.length != 0) {
-            data.data.forEach((ele) => {
-              if (ele.studentHomework) {
-                if (ele.studentHomework.answerProgress < 1) {
-                  this.UnfinishedCourseTypeHomework.push(
-                    element.name.split("（")[0]
-                  );
-                }
-              } else {
-                this.UnfinishedCourseTypeHomework.push(
-                  element.name.split("（")[0]
-                );
-              }
-            });
-          }
+    //获取课程所有类型作业
+    async handleGetAllTypeHomeworks() {
+      this.UnfinishedTypeHomework = [];
+      this.courseTypeList.forEach(async (element) => {
+        const { data } = await apiGetHomeworks({
+          tcc_id: this.optCourse.tcc_id,
+          category: element,
+          student_id: this.$store.getters["user/studentId"][0]._id,
         });
+        if (data.data.length != 0) {
+          data.data.forEach((ele) => {
+            if (ele.studentHomework) {
+              if (ele.studentHomework.answerProgress < 1) {
+                this.UnfinishedTypeHomework.push(element);
+              }
+            } else {
+              this.UnfinishedTypeHomework.push(element);
+            }
+          });
+        }
       });
-      var newArr = [...new Set(this.UnfinishedCourseTypeHomework)]; //利用了Set结构不能接收重复数据的特点
-      this.UnfinishedCourseTypeHomework = newArr;
-      console.log(this.UnfinishedCourseTypeHomework);
+      var newArr = [...new Set(this.UnfinishedTypeHomework)]; //利用了Set结构不能接收重复数据的特点
+      this.UnfinishedTypeHomework = newArr;
     },
 
-    //获取课程作业信息
+    //获取课程类型作业信息
     async handleGetHomeworks() {
       this.homeworkList = [];
       const payload = {
         tcc_id: this.optCourse.tcc_id,
-        category: this.optHomeworkType,
+        category: this.optHomeworkType.value,
         student_id: this.$store.getters["user/studentId"][0]._id,
       };
       const { data } = await apiGetHomeworks(payload);
-      console.log(data)
+      console.log(data.data);
       if (data.code === 2000) {
         data.data.forEach((element) => {
           element.isEnd = false;
           let now = new Date();
-          // if(!element.starttime){
-          //   element.starttime=new Date('2000-01-01')
-          // }
-          // let startTime = Date.parse(new Date(element.starttime));
-          // // let startTime = element.starttime.setHours(element.starttime.getHours() + 8)
-          // element.starttime=startTime
           if (element.studentHomework && element.studentHomework.endtime) {
             let end = new Date(element.studentHomework.endtime);
             let d = end.getTime() - now.getTime();
@@ -515,7 +474,9 @@ export default {
               //已截止
               element.isEnd = true;
             }
-            element.endtime = this.formatDate(element.studentHomework.endtime);
+            element.endtime = formatTimeWithWeekDay(
+              element.studentHomework.endtime
+            );
           } else {
             let end = new Date(element.endtime);
             let d = end.getTime() - now.getTime();
@@ -523,15 +484,10 @@ export default {
               //已截止
               element.isEnd = true;
             }
-            element.endtime = this.formatDate(element.endtime);
+            element.endtime = formatTimeWithWeekDay(element.endtime);
             //console.log(object);
           }
         });
-        // res.data.data.forEach((el) => {
-        //   if (time.data.data >= el.starttime) {
-        //     this.homeworkList.push(el);
-        //   }
-        // });
         this.homeworkList = data.data;
         // 添加课程与作业类型进LocalStorage
         localStorage.setItem("course", JSON.stringify(this.optCourse));
@@ -541,8 +497,13 @@ export default {
   },
 
   created() {
-    this.handleGetHomeworks();
-    // this.handleGetAllCourse();
+    // this.$socket.connect();
+    // if (localStorage.getItem("course"))
+    //   this.optCourse = JSON.parse(localStorage.getItem("course"));
+    // if (localStorage.getItem("homeworkType"))
+    //   this.optHomeworkType = localStorage.getItem("homeworkType");
+    // if (this.optCourse && this.optHomeworkType) this.handleGetHomeworks();
+    this.handleGetAllCourse();
   },
 };
 </script>
