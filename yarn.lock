@@ -5898,6 +5898,11 @@ jsesc@~0.5.0:
   resolved "https://registry.npmmirror.com/jsesc/-/jsesc-0.5.0.tgz"
   integrity sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==
 
+jsmind@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.npmmirror.com/jsmind/-/jsmind-0.5.2.tgz#7a7fdd370a39a75b5bba0ee4e220554a88ce330f"
+  integrity sha512-CZTFC6+fbP8gqyKVE49/1Ep+wUnXGOymtwgZddspMpo6bnAFp3SSF2Ku3DMbGQRzdKQLMLymvbv0dNWBnwx3MQ==
+
 json-buffer@3.0.0:
   version "3.0.0"
   resolved "https://registry.npmmirror.com/json-buffer/-/json-buffer-3.0.0.tgz"
@@ -9540,6 +9545,13 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.npmmirror.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
+vue-jsmind@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.npmmirror.com/vue-jsmind/-/vue-jsmind-1.5.0.tgz#3b7ba51dc6d108621f140a4cc46f0c6fd817f717"
+  integrity sha512-d3toxItK4KVNvNyJhuktj4VGGgZBEp5zlnnc1GimerH2ktiPhpJRnrbI6FZQLXOpyDy3cPpf+N1VS4z5LyPDEg==
+  dependencies:
+    vue "^2.5.11"
+
 vue-katex-auto-render@^0.1.3:
   version "0.1.3"
   resolved "https://registry.npmmirror.com/vue-katex-auto-render/-/vue-katex-auto-render-0.1.3.tgz"
@@ -9605,7 +9617,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npmmirror.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@^2.4.1, vue@^2.7.1:
+vue@^2.4.1, vue@^2.5.11, vue@^2.7.1:
   version "2.7.14"
   resolved "https://registry.npmmirror.com/vue/-/vue-2.7.14.tgz"
   integrity sha512-b2qkFyOM0kwqWFuQmgd4o+uHGU7T+2z3T+WQp8UBjADfEv2n4FEMffzBmCKNP0IGzOEEfYjvtcC62xaSKeQDrQ==
