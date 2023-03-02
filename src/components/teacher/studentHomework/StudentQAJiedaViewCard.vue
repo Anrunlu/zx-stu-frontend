@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <template>
   <div>
     <q-card
@@ -11,34 +12,10 @@
     >
       <q-card-section class="q-pa-sm">
         <div class="row q-gutter-sm">
-          <q-badge
-            :color="
-              questionDetails.studentQA[0].corrected ? 'positive' : 'grey-5'
-            "
-            >{{
-              questionDetails.studentQA[0].corrected ? "已批改" : "未批改"
-            }}</q-badge
-          >
-          <q-btn
-            dense
-            flat
-            size="sm"
-            color="primary"
-            icon="search"
-            label="查看题干"
-            @click="handleViewQuestionBtnClick"
-          >
-          </q-btn>
-          <q-btn
-            dense
-            flat
-            size="sm"
-            color="primary"
-            icon="edit"
-            label="批注"
-            @click.stop="handleAnnotationBtnClick"
-          >
-          </q-btn>
+          <QuestionChip
+            :questionType="questionDetails.type"
+            :colorization="false"
+          />
           <q-space />
           <!-- 序号 -->
           <q-chip
@@ -54,28 +31,28 @@
       </q-card-section>
       <q-separator />
       <q-card-section>
-        <div
-          id="studentqa"
-          v-viewer
-          v-html="questionDetails.studentQA[0].stuAnswer[0].content"
-        ></div>
+        <div v-html="questionDetails.content"></div>
+      </q-card-section>
+      <q-card-section>
+        <ckeditor
+          :editor="editor"
+          :config="editorConfig"
+          v-model="questionDetails.studentQA[0].stuAnswer[0].content"
+        ></ckeditor>
+      </q-card-section>
+      <q-card-section>
+        <q-btn color="primary" :icon="questionsDetails ?'check':'cached' " @click="handlePostJieDaAnswer"
+          >{{ !questionDetails.isSubmit ? "提交" : "更新" }}
+        </q-btn>
       </q-card-section>
     </q-card>
-
-    <!-- 查看题干对话框 -->
-    <q-dialog v-model="questionViewDig">
-      <QuestionViewCard pure :questionId="questionDetails._id" />
-    </q-dialog>
-
-    <!-- 批注对话框 -->
-    <q-dialog v-model="studentqaAnnotationDig" maximized>
-      <q-card id="studentqa-annotation-card"> </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
-import html2canvas from "html2canvas";
+import Editor from "ckeditor5-custom-build/build/ckeditor";
+import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
+import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 export default {
   name: "StudentHomeworkJiedaQuestionCard",
   props: {
@@ -114,14 +91,30 @@ export default {
 
   data() {
     return {
+      // 编辑器配置
+      editor: Editor,
       studentqaAnnotationDig: false,
       questionViewDig: false,
+      props: {
+        index: {
+          type: Number,
+          required: false,
+        },
+        questionDetails: {
+          type: Object,
+          required: true,
+        },
+        isActive: {
+          type: Boolean,
+          required: false,
+          default: false,
+        },
+      },
     };
   },
 
   components: {
-    QuestionViewCard: () =>
-      import("src/components/teacher/questionBank/QuestionViewCard.vue"),
+    QuestionChip: () => import("src/components/common/QuestionChip.vue"),
   },
 
   methods: {
@@ -131,33 +124,69 @@ export default {
     handleQuestionCardDblClick() {
       this.$emit("questionCardDblClick", this.questionDetails);
     },
-
-    // 点击批注按钮
-    handleAnnotationBtnClick() {
-      // TODO:批注功能暂时不做
-      this.$q.notify({
-        message: "批注功能即将上线，敬请期待...",
-        type: "warning",
-      });
-
-      return;
-
-      // 将 dom 及其子元素绘制到 canvas 上
-      const capture = document.getElementById("studentqa");
-      html2canvas(capture, { allowTaint: true }).then((canvas) => {
-        // const dataURL = canvas.toDataURL("image/png");
-        this.studentqaAnnotationDig = true;
-        setTimeout(() => {
-          document
-            .getElementById("studentqa-annotation-card")
-            .appendChild(canvas);
-        }, 300);
-      });
+    handlePostJieDaAnswer(){
+      this.$emit("postJieDaAnswer",this.questionDetails)
+    }
+  },
+  computed: {
+    editorConfig() {
+      return {
+        toolbar: {
+          items: [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "fontColor",
+            "highlight",
+            "removeFormat",
+            "underline",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "alignment",
+            "|",
+            "math",
+            "codeBlock",
+            "imageUpload",
+            "uploadFile",
+            "blockQuote",
+            "insertTable",
+            "|",
+            "findAndReplace",
+            "undo",
+            "redo",
+          ],
+        },
+        extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
+      };
     },
-
-    // 点击查看题干按钮
-    handleViewQuestionBtnClick() {
-      this.questionViewDig = true;
+    questionOptionEditorConfig() {
+      return {
+        extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
+        toolbar: {
+          items: [
+            "bold",
+            "italic",
+            "link",
+            "|",
+            "math",
+            "codeBlock",
+            "imageUpload",
+            "uploadFile",
+          ],
+        },
+        image: {
+          toolbar: [
+            "imageTextAlternative",
+            "toggleImageCaption",
+            "imageStyle:inline",
+            "imageStyle:block",
+            "imageStyle:side",
+          ],
+        },
+        language: "zh-cn",
+      };
     },
   },
 };

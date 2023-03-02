@@ -1,6 +1,6 @@
 import { Cookies } from "quasar";
 
-const TokenKey = "zx_tea_token";
+const TokenKey = "zx_stu_token";
 
 export function getToken() {
   return Cookies.get(TokenKey) || "";

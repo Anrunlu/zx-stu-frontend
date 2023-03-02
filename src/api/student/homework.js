@@ -35,12 +35,12 @@ export function apiGetHomeworkInfo(homework_id) {
   });
 }
 
-//提交作业
-export function apiPostAnswerForQuestion(data) {
-  return loadingFn(request)({
+// 提交作答
+export function apiPostAnswer(data) {
+  return request({
     url: "/stu/question/answerForQuestion",
     method: "POST",
-    data,
+    data
   });
 }
 

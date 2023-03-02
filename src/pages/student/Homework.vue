@@ -190,6 +190,7 @@
 import { apiGetCourses } from "src/api/student";
 import { apiGetHomeworks } from "src/api/student/homework";
 import { formatTimeWithWeekDay } from "src/utils/time";
+import { mapGetters } from "vuex";
 export default {
   name: "Homework",
   data() {
@@ -197,7 +198,7 @@ export default {
       //选中课程名称
       optCourse: "",
       //选中作业类型
-      optHomeworkType: "",
+      optHomeworkType: [],
       // 作业列表
       homeworkList: [],
       // 作业列表表头
@@ -253,11 +254,11 @@ export default {
   methods: {
     // 处理点击作业列表中的某一行
     handleHomeworkClick(evt, row) {
-      this.currClickedRowHomework = row;
-      // 跳转到作业概览页面
-      // 在新标签页打开
-      // 新标签页打开
-      const routeData = this.$router.resolve(`/homework/${row._id}`);
+      // this.$router.resolve(`/homework/${row._id}`);
+      const routeData = this.$router.resolve(
+        `/student/homeworkdetails/${row._id}`
+      );
+      //新窗口打开
       window.open(routeData.href, "_blank");
     },
 
@@ -279,30 +280,30 @@ export default {
       }
     },
 
-    //获取课程所有类型作业
-    async handleGetAllTypeHomeworks() {
-      this.UnfinishedTypeHomework = [];
-      this.courseTypeList.forEach(async (element) => {
-        const { data } = await apiGetHomeworks({
-          tcc_id: this.optCourse.tcc_id,
-          category: element,
-          student_id: this.$store.getters["user/studentId"][0]._id,
-        });
-        if (data.data.length != 0) {
-          data.data.forEach((ele) => {
-            if (ele.studentHomework) {
-              if (ele.studentHomework.answerProgress < 1) {
-                this.UnfinishedTypeHomework.push(element);
-              }
-            } else {
-              this.UnfinishedTypeHomework.push(element);
-            }
-          });
-        }
-      });
-      var newArr = [...new Set(this.UnfinishedTypeHomework)]; //利用了Set结构不能接收重复数据的特点
-      this.UnfinishedTypeHomework = newArr;
-    },
+    //获取未完成作业课程
+    // async handleGetAllTypeHomeworks() {
+    //   this.UnfinishedTypeHomework = [];
+    //   this.courseTypeList.forEach(async (element) => {
+    //     const { data } = await apiGetHomeworks({
+    //       tcc_id: this.optCourse.tcc_id,
+    //       category: element,
+    //       student_id: this.$store.getters["user/studentId"][0]._id,
+    //     });
+    //     if (data.data.length != 0) {
+    //       data.data.forEach((ele) => {
+    //         if (ele.studentHomework) {
+    //           if (ele.studentHomework.answerProgress < 1) {
+    //             this.UnfinishedTypeHomework.push(element);
+    //           }
+    //         } else {
+    //           this.UnfinishedTypeHomework.push(element);
+    //         }
+    //       });
+    //     }
+    //   });
+    //   var newArr = [...new Set(this.UnfinishedTypeHomework)]; //利用了Set结构不能接收重复数据的特点
+    //   this.UnfinishedTypeHomework = newArr;
+    // },
 
     //获取课程类型作业信息
     async handleGetHomeworks() {
@@ -341,18 +342,20 @@ export default {
         this.homeworkList = data.data;
         // 添加课程与作业类型进LocalStorage
         localStorage.setItem("course", JSON.stringify(this.optCourse));
-        localStorage.setItem("homeworkType", this.optHomeworkType);
+        localStorage.setItem(
+          "homeworkType",
+          JSON.stringify(this.optHomeworkType)
+        );
       }
     },
   },
 
   created() {
-    // this.$socket.connect();
-    // if (localStorage.getItem("course"))
-    //   this.optCourse = JSON.parse(localStorage.getItem("course"));
-    // if (localStorage.getItem("homeworkType"))
-    //   this.optHomeworkType = localStorage.getItem("homeworkType");
-    // if (this.optCourse && this.optHomeworkType) this.handleGetHomeworks();
+    if (localStorage.getItem("course"))
+      this.optCourse = JSON.parse(localStorage.getItem("course"));
+    if (localStorage.getItem("homeworkType"))
+      this.optHomeworkType = JSON.parse(localStorage.getItem("homeworkType"));
+    if (this.optCourse && this.optHomeworkType) this.handleGetHomeworks();
     this.handleGetAllCourse();
   },
 };

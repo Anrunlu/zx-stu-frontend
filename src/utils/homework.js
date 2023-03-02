@@ -115,49 +115,28 @@ export function pretreatmentChoiceQuestions(choiceQuestions) {
 // 预处理填空题
 export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
   const res = fillBlankQuestions.map((q) => {
-    // 格式化正确答案内容
-    q.answer.forEach((a) => {
-      a.content = marked(a.content);
-    });
-
-    // 判断是否已作答
-    if (q.studentQA.length > 0) {
-      // 添加作答标记
-      Vue.set(q, "submited", true);
-      // 添加最后作答时间标记
-      Vue.set(
-        q,
-        "lastSubmitedTime",
-        formatTimeWithWeekDayAndSecond(q.studentQA[0].updatedAt)
-      );
-      // 得分 TODO:如果复用的话，这里需要修改，因为score可能不存在，目前只在学生作业作答详情页使用
-      Vue.set(q, "getScore", q.studentQA[0].score);
-
-      q.answer = q.answer.map((a, aIndex) => {
+    q.answer = q.answer.map((a) => {
+      // 判断是否已作答
+      if (q.studentQA.length > 0) {
+        // 添加作答标记
+        Vue.set(q, "submited", true);
+        // 添加最后作答时间标记
+        Vue.set(
+          q,
+          "lastSubmitedTime",
+          formatTimeWithWeekDayAndSecond(q.studentQA[0].updatedAt)
+        );
         // 合并学生作答和填空
-        q.studentQA[0].stuAnswer.forEach((sqa, sqaIndex) => {
-          a.rightAnswer = a.content;
-          if (aIndex === sqaIndex) {
-            a.stuAnswer = sqa.content;
+        q.studentQA[0].stuAnswer.forEach((sqa) => {
+          if (sqa.mark === a.mark) {
+            a.content = sqa.content;
           }
         });
-        return a;
-      });
-    } else {
-      Vue.set(q, "submited", false);
-      Vue.set(q, "getScore", 0);
-      Vue.set(q, "studentQA", [
-        {
-          stuAnswer: [
-            {
-              content: "",
-            },
-          ],
-          score: 0,
-        },
-      ]);
-    }
-    q.content = marked(q.content);
+      } else {
+        Vue.set(q, "submited", false);
+      }
+      return a;
+    });
     return q;
   });
   return res;
@@ -276,7 +255,7 @@ export function pretreatmentStudentHomeworkDetails(studentHomeworkDetails) {
   const questionsMeta = questionSets[0].questionsMeta; // 题目元数据
 
   // 合并题目和题目元数据
-  concatQuestionWithQuestionMeta(questions, questionsMeta);
+  // concatQuestionWithQuestionMeta(questions, questionsMeta);
 
   studentHomeworkDetails.questions = questions;
   studentHomeworkDetails.quesCategory = quesCategory;
