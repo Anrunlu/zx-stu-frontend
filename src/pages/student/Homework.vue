@@ -255,11 +255,7 @@ export default {
     // 处理点击作业列表中的某一行
     handleHomeworkClick(evt, row) {
       // this.$router.resolve(`/homework/${row._id}`);
-      const routeData = this.$router.resolve(
-        `/student/homeworkdetails/${row._id}`
-      );
-      //新窗口打开
-      window.open(routeData.href, "_blank");
+      this.$router.push(`/student/homeworkdetails/${row._id}`);
     },
 
     //获取所有课程

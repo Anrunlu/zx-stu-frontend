@@ -41,7 +41,10 @@
         ></ckeditor>
       </q-card-section>
       <q-card-section>
-        <q-btn color="primary" :icon="questionsDetails ?'check':'cached' " @click="handlePostJieDaAnswer"
+        <q-btn
+          :color="questionDetails.isSubmit ? 'positive' : 'primary'"
+          :icon="questionDetails.isSubmit ? 'cached' : 'check'"
+          @click="handlePostJieDaAnswer"
           >{{ !questionDetails.isSubmit ? "提交" : "更新" }}
         </q-btn>
       </q-card-section>
@@ -124,9 +127,9 @@ export default {
     handleQuestionCardDblClick() {
       this.$emit("questionCardDblClick", this.questionDetails);
     },
-    handlePostJieDaAnswer(){
-      this.$emit("postJieDaAnswer",this.questionDetails)
-    }
+    handlePostJieDaAnswer() {
+      this.$emit("postJieDaAnswer", this.questionDetails);
+    },
   },
   computed: {
     editorConfig() {

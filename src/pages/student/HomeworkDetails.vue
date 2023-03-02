@@ -143,7 +143,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import { apiGetHomeworkInfo, apiPostAnswer } from "src/api/student/homework";
 import { pretreatmentStudentHomeworkDetails } from "src/utils/homework";
 import { formatTimeWithWeekDayAndSecond } from "src/utils/time";
@@ -276,6 +275,14 @@ export default {
 
     //提交解答题
     async handlePostJieDaAnswer(q) {
+      if (this.questiondatas.isEnd) {
+        this.$q.notify({
+          type: "negative",
+          message: "作业已截止",
+          timeout: 1000,
+        });
+        return;
+      }
       //判断输入是否为空
       if (q.studentQA[0].stuAnswer[0].content === "") {
         this.$q.notify({
@@ -519,7 +526,7 @@ export default {
 
     // 点击关闭按钮
     handleCloseBtnClick() {
-      window.open("about:blank", "_top").close();
+      this.$router.push({ path: "/homework" });
     },
   },
 
