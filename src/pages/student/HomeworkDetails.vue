@@ -102,15 +102,6 @@
                   @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
-                <QuestionStatisticsCard
-                  v-if="
-                    mode == 'focus' &&
-                    currQuestion.type != '解答' &&
-                    currQuestion.type != '填空'
-                  "
-                  :questionId="currQuestion._id"
-                  :homeworkId="homeworkId"
-                />
               </div>
               <!-- 解答题 -->
               <StudentQAJiedaViewCard
@@ -191,10 +182,6 @@ export default {
       import(
         "src/components/teacher/studentHomework/StudentQAJiedaViewCard.vue"
       ),
-    QuestionStatisticsCard: () =>
-      import(
-        "src/components/teacher/studentHomework/QuestionStatisticsCard.vue"
-      ),
     CorrectionToolbar: () =>
       import("src/components/teacher/studentHomework/CorrectionToolbar.vue"),
   },
@@ -204,7 +191,7 @@ export default {
     async handleGetHomeworkInfo() {
       const { data } = await apiGetHomeworkInfo(this.homeworkId);
       //预处理作业
-      console.log(data.data,"预处理前")
+      console.log(data.data, "预处理前");
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
       this.questions = data.data.questions;
@@ -398,7 +385,7 @@ export default {
         // 如果是桌面端，则提示用户
         if (!this.$q.platform.is.mobile) {
           this.$q.notify({
-            message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的批阅体验？`,
+            message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的作答体验？`,
             position: "top",
             icon: "notifications",
             progress: true,

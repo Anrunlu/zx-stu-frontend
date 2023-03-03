@@ -15,7 +15,7 @@
         />
 
         <q-toolbar-title shrink class="row items-center no-wrap">
-          <img src="~assets/teacherLogo.png" width="130" />
+          <img src="~assets/studentLogo.png" width="130" />
           <span class="q-ml-sm" v-if="$q.screen.gt.sm"
             ><q-btn
               color="gray"

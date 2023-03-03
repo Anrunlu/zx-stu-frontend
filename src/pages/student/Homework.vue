@@ -246,48 +246,29 @@ export default {
           sortable: true,
         },
       ],
-      //课程列表
-      courseList: [],
       // 当前点击的作业
       currClickedRowHomework: {},
-      //作业类型
-      courseTypeList: [
-        { value: "课前预习", label: "课前预习", icon: "o_auto_stories" },
-        { value: "课堂作业", label: "互动课堂", icon: "o_cast_for_education" },
-        { value: "课后作业", label: "课后作业", icon: "o_home_work" },
-        { value: "课程实验", label: "课程实验", icon: "o_science" },
-      ],
     };
   },
   computed: {
     ...mapGetters("settings", {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
+      courseTypeList: "homeworkCategoryOptions",
+    }),
+    ...mapGetters("student", {
+      courseList: "courseList",
     }),
   },
   methods: {
     // 处理点击作业列表中的某一行
     handleHomeworkClick(evt, row) {
-      // this.$router.resolve(`/homework/${row._id}`);
       this.$router.push(`/student/homeworkdetails/${row._id}`);
     },
 
     //获取所有课程
     async handleGetAllCourse() {
-      const { data } = await apiGetCourses();
-      if (data.code === 2000) {
-        this.courseList = data.data.map((item) => {
-          item.course.tcc_id = item._id;
-          if (item.teacher == null) {
-            item.course.name =
-              item.course.name + "（" + "该老师已退出知新系统" + "）";
-          } else {
-            item.course.name =
-              item.course.name + "（" + item.teacher.user.nickname + "）";
-          }
-          return item.course;
-        });
-      }
+      await this.$store.dispatch("student/getCourseList");
     },
 
     //获取课程类型作业信息

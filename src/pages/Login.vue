@@ -20,7 +20,7 @@
           <div class="col-11 text-center">
             <q-img
               :width="$q.screen.gt.sm ? '300px' : '250px'"
-              src="~assets/teacherLogo.png"
+              src="~assets/studentLogo.png"
               spinner-color="primary"
               spinner-size="82px"
             />
