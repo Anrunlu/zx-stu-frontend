@@ -470,7 +470,7 @@ export default {
         // 如果是桌面端，则提示用户
         if (!this.$q.platform.is.mobile) {
           this.$q.notify({
-            message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的批阅体验？`,
+            message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的作答体验？`,
             position: "top",
             icon: "notifications",
             progress: true,
@@ -488,7 +488,7 @@ export default {
                     setTimeout(() => {
                       this.$q.notify({
                         message:
-                          "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的批阅体验。",
+                          "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的作答体验。",
                         position: "top",
                         type: "warning",
                       });

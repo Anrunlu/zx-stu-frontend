@@ -45,9 +45,9 @@
           <q-item-section avatar v-if="questionDetails.type != '填空'" >
             <q-icon
               :class="{
-                'q-pa-xs rounded-borders bg-blue-4': option.selected,
+                'q-pa-xs rounded-borders bg-blue-2': option.selected,
               }"
-              :color="option.selected ? 'primary' : 'grey'"
+              :color="option.selected ? 'positive' : 'grey'"
               >{{ option.mark }}
             </q-icon>
           </q-item-section>

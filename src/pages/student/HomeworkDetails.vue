@@ -2,10 +2,8 @@
   <q-layout view="hHh Lpr fFf" class="bg-grey-1">
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
-        <!-- <q-icon name="edit_note" /> -->
-        <!-- <div @click="handleSwitchDisplayStuList">
-          {{ currStuInfo.nickname }} {{ currStuInfo.username }}
-        </div> -->
+        <q-icon name="edit_note" />
+        <div class="text-body2">{{ questiondatas.title }}</div>
         <q-space />
         <q-chip
           text-color="white"
@@ -225,13 +223,13 @@ export default {
         q.answer.forEach((a) => {
           a.selected = false;
         });
-        choice.selected = !choice.selected;
       }
+      choice.selected = !choice.selected;
       await this.handlePostAnswer(q);
     },
     async handlePostAnswer(q) {
       //选择提交
-      if (q.type === "单选" || q.type === "判断") {
+      if (q.type === "单选" || q.type === "判断" || q.type === "多选") {
         const payload = {
           question_id: q.id,
           homework_id: this.homeworkId,
@@ -417,7 +415,7 @@ export default {
                     setTimeout(() => {
                       this.$q.notify({
                         message:
-                          "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的批阅体验。",
+                          "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的作答体验。",
                         position: "top",
                         type: "warning",
                       });
