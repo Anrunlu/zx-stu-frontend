@@ -191,7 +191,6 @@ export default {
     async handleGetHomeworkInfo() {
       const { data } = await apiGetHomeworkInfo(this.homeworkId);
       //预处理作业
-      console.log(data.data, "预处理前");
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
       this.questions = data.data.questions;

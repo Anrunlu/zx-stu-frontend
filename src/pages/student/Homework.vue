@@ -204,6 +204,7 @@ export default {
   name: "Homework",
   data() {
     return {
+      courseList: [],
       //选中课程名称
       optCourse: "",
       //选中作业类型
@@ -256,9 +257,9 @@ export default {
       tablePagination: "tablePagination",
       courseTypeList: "homeworkCategoryOptions",
     }),
-    ...mapGetters("student", {
-      courseList: "courseList",
-    }),
+    // ...mapGetters("student", {
+    //   courseList: "courseList",
+    // }),
   },
   methods: {
     // 处理点击作业列表中的某一行
@@ -268,7 +269,20 @@ export default {
 
     //获取所有课程
     async handleGetAllCourse() {
-      await this.$store.dispatch("student/getCourseList");
+      const { data } = await apiGetCourses();
+      if (data.code === 2000) {
+        this.courseList = data.data.map((item) => {
+          item.course.tcc_id = item._id;
+          if (item.teacher == null) {
+            item.course.name =
+              item.course.name + "（" + "该老师已退出知新系统" + "）";
+          } else {
+            item.course.name =
+              item.course.name + "（" + item.teacher.user.nickname + "）";
+          }
+          return item.course;
+        });
+      }
     },
 
     //获取课程类型作业信息
