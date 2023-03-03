@@ -6,8 +6,6 @@ import {
 import { getObjectShortId, toFixed2 } from "./common";
 import { marked } from "marked";
 import Vue from "vue";
-import { concatQuestionWithQuestionMeta } from "./questionSet";
-import { apiGetHomeworkOverallAnswerStatus } from "src/api/teacher/homework";
 
 // markdown转换为html
 function markdownToHtml(value) {
@@ -34,7 +32,7 @@ export function preProcessHomeworkDetails(homeworkDetails) {
   homeworkDetails.statusByTime = computeHomeworkStatusByTime(homeworkDetails);
 
   calcHomeworkCorrectProgress(homeworkDetails).then((res) => {
-    Vue.set(homeworkDetails, "correctProgress", res);
+    Vue.set(homeworkDetails, "answerProgress", res);
   });
 }
 
@@ -269,32 +267,16 @@ export function pretreatmentStudentHomeworkDetails(studentHomeworkDetails) {
 
 // 计算作业批改进度
 export async function calcHomeworkCorrectProgress(homeworkDetails) {
-  const getHomeworkOverallAnswerStatusDto = {
-    homework_id: homeworkDetails._id,
-    receiver_id: homeworkDetails.receiver._id,
-    receiver_type: "Classroom",
-    tcc_id: homeworkDetails.tcc,
-  };
 
-  const { data } = await apiGetHomeworkOverallAnswerStatus(
-    getHomeworkOverallAnswerStatusDto
-  );
+  if(!homeworkDetails.studentHomework){
+    return null
+  }
+  let answerProgress = homeworkDetails.studentHomework.answerProgress;
 
-  const allStuAnswerStatus = data.data;
+  let correctProgress = homeworkDetails.studentHomework.correctProgress;
 
-  // 计算作业批改进度
-  let baseNum = 0;
 
-  let correctedSum = 0;
+  const homeworkProgress = answerProgress / correctProgress;
 
-  allStuAnswerStatus.forEach((status) => {
-    if (status.answerProgress >= 1) {
-      baseNum += 1;
-      correctedSum += status.correctProgress;
-    }
-  });
-
-  const correctProgress = correctedSum / baseNum;
-
-  return toFixed2(correctProgress);
+  return toFixed2(homeworkProgress);
 }

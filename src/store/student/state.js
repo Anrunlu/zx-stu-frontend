@@ -4,8 +4,8 @@ export default function () {
     curTccId: "",
     teacherName: "",
     courseList: [], // 当前学期课程列表
-    currCourseHmwList: [], // 当前课程作业列表
-    currCourseHmwCategory: "课前预习", // 当前选择的作业分类，默认为 课前预习
-    currCourseHmwListWithCategory: [], // 当前类型的作业列表
+    currSelectedCourse: null, // 当前选中课程作业
+    currSelectedHomeworkType: "课后作业", // 当前选择的作业分类，默认为课后作业
   };
 }
+

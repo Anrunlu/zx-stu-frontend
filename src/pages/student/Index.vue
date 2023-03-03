@@ -53,7 +53,13 @@ export default {
         name: c.name + "（" + c.teacherName + ")",
         tcc_id: c.id,
       };
+      let optHometype = {
+        icon: "o_home_work",
+        label: "课后作业",
+        value: "课后作业",
+      };
       localStorage.setItem("course", JSON.stringify(optCourse));
+      localStorage.setItem("homeworkType", JSON.stringify(optHometype));
       this.$router.push({ path: "/homework" });
     },
 

@@ -97,9 +97,9 @@ export function changeTerm({ commit, dispatch }, term) {
           // 重新获取用户数据
           dispatch("getUserInfo");
           // 重新获取 teaCourse 数据
-          dispatch("teaCourse/getTeaCourseInfo", null, { root: true });
-          // 重置当前选择的课程
-          commit("teaCourse/setCurrSelectedTeaCourse", null, { root: true });
+          dispatch("student/getCourseList", null, { root: true });
+          // // 重置当前选择的课程
+          // commit("teaCourse/setCurrSelectedTeaCourse", null, { root: true });
 
           resolve();
         } else {

@@ -61,6 +61,14 @@
         </div>
       </template>
 
+      <template v-slot:body-cell-shortId="props">
+        <q-td :props="props">
+          <q-icon name="fingerprint" size="xs" color="grey-6" />{{
+            props.row.shortId
+          }}
+        </q-td>
+      </template>
+
       <template v-slot:top-right="props">
         <q-btn
           flat
@@ -187,6 +195,7 @@
 </template>
 
 <script>
+import { getObjectShortId } from "src/utils/common";
 import { apiGetCourses } from "src/api/student";
 import { apiGetHomeworks } from "src/api/student/homework";
 import { formatTimeWithWeekDay } from "src/utils/time";
@@ -203,6 +212,13 @@ export default {
       homeworkList: [],
       // 作业列表表头
       homeworkColumns: [
+        {
+          name: "shortId",
+          label: "作业编号",
+          align: "left",
+          field: "shortId",
+          sortable: true,
+        },
         {
           name: "title",
           label: "作业名",
@@ -240,8 +256,6 @@ export default {
         { value: "课堂作业", label: "互动课堂", icon: "o_cast_for_education" },
         { value: "课后作业", label: "课后作业", icon: "o_home_work" },
         { value: "课程实验", label: "课程实验", icon: "o_science" },
-        { value: "期中考试", label: "期中考试", icon: "o_assignment" },
-        { value: "期末考试", label: "期末考试", icon: "o_assignment" },
       ],
     };
   },
@@ -276,31 +290,6 @@ export default {
       }
     },
 
-    //获取未完成作业课程
-    // async handleGetAllTypeHomeworks() {
-    //   this.UnfinishedTypeHomework = [];
-    //   this.courseTypeList.forEach(async (element) => {
-    //     const { data } = await apiGetHomeworks({
-    //       tcc_id: this.optCourse.tcc_id,
-    //       category: element,
-    //       student_id: this.$store.getters["user/studentId"][0]._id,
-    //     });
-    //     if (data.data.length != 0) {
-    //       data.data.forEach((ele) => {
-    //         if (ele.studentHomework) {
-    //           if (ele.studentHomework.answerProgress < 1) {
-    //             this.UnfinishedTypeHomework.push(element);
-    //           }
-    //         } else {
-    //           this.UnfinishedTypeHomework.push(element);
-    //         }
-    //       });
-    //     }
-    //   });
-    //   var newArr = [...new Set(this.UnfinishedTypeHomework)]; //利用了Set结构不能接收重复数据的特点
-    //   this.UnfinishedTypeHomework = newArr;
-    // },
-
     //获取课程类型作业信息
     async handleGetHomeworks() {
       this.homeworkList = [];
@@ -312,6 +301,7 @@ export default {
       const { data } = await apiGetHomeworks(payload);
       if (data.code === 2000) {
         data.data.forEach((element) => {
+          element.shortId = getObjectShortId(element);
           element.isEnd = false;
           let now = new Date();
           if (element.studentHomework && element.studentHomework.endtime) {
@@ -332,7 +322,6 @@ export default {
               element.isEnd = true;
             }
             element.endtime = formatTimeWithWeekDay(element.endtime);
-            //console.log(object);
           }
         });
         this.homeworkList = data.data;

@@ -28,27 +28,6 @@
           >
         </q-toolbar-title>
 
-        <q-space />
-
-        <q-input
-          v-if="$q.screen.gt.xs"
-          class="GPL__toolbar-input"
-          dense
-          standout="bg-primary"
-          v-model="search"
-          placeholder="搜索"
-        >
-          <template v-slot:prepend>
-            <q-icon v-if="search === ''" name="search" />
-            <q-icon
-              v-else
-              name="clear"
-              class="cursor-pointer"
-              @click="search = ''"
-            />
-          </template>
-        </q-input>
-
         <!-- <q-btn
           v-if="$q.screen.gt.xs"
           flat
@@ -77,18 +56,6 @@
             </q-list>
           </q-menu>
         </q-btn> -->
-
-        <q-btn
-          v-if="$q.screen.gt.xs"
-          flat
-          dense
-          no-wrap
-          color="primary"
-          icon="o_forum"
-          label="题库管理"
-          class="q-ml-sm q-px-md"
-          to="questionBank"
-        />
 
         <q-space />
 

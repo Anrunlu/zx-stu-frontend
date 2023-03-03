@@ -14,14 +14,10 @@ export function courseList(state) {
   return state.courseList;
 }
 
-export function currCourseHmwList(state) {
-  return state.courseName;
+export function currSelectedCourse(state) {
+  return state.currSelectedCourse;
 }
 
-export function currCourseHmwCategory(state) {
+export function currSelectedHomeworkType(state) {
   return state.currCourseHmwCategory;
-}
-
-export function currCourseHmwListWithCategory(state) {
-  return state.currCourseHmwListWithCategory;
 }
