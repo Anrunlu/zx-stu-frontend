@@ -73,51 +73,8 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/question/:questionId",
-    component: () => import(`pages/student/QuestionEdit.vue`),
-    props: true,
-    meta: {
-      type: "student",
-      title: "题目编辑",
-    },
-  },
-  {
-    path: "/course_mind/:courseMindId?",
-    component: () => import(`pages/student/CourseMindDetail.vue`),
-    props: true,
-    meta: {
-      type: "student",
-      title: "导图详情",
-    },
-  },
-  {
-    path: "/question_add/:courseId",
-    component: () => import(`pages/student/QuestionAdd.vue`),
-    props: true,
-    meta: {
-      type: "student",
-      title: "添加题目",
-    },
-  },
-  {
-    path: "/question_import/:courseId",
-    component: () => import(`pages/student/QuestionImport.vue`),
-    props: true,
-    meta: {
-      type: "student",
-      title: "题目导入",
-    },
-  },
-  {
-    path: "/homework/:homeworkId",
-    component: () => import(`pages/student/HomeworkProfile.vue`),
-    props: true,
-    meta: {
-      type: "student",
-      title: "作业概览",
-    },
-  },
+
+
   {
     path: "/student_homework/:homeworkId",
     component: () => import(`pages/student/StudentHomework.vue`),

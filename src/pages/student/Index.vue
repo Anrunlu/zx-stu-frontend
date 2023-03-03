@@ -1,8 +1,13 @@
 <template>
   <q-page>
     <div class="row q-gutter-md q-ma-sm justify-center">
-      <div class="col-11 col-md-3" v-for="(c, i) in courseList" :key="i">
-        <q-card class="course-card shadow-4" @click="toHomework">
+      <div
+        class="col-11 col-md-3"
+        v-for="(c, i) in courseList"
+        :key="i"
+        @click="toHomework(c)"
+      >
+        <q-card class="course-card shadow-4">
           <q-card-section class="text-h3"> {{ c.name }} </q-card-section>
           <q-card-section>
             <q-avatar size="40px" color="primary" text-color="white">
@@ -41,7 +46,12 @@ export default {
   },
   methods: {
     //跳转作业
-    toHomework() {
+    toHomework(c) {
+      let optCourse = {
+        name: c.name + "（" + c.teacherName + ")",
+        tcc_id: c.id,
+      };
+      localStorage.setItem("course", JSON.stringify(optCourse));
       this.$router.push({ path: "/homework" });
     },
 
