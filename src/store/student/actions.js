@@ -1,6 +1,6 @@
 import { apiGetCourses } from "src/api/student";
 import { apiGetCourseWithUnfinishedHmw } from "src/api/student";
-import Vue from 'vue'
+import Vue from "vue";
 //获取课程列表
 export function getCourseList({ commit, dispatch }) {
   return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ export function getCourseList({ commit, dispatch }) {
 }
 
 //获取未完成作业数量
-export function getCourseWithUnfinishedHmw({ state,commit }) {
+export function getCourseWithUnfinishedHmw({ state, commit }) {
   return new Promise((resolve, reject) => {
     apiGetCourseWithUnfinishedHmw().then(({ data }) => {
       const copyCourseList = [];
@@ -53,8 +53,8 @@ export function getCourseWithUnfinishedHmw({ state,commit }) {
             "unfinishedHomeworkNum",
             course.unfinishedHomework.length
           );
-          Vue.set(course, "readyToShowUnfinishedHmwNum", true);
-          copyCourseList.push(course)
+          Vue.set(course, "unfinishedHomework", true);
+          copyCourseList.push(course);
         });
         commit("setCourseList", copyCourseList);
         resolve();
