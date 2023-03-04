@@ -10,6 +10,7 @@ export function getCourseList({ commit, dispatch }) {
         data.data.reduce((pre, curr) => {
           const course = {
             id: curr._id,
+            _id: curr.course._id,
             name: curr.course.name,
             teacherName: curr.teacher.user.nickname,
             teacherAvatar: curr.teacher.user.avatar,

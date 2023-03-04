@@ -71,6 +71,7 @@
                   v-if="questionDetails.type != '解答'"
                   :index="index + 1"
                   :questionDetails="questionDetails"
+                  :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @selectChoiceItem="handleSelectChoiceItem"
                   @questionCardClick="handleQuestionCardClick"
@@ -81,6 +82,7 @@
                   v-else
                   :index="index + 1"
                   :questionDetails="questionDetails"
+                  :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @postJieDaAnswer="handlePostJieDaAnswer"
                   @questionCardClick="handleQuestionCardClick"
@@ -96,6 +98,7 @@
                 <StudentQAViewCard
                   :index="currQuestionIndex + 1"
                   :questionDetails="currQuestion"
+                  :isShowHomeworkDetails="isShowHomeworkDetails"
                   @selectChoiceItem="handleSelectChoiceItem"
                   :currQuestionIndex="currQuestionIndex"
                   :isActive="true"
@@ -108,6 +111,7 @@
                 v-else
                 :index="currQuestionIndex + 1"
                 :questionDetails="currQuestion"
+                :isShowHomeworkDetails="isShowHomeworkDetails"
                 :isActive="true"
                 @postJieDaAnswer="handlePostJieDaAnswer"
                 @questionCardClick="handleQuestionCardClick"
@@ -172,6 +176,8 @@ export default {
       questions: [],
       //data预处理后数据
       questiondatas: [],
+      //作答细节展示
+      isShowHomeworkDetails: {},
     };
   },
 
@@ -194,6 +200,14 @@ export default {
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
       this.questions = data.data.questions;
+      this.isShowHomeworkDetails = JSON.parse(
+        JSON.stringify(this.questiondatas, [
+          "isShowAnswerAfterEndtime",
+          "isShowKnowledge",
+          "isShowScoreAfterEndtime",
+          "isEnd",
+        ])
+      );
     },
 
     //提交作业
