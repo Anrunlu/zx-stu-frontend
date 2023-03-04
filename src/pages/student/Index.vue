@@ -44,12 +44,15 @@ export default {
   computed: {
     ...mapGetters("student", {
       courseList: "courseList",
+      currSelectedCourse: "currSelectedCourse",
     }),
   },
   methods: {
     //跳转作业
     toHomework(c) {
       this.$router.push({ path: "/homework" });
+      //设置当先选择课程
+      this.$store.commit("student/setCurrSelectedCourse", c);
     },
 
     // 获取课程

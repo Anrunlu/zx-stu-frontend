@@ -13,18 +13,14 @@
         <div class="q-gutter-sm">
           <!-- 选择课程 -->
           <q-btn-dropdown
-            :label="!optCourse.name ? '选择课程' : optCourse.name"
+            :label="!currSelectedCourse ? '选择课程' : currSelectedCourse.name"
             color="primary"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
-                @click="
-                  (optCourse = course),
-                    (optHomeworkType = ''),
-                    (homeworkList = [])
-                "
+                @click="handleChangeOptCourse(course)"
                 :key="index"
                 v-for="(course, index) in courseList"
               >
@@ -36,16 +32,24 @@
           </q-btn-dropdown>
           <!-- 选择作业类型 -->
           <q-btn-dropdown
-            v-if="optCourse"
-            :icon="optHomeworkType.icon ? optHomeworkType.icon : 'touch_app'"
-            :label="!optHomeworkType.value ? '作业类型' : optHomeworkType.label"
+            v-if="currSelectedCourse"
+            :icon="
+              currSelectedCategory.icon
+                ? currSelectedCategory.icon
+                : 'touch_app'
+            "
+            :label="
+              !currSelectedCategory.value
+                ? '作业类型'
+                : currSelectedCategory.label
+            "
             color="positive"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
-                @click="(optHomeworkType = category), handleGetHomeworks()"
+                @click="handleChangeHomeworkCategory(category)"
                 :key="index"
                 v-for="(category, index) in courseTypeList"
               >
@@ -203,10 +207,8 @@ export default {
   name: "Homework",
   data() {
     return {
-      //选中课程名称
-      optCourse: "",
-      //选中作业类型
-      optHomeworkType: [],
+      // 当前选中的作业分类
+      currSelectedCategory: { value: "", label: "", icon: "" },
       // 作业列表
       homeworkList: [],
       // 作业列表表头
@@ -245,8 +247,6 @@ export default {
           sortable: true,
         },
       ],
-      // 当前点击的作业
-      currClickedRowHomework: {},
     };
   },
   computed: {
@@ -257,6 +257,7 @@ export default {
     }),
     ...mapGetters("student", {
       courseList: "courseList",
+      currSelectedCourse: "currSelectedCourse",
     }),
   },
   methods: {
@@ -274,8 +275,8 @@ export default {
     async handleGetHomeworks() {
       this.homeworkList = [];
       const payload = {
-        tcc_id: this.optCourse.id,
-        category: this.optHomeworkType.value,
+        tcc_id: this.currSelectedCourse.id,
+        category: this.currSelectedCategory.value,
         student_id: this.$store.getters["user/studentId"][0]._id,
       };
       const { data } = await apiGetHomeworks(payload);
@@ -313,15 +314,45 @@ export default {
         );
       }
     },
+    //设置当前选择的课程
+    handleChangeOptCourse(course) {
+      this.$store.commit("student/setCurrSelectedCourse", course);
+      // 如果当前选中的作业分类不为空，则重新获取作业列表
+      if (this.currSelectedCategory.value) {
+        this.handleGetHomeworks(this.currSelectedCategory.value);
+      }
+    },
+    // 处理作业分类选项改变
+    handleChangeHomeworkCategory(category) {
+      this.currSelectedCategory = category;
+      this.handleGetHomeworks();
+    },
+  },
+  watch: {
+    currSelectedCourse: {
+      handler: function (newVal, oldVal) {
+        if (!newVal) {
+          this.homeworkList = [];
+        }
+      },
+      deep: true,
+    },
   },
 
   created() {
-    if (localStorage.getItem("course"))
-      this.optCourse = JSON.parse(localStorage.getItem("course"));
-    if (localStorage.getItem("homeworkType"))
-      this.optHomeworkType = JSON.parse(localStorage.getItem("homeworkType"));
-    if (this.optCourse && this.optHomeworkType) this.handleGetHomeworks();
     this.handleGetAllCourse();
+    // 获取路由 query 参数
+    const { category } = this.$route.query;
+    // 如果有 category 参数，则设置当前选中的作业分类
+    if (category) {
+      this.currSelectedCategory = this.homeworkCategoryOptions.find(
+        (item) => item.value === category
+      );
+    } else {
+      // 否则设置为默认值
+      this.currSelectedCategory = this.courseTypeList[2];
+    }
+    this.handleGetHomeworks();
   },
 };
 </script>
