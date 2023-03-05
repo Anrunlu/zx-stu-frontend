@@ -35,6 +35,7 @@ module.exports = function (ctx) {
       "marked",
       "imgviewer",
       "keymaster",
+      "appback",
     ],
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css

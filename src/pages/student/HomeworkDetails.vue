@@ -3,7 +3,10 @@
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit_note" />
-        <div class="text-body2">{{ questiondatas.title }}</div>
+        <div v-if="$q.platform.is.mobile" class="text-body2">
+          {{ questiondatas.title.slice(0, 6) }}···
+        </div>
+        <div v-else class="text-body2">{{ questiondatas.title }}</div>
         <q-chip
           v-if="
             isShowHomeworkDetails.isShowScoreAfterEndtime &&
@@ -18,6 +21,7 @@
         />
         <q-space />
         <q-chip
+          text-color="white"
           :color="mode == 'focus' ? 'positive' : 'white'"
           :outline="mode != 'focus'"
           dense
@@ -220,6 +224,7 @@ export default {
         ])
       );
       this.calculateTotalScore();
+      this.switchToQuestion(this.questions[0]);
     },
 
     //计算作业总成绩
@@ -235,7 +240,7 @@ export default {
       if (this.questiondatas.isEnd) {
         this.$q.notify({
           type: "negative",
-          message: "作业已截止",
+          message: "作业已截止,无法作答",
           timeout: 1000,
         });
         return;
@@ -297,7 +302,7 @@ export default {
       if (this.questiondatas.isEnd) {
         this.$q.notify({
           type: "negative",
-          message: "作业已截止",
+          message: "作业已截止,无法作答",
           timeout: 1000,
         });
         return;
@@ -575,8 +580,6 @@ export default {
     this.$shortcut.unbind("right");
     this.$shortcut.unbind("v");
     this.$shortcut.unbind("tab");
-    this.$shortcut.unbind("space");
-    this.$shortcut.unbind("enter");
   },
 };
 </script>

@@ -7,7 +7,7 @@
       row-key="_id"
       @row-click="handleHomeworkClick"
       :pagination="tablePagination"
-      :dense="tableDense"
+      :dense="$q.platform.is.mobile ? false : true"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -75,6 +75,7 @@
 
       <template v-slot:top-right="props">
         <q-btn
+          v-if="!$q.platform.is.mobile"
           flat
           round
           dense
@@ -334,7 +335,6 @@ export default {
           }
         });
         this.homeworkList = data.data;
-        console.log(data.data);
       }
     },
     //设置当前选择的课程
@@ -359,7 +359,6 @@ export default {
       };
       apiGetTccHmwProgress(payload).then(({ data }) => {
         const progress = `${data.data.completedNum} / ${data.data.totalNum}`;
-        console.log(progress);
         row.readyToShowTccHmwProgress = true;
         row.tccHmwProgress = progress;
       });

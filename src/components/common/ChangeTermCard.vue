@@ -1,5 +1,5 @@
 <template>
-  <q-card style="min-width: 500px; max-width: 90vw">
+  <q-card style="max-width: 90vw">
     <CardBar title="切换学期" icon="event_repeat" />
     <q-card-section>
       <!-- 显示当前学期 -->

@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="row q-gutter-md q-ma-sm justify-center">
+    <div class="row q-gutter-md q-my-sm justify-center">
       <div
         class="col-11 col-md-3"
         v-for="(c, i) in courseList"
@@ -31,6 +31,24 @@
         </q-card>
       </div>
     </div>
+    <div v-if="courseList.length == 0">
+      <div class="row q-mt-lg text-grey justify-center">
+        <span class="text-h3 text-center">本学期暂无课程</span>
+      </div>
+      <div class="row justify-center q-ma-md">
+        <q-btn
+          class="q-mb-md"
+          color="primary"
+          icon="event_repeat"
+          label="切换学期"
+          @click="changeTermDig = true"
+        />
+      </div>
+    </div>
+    <!-- 切换学期对话框 -->
+    <q-dialog v-model="changeTermDig" persistent>
+      <ChangeTermCard />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -39,14 +57,22 @@ import { mapGetters } from "vuex";
 export default {
   name: "Index",
   data() {
-    return {};
+    return {
+      changeTermDig: false,
+    };
   },
+
+  components: {
+    ChangeTermCard: () => import("src/components/common/ChangeTermCard.vue"),
+  },
+
   computed: {
     ...mapGetters("student", {
       courseList: "courseList",
       currSelectedCourse: "currSelectedCourse",
     }),
   },
+
   methods: {
     //跳转作业
     toHomework(c) {

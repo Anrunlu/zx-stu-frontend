@@ -68,13 +68,13 @@
                     />
                   </template>
                 </q-input>
-                <div class="row justify-between items-center">
+                <!-- <div class="row justify-between items-center">
                   <q-checkbox left-label label="记住我" v-model="isRemeberMe" />
 
                   <div class="col">
                     <a class="float-right">忘记密码</a>
                   </div>
-                </div>
+                </div> -->
                 <!-- 登录按钮 -->
                 <q-btn
                   class="full-width q-mt-sm"
@@ -153,7 +153,9 @@ export default {
         });
       }, 500);
 
-      this.$router.push(this.$route.query.redirect || "/index").catch((e) => {});
+      this.$router
+        .push(this.$route.query.redirect || "/index")
+        .catch((e) => {});
     },
   },
 };

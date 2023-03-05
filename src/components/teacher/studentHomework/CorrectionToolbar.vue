@@ -1,11 +1,7 @@
 <template>
-  <div
-    class="row q-ml-sm justify-end"
-    :class="$q.platform.is.mobile ? 'q-gutter-sm' : 'q-gutter-lg'"
-  >
+  <div class="row q-ml-sm justify-end q-gutter-lg">
     <div class="row q-mr-xl">
-      <!-- 大屏幕 -->
-      <q-btn-group outline v-if="!$q.platform.is.mobile">
+      <q-btn-group outline>
         <q-btn
           outline
           label="上题"
@@ -159,7 +155,6 @@ export default {
     handleSwitchDisplayStuList() {
       this.$emit("switchDisplayStuList");
     },
-
   },
 
   mounted() {
