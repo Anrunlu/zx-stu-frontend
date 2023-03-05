@@ -306,12 +306,6 @@ export default {
           }
         });
         this.homeworkList = data.data;
-        // 添加课程与作业类型进LocalStorage
-        localStorage.setItem("course", JSON.stringify(this.optCourse));
-        localStorage.setItem(
-          "homeworkType",
-          JSON.stringify(this.optHomeworkType)
-        );
       }
     },
     //设置当前选择的课程

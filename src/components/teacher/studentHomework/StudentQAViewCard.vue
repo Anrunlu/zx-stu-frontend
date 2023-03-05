@@ -52,7 +52,14 @@
               :class="{
                 'q-pa-xs rounded-borders bg-blue-2': option.selected,
               }"
-              :color="option.selected ? 'positive' : 'grey'"
+              :color="
+                isShowHomeworkDetails.isEnd &&
+                isShowHomeworkDetails.isShowAnswerAfterEndtime
+                  ? `${option.isRight ? 'positive' : 'grey'}`
+                  : option.selected
+                  ? 'positive'
+                  : 'grey'
+              "
               >{{ option.mark }}
               <q-badge
                 color="red"
