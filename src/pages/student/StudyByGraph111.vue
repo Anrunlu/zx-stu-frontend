@@ -64,8 +64,7 @@
                 v-model="innerTab"
                 placeholder="题目内容"
                 :editor="editor"
-                  ></ckeditor>
-
+              ></ckeditor>
             </q-tab-panel>
             <q-tab-panel name="knowledgeQuestion">
               <q-table
@@ -203,7 +202,7 @@ import {
   apiGetCourse,
   apiGetHomeworkByKnowledge,
   apiGetCompleteKnowledgeByStudent,
-  apiEditKG
+  apiEditKG,
 } from "src/api/student/studyByGraph";
 export default {
   data() {
@@ -318,8 +317,6 @@ export default {
           }
         });
         if (flag == 1) {
-          //console.log(res);
-
           edges.forEach((a) => {
             if (a.label == "包含") {
               for (var i = 0; i < res.graph.nodes.length; i++) {

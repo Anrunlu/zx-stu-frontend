@@ -40,7 +40,7 @@ export function apiPostAnswer(data) {
   return request({
     url: "/stu/question/answerForQuestion",
     method: "POST",
-    data
+    data,
   });
 }
 
@@ -57,6 +57,15 @@ export function apiPostAnswerForOJQuestion(data) {
 export function apiGetCompleteKnowledgeByStudent(data) {
   return loadingFn(request)({
     url: "/stu/knowledge/getStudentCompleteKnowledgeQuestion",
+    method: "POST",
+    data,
+  });
+}
+
+// 获取班级内作业作答进度
+export function apiGetTccHmwProgress(data) {
+  return loadingFn(request)({
+    url: "/stu/homework/getTccStudentHomeworkInterval",
     method: "POST",
     data,
   });

@@ -38,7 +38,7 @@ export function getCourseWithUnfinishedHmw({ state, commit }) {
       if (data.code === 2000) {
         data.data.forEach((curr) => {
           const course = Object.assign(
-            {}, 
+            {},
             state.courseList.find((c) => c.id === curr._id)
           );
           course.unfinishedHomework = curr.homework.filter((h) => {

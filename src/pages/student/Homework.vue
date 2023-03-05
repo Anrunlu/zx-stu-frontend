@@ -188,7 +188,21 @@
           </div>
         </q-td>
       </template>
-
+      <!-- 班级进度 -->
+      <template v-slot:body-cell-classroom="props">
+        <q-td :props="props">
+          <q-badge
+            v-if="!props.row.readyToShowTccHmwProgress"
+            @click.stop="handleViewOthersInfo(props.row)"
+            >查看班级进度</q-badge
+          >
+          <q-badge
+            v-if="props.row.readyToShowTccHmwProgress"
+            @click.stop="handleViewOthersInfo(props.row)"
+            >班级内进度：{{ props.row.tccHmwProgress }}
+          </q-badge>
+        </q-td>
+      </template>
       <template v-slot:no-data>
         <div class="full-width row flex-center text-grey q-gutter-sm">
           <span class="text-h6"> 暂无数据 </span>
@@ -200,7 +214,10 @@
 
 <script>
 import { getObjectShortId } from "src/utils/common";
-import { apiGetHomeworks } from "src/api/student/homework";
+import {
+  apiGetHomeworks,
+  apiGetTccHmwProgress,
+} from "src/api/student/homework";
 import { formatTimeWithWeekDay } from "src/utils/time";
 import { mapGetters } from "vuex";
 export default {
@@ -211,6 +228,8 @@ export default {
       currSelectedCategory: { value: "", label: "", icon: "" },
       // 作业列表
       homeworkList: [],
+      //是否显示班级进度
+      readyToShowTccHmwProgress: false,
       // 作业列表表头
       homeworkColumns: [
         {
@@ -232,6 +251,13 @@ export default {
           label: "截止时间",
           align: "center",
           field: "endtime",
+          sortable: true,
+        },
+        {
+          name: "classroom",
+          label: "班级进度",
+          align: "center",
+          field: "classroom",
           sortable: true,
         },
         {
@@ -282,6 +308,8 @@ export default {
       const { data } = await apiGetHomeworks(payload);
       if (data.code === 2000) {
         data.data.forEach((element) => {
+          element.readyToShowTccHmwProgress = false;
+          element.tccHmwProgress = "0";
           element.shortId = getObjectShortId(element);
           element.isEnd = false;
           let now = new Date();
@@ -306,6 +334,7 @@ export default {
           }
         });
         this.homeworkList = data.data;
+        console.log(data.data);
       }
     },
     //设置当前选择的课程
@@ -320,6 +349,32 @@ export default {
     handleChangeHomeworkCategory(category) {
       this.currSelectedCategory = category;
       this.handleGetHomeworks();
+    },
+
+    // 查看班级内进度
+    handleViewOthersInfo(row) {
+      const payload = {
+        tcc_id: this.currSelectedCourse.id,
+        homework_id: row._id,
+      };
+      apiGetTccHmwProgress(payload).then(({ data }) => {
+        const progress = `${data.data.completedNum} / ${data.data.totalNum}`;
+        console.log(progress);
+        row.readyToShowTccHmwProgress = true;
+        row.tccHmwProgress = progress;
+      });
+      // this.currCourseHmwListWithCategory.find(
+      //   (hmw) => hmw.id === hmwId
+      // ).loadingHmwProgressBadge = true;
+      // getTccHmwProgress(payload).then(({ data }) => {
+      //   const progress = `${data.data.completedNum} / ${data.data.totalNum}`;
+      //   const h = this.currCourseHmwListWithCategory.find(
+      //     (hmw) => hmw.id === hmwId
+      //   );
+      //   h.tccHmwProgress = progress;
+      //   h.readyToShowTccHmwProgress = true;
+      //   h.loadingHmwProgressBadge = false;
+      // });
     },
   },
   watch: {

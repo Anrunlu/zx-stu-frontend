@@ -18,7 +18,6 @@
         />
         <q-space />
         <q-chip
-
           :color="mode == 'focus' ? 'positive' : 'white'"
           :outline="mode != 'focus'"
           dense
@@ -86,7 +85,6 @@
                   :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @selectChoiceItem="handleSelectChoiceItem"
-                  @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
                 <!-- 解答题 -->
@@ -97,7 +95,6 @@
                   :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @postJieDaAnswer="handlePostJieDaAnswer"
-                  @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
               </div>
@@ -211,11 +208,9 @@ export default {
     async handleGetHomeworkInfo() {
       const { data } = await apiGetHomeworkInfo(this.homeworkId);
       //预处理作业
-      console.log(data.data, "yuchuliqian");
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
       this.questions = data.data.questions;
-      console.log(this.questions);
       this.isShowHomeworkDetails = JSON.parse(
         JSON.stringify(this.questiondatas, [
           "isShowAnswerAfterEndtime",
