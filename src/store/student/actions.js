@@ -10,6 +10,7 @@ export function getCourseList({ commit, dispatch }) {
         data.data.reduce((pre, curr) => {
           const course = {
             id: curr._id,
+            _id: curr.course._id,
             name: curr.course.name,
             teacherName: curr.teacher.user.nickname,
             teacherAvatar: curr.teacher.user.avatar,
@@ -37,7 +38,7 @@ export function getCourseWithUnfinishedHmw({ state, commit }) {
       if (data.code === 2000) {
         data.data.forEach((curr) => {
           const course = Object.assign(
-            {},
+            {}, 
             state.courseList.find((c) => c.id === curr._id)
           );
           course.unfinishedHomework = curr.homework.filter((h) => {

@@ -15,7 +15,7 @@ export default function () {
     ],
     layoutLeftDrawerLinks2: [
       {
-        icon: "o_schema",
+        icon: "o_fact_check",
         label: "我的作业",
         to: "homework",
       },
@@ -54,8 +54,6 @@ export default function () {
       { value: "课堂作业", label: "互动课堂", icon: "o_cast_for_education" },
       { value: "课后作业", label: "课后作业", icon: "o_home_work" },
       { value: "课程实验", label: "课程实验", icon: "o_science" },
-      { value: "期中考试", label: "期中考试", icon: "o_assignment" },
-      { value: "期末考试", label: "期末考试", icon: "o_assignment" },
     ],
 
     // 题目类型选项

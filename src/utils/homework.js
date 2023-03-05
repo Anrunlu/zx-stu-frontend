@@ -124,6 +124,7 @@ export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
           "lastSubmitedTime",
           formatTimeWithWeekDayAndSecond(q.studentQA[0].updatedAt)
         );
+        Vue.set(q, "getScore", q.studentQA[0].score);
         // 合并学生作答和填空
         q.studentQA[0].stuAnswer.forEach((sqa) => {
           if (sqa.mark === a.mark) {

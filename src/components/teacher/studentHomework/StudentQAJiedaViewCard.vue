@@ -16,6 +16,11 @@
             :questionType="questionDetails.type"
             :colorization="false"
           />
+          <ObjectShortId
+            :id="questionDetails._id"
+            :color="'grey'"
+            objectName="题目"
+          />
           <q-space />
           <!-- 序号 -->
           <q-chip
@@ -34,6 +39,22 @@
         <div v-html="questionDetails.content"></div>
       </q-card-section>
       <q-card-section>
+        <!-- 知识点区域 -->
+        <div class="q-mt-md" v-if="isShowHomeworkDetails.isShowKnowledge">
+          <div class="row">
+            <q-chip
+              v-for="(knowledge, index) in questionDetails.knowledges"
+              icon="o_lightbulb"
+              size="sm"
+              square
+              :label="knowledge.name"
+              :key="index"
+            />
+          </div>
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section>
         <ckeditor
           :editor="editor"
           :config="editorConfig"
@@ -48,12 +69,28 @@
           >{{ !questionDetails.isSubmit ? "提交" : "更新" }}
         </q-btn>
       </q-card-section>
+      <!-- 底部信息区域 -->
+      <div class="q-mt-sm">
+        <q-chip
+          dense
+          outline
+          size="sm"
+          square
+          v-if="
+            isShowHomeworkDetails.isShowScoreAfterEndtime &&
+            isShowHomeworkDetails.isEnd
+          "
+          :color="questionDetails.studentQA[0].score > 0 ? 'green-5' : 'grey'"
+          :label="`${questionDetails.studentQA[0].score}分`"
+        />
+      </div>
     </q-card>
   </div>
 </template>
 
 <script>
 import Editor from "ckeditor5-custom-build/build/ckeditor";
+import ObjectShortId from "src/components/common/ObjectShortId.vue";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 export default {
@@ -90,6 +127,10 @@ export default {
       required: false,
       default: false,
     },
+    isShowHomeworkDetails: {
+      type: Object,
+      required: true,
+    },
   },
 
   data() {
@@ -118,6 +159,7 @@ export default {
 
   components: {
     QuestionChip: () => import("src/components/common/QuestionChip.vue"),
+    ObjectShortId,
   },
 
   methods: {

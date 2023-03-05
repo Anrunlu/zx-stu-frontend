@@ -4,6 +4,18 @@
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit_note" />
         <div class="text-body2">{{ questiondatas.title }}</div>
+        <q-chip
+          v-if="
+            isShowHomeworkDetails.isShowScoreAfterEndtime &&
+            isShowHomeworkDetails.isEnd
+          "
+          dense
+          outline
+          size="sm"
+          square
+          color="white"
+          :label="`总得分：${totalScore}分`"
+        />
         <q-space />
         <q-chip
           text-color="white"
@@ -71,6 +83,7 @@
                   v-if="questionDetails.type != '解答'"
                   :index="index + 1"
                   :questionDetails="questionDetails"
+                  :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @selectChoiceItem="handleSelectChoiceItem"
                   @questionCardClick="handleQuestionCardClick"
@@ -81,6 +94,7 @@
                   v-else
                   :index="index + 1"
                   :questionDetails="questionDetails"
+                  :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @postJieDaAnswer="handlePostJieDaAnswer"
                   @questionCardClick="handleQuestionCardClick"
@@ -96,6 +110,7 @@
                 <StudentQAViewCard
                   :index="currQuestionIndex + 1"
                   :questionDetails="currQuestion"
+                  :isShowHomeworkDetails="isShowHomeworkDetails"
                   @selectChoiceItem="handleSelectChoiceItem"
                   :currQuestionIndex="currQuestionIndex"
                   :isActive="true"
@@ -108,6 +123,7 @@
                 v-else
                 :index="currQuestionIndex + 1"
                 :questionDetails="currQuestion"
+                :isShowHomeworkDetails="isShowHomeworkDetails"
                 :isActive="true"
                 @postJieDaAnswer="handlePostJieDaAnswer"
                 @questionCardClick="handleQuestionCardClick"
@@ -172,6 +188,10 @@ export default {
       questions: [],
       //data预处理后数据
       questiondatas: [],
+      //作答细节展示
+      isShowHomeworkDetails: {},
+      //作业总成绩
+      totalScore: 0,
     };
   },
 
@@ -191,11 +211,30 @@ export default {
     async handleGetHomeworkInfo() {
       const { data } = await apiGetHomeworkInfo(this.homeworkId);
       //预处理作业
+      console.log(data.data, "yuchuliqian");
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
       this.questions = data.data.questions;
+      console.log(this.questions);
+      this.isShowHomeworkDetails = JSON.parse(
+        JSON.stringify(this.questiondatas, [
+          "isShowAnswerAfterEndtime",
+          "isShowKnowledge",
+          "isShowScoreAfterEndtime",
+          "isEnd",
+        ])
+      );
+      this.calculateTotalScore();
     },
 
+    //计算作业总成绩
+    async calculateTotalScore() {
+      let totalScore = 0;
+      this.questions.forEach((q) => {
+        totalScore = totalScore + q.studentQA[0].score;
+      });
+      this.totalScore = totalScore;
+    },
     //提交作业
     async handleSelectChoiceItem(q, choice) {
       if (this.questiondatas.isEnd) {

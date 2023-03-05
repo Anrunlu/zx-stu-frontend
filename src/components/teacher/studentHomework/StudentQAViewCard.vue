@@ -16,6 +16,11 @@
           :questionType="questionDetails.type"
           :colorization="false"
         />
+        <ObjectShortId
+          :id="questionDetails._id"
+          :color="'grey'"
+          objectName="题目"
+        />
         <!-- 序号 -->
         <q-chip
           class="float-right"
@@ -42,13 +47,46 @@
           @blur="handleSelectChoiceItem(questionDetails, option)"
         >
           <!-- 非填空题mark -->
-          <q-item-section avatar v-if="questionDetails.type != '填空'" >
+          <q-item-section avatar v-if="questionDetails.type != '填空'">
             <q-icon
               :class="{
                 'q-pa-xs rounded-borders bg-blue-2': option.selected,
               }"
-              :color="option.selected ? 'positive' : 'grey'"
+              :color="
+                isShowHomeworkDetails.isEnd &&
+                isShowHomeworkDetails.isShowAnswerAfterEndtime
+                  ? `${option.isRight ? 'positive' : 'grey'}`
+                  : option.selected
+                  ? 'positive'
+                  : 'grey'
+              "
               >{{ option.mark }}
+              <q-badge
+                color="red"
+                floating
+                rounded
+                v-if="
+                  option.selected &&
+                  !option.isRight &&
+                  isShowHomeworkDetails.isShowAnswerAfterEndtime &&
+                  isShowHomeworkDetails.isEnd
+                "
+              >
+                x
+              </q-badge>
+              <q-badge
+                color="positive"
+                floating
+                rounded
+                v-if="
+                  option.selected &&
+                  option.isRight &&
+                  isShowHomeworkDetails.isShowAnswerAfterEndtime &&
+                  isShowHomeworkDetails.isEnd
+                "
+              >
+                √
+              </q-badge>
             </q-icon>
           </q-item-section>
           <!-- 填空题mark -->
@@ -72,9 +110,38 @@
             />
           </q-item-section>
         </q-item>
+        <q-item>
+          <q-item-section>
+            <!-- 知识点区域 -->
+            <div class="q-mt-md" v-if="isShowHomeworkDetails.isShowKnowledge">
+              <div class="row">
+                <q-chip
+                  v-for="(knowledge, index) in questionDetails.knowledges"
+                  icon="o_lightbulb"
+                  size="sm"
+                  square
+                  :label="knowledge.name"
+                  :key="index"
+                />
+              </div>
+            </div>
+          </q-item-section>
+        </q-item>
       </q-list>
       <!-- 底部信息区域 -->
       <div class="q-mt-sm">
+        <q-chip
+          dense
+          outline
+          size="sm"
+          square
+          v-if="
+            isShowHomeworkDetails.isShowScoreAfterEndtime &&
+            isShowHomeworkDetails.isEnd
+          "
+          :color="questionDetails.getScore > 0 ? 'green-5' : 'grey'"
+          :label="`${questionDetails.getScore}分`"
+        />
         <span class="float-right q-mt-mb text-grey" style="font-size: 0.6rem"
           >{{
             questionDetails.submited
@@ -90,6 +157,8 @@
 </template>
 
 <script>
+import ObjectShortId from "src/components/common/ObjectShortId.vue";
+
 export default {
   name: "StudentQAViewCard", // 展示选择和填空题目
   props: {
@@ -106,6 +175,10 @@ export default {
       required: false,
       default: false,
     },
+    isShowHomeworkDetails: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {};
@@ -113,6 +186,7 @@ export default {
 
   components: {
     QuestionChip: () => import("src/components/common/QuestionChip.vue"),
+    ObjectShortId,
   },
 
   methods: {

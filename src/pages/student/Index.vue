@@ -44,23 +44,15 @@ export default {
   computed: {
     ...mapGetters("student", {
       courseList: "courseList",
+      currSelectedCourse: "currSelectedCourse",
     }),
   },
   methods: {
     //跳转作业
     toHomework(c) {
-      let optCourse = {
-        name: c.name + "（" + c.teacherName + ")",
-        tcc_id: c.id,
-      };
-      let optHometype = {
-        icon: "o_home_work",
-        label: "课后作业",
-        value: "课后作业",
-      };
-      localStorage.setItem("course", JSON.stringify(optCourse));
-      localStorage.setItem("homeworkType", JSON.stringify(optHometype));
       this.$router.push({ path: "/homework" });
+      //设置当先选择课程
+      this.$store.commit("student/setCurrSelectedCourse", c);
     },
 
     // 获取课程
