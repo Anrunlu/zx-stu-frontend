@@ -18,7 +18,7 @@
         />
         <q-space />
         <q-chip
-          text-color="white"
+
           :color="mode == 'focus' ? 'positive' : 'white'"
           :outline="mode != 'focus'"
           dense
