@@ -20,12 +20,12 @@ export default function () {
         to: "homework",
       },
       {
-        icon: "o_cloud",
+        icon: "flutter_dash",
         label: "我的学习",
         to: "studybygraph",
       },
       {
-        icon: "flutter_dash",
+        icon: "o_cloud",
         label: "学习资源",
         to: "resources",
       },
