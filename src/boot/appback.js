@@ -9,7 +9,7 @@ export default async (/* { app, router, Vue ... } */) => {
 
         let url = location.hash;
 
-        if (url == "#/index" || url == "#/login") {
+        if (url == "#/index" || url.includes("#/login")) {
           //根据自己需求判断首页路径
 
           // 处于app首页,满足退出app操作

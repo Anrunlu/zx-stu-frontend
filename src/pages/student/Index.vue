@@ -31,7 +31,7 @@
         </q-card>
       </div>
     </div>
-    <div v-if="courseList.length == 0">
+    <div v-if="courseList.length == 0 && dataLodingFinished">
       <div class="row q-mt-lg text-grey justify-center">
         <span class="text-h3 text-center">本学期暂无课程</span>
       </div>
@@ -59,6 +59,7 @@ export default {
   data() {
     return {
       changeTermDig: false,
+      dataLodingFinished: false,
     };
   },
 
@@ -84,6 +85,9 @@ export default {
     // 获取课程
     async handleGetCourse() {
       await this.$store.dispatch("student/getCourseList");
+      setTimeout(() => {
+        this.dataLodingFinished = true;
+      }, 1000);
     },
   },
   created() {
