@@ -38,9 +38,14 @@
       <q-card-section>
         <div v-html="questionDetails.content"></div>
       </q-card-section>
-      <q-card-section>
+      <q-card-section
+        v-if="
+          isShowHomeworkDetails.isShowKnowledge &&
+          questionDetails.knowledges.length != 0
+        "
+      >
         <!-- 知识点区域 -->
-        <div class="q-mt-md" v-if="isShowHomeworkDetails.isShowKnowledge">
+        <div class="q-mt-md">
           <div class="row">
             <q-chip
               v-for="(knowledge, index) in questionDetails.knowledges"

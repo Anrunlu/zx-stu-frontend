@@ -23,6 +23,16 @@
       <div class="col-10 col-sm-7">
         <q-card>
           <q-card-section>
+            <div>
+              <q-btn
+                class="q-mb-md fit"
+                color="primary"
+                icon="event_repeat"
+                label="切换学期"
+                @click="changeTermDig = true"
+              />
+            </div>
+
             <q-form @submit="handleUpdateProfileSubmit" class="q-gutter-md">
               <!-- 基本信息 -->
               <div class="row">
@@ -161,6 +171,11 @@
       </div>
     </div>
 
+    <!-- 切换学期对话框 -->
+    <q-dialog v-model="changeTermDig" persistent>
+      <ChangeTermCard />
+    </q-dialog>
+
     <!-- 头像上传对话框 -->
     <q-dialog v-model="avatarUploadDig" persistent>
       <AvatarUploadCard @avatarUploaded="modifyUserAvatar" />
@@ -200,6 +215,7 @@ export default {
       newPwd: "",
       // 头像上传对话框
       avatarUploadDig: false,
+      changeTermDig: false,
     };
   },
 
@@ -215,6 +231,7 @@ export default {
   components: {
     AvatarUploadCard: () =>
       import("src/components/common/AvatarUploadCard.vue"),
+    ChangeTermCard: () => import("src/components/common/ChangeTermCard.vue"),
   },
 
   methods: {
