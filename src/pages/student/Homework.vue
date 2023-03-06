@@ -130,79 +130,77 @@
       <!-- 完成状态 -->
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
-          <div class="q-gutter-sm">
-            <q-chip
-              v-if="
-                props.row.studentHomework == null ||
-                (props.row.studentHomework.answerProgress === 0 &&
-                  props.row.isEnd === true)
-              "
-              dense
-              square
-              size="sm"
-              color="red"
-              icon="work"
-              label="未作答"
-              text-color="white"
-            ></q-chip>
-            <q-btn
-              v-else-if="
-                props.row.studentHomework == null ||
-                (props.row.studentHomework.answerProgress === 0 &&
-                  props.row.isEnd === false)
-              "
-              dense
-              square
-              size="md"
-              color="primary"
-              icon="work"
-              label="未作答"
-            ></q-btn>
-            <q-chip
-              v-else-if="
-                props.row.studentHomework.answerProgress < 1 &&
-                props.row.isEnd === false
-              "
-              dense
-              square
-              size="sm"
-              color="primary"
-              icon="pending"
-              text-color="white"
-              :label="
-                '已完成(' +
-                (props.row.studentHomework.answerProgress * 100).toFixed(0) +
-                '%)'
-              "
-            ></q-chip>
-            <q-chip
-              v-else-if="
-                props.row.studentHomework.answerProgress < 1 &&
-                props.row.isEnd === true
-              "
-              dense
-              square
-              size="sm"
-              color="primary"
-              icon="work"
-              text-color="white"
-              :label="
-                '仅完成(' +
-                (props.row.studentHomework.answerProgress * 100).toFixed(0) +
-                '%)'
-              "
-            ></q-chip>
-            <q-chip
-              v-else
-              dense
-              square
-              size="sm"
-              color="positive"
-              icon="fas fa-award"
-              label="已完成"
-              text-color="white"
-            ></q-chip>
-          </div>
+          <q-chip
+            v-if="
+              props.row.studentHomework == null ||
+              (props.row.studentHomework.answerProgress === 0 &&
+                props.row.isEnd === true)
+            "
+            dense
+            square
+            size="sm"
+            color="red"
+            icon="work"
+            label="未作答"
+            text-color="white"
+          ></q-chip>
+          <q-btn
+            v-else-if="
+              props.row.studentHomework == null ||
+              (props.row.studentHomework.answerProgress === 0 &&
+                props.row.isEnd === false)
+            "
+            dense
+            square
+            size="md"
+            color="primary"
+            icon="work"
+            label="未作答"
+          ></q-btn>
+          <q-chip
+            v-else-if="
+              props.row.studentHomework.answerProgress < 1 &&
+              props.row.isEnd === false
+            "
+            dense
+            square
+            size="sm"
+            color="primary"
+            icon="pending"
+            text-color="white"
+            :label="
+              '已完成(' +
+              (props.row.studentHomework.answerProgress * 100).toFixed(0) +
+              '%)'
+            "
+          ></q-chip>
+          <q-chip
+            v-else-if="
+              props.row.studentHomework.answerProgress < 1 &&
+              props.row.isEnd === true
+            "
+            dense
+            square
+            size="sm"
+            color="primary"
+            icon="work"
+            text-color="white"
+            :label="
+              '仅完成(' +
+              (props.row.studentHomework.answerProgress * 100).toFixed(0) +
+              '%)'
+            "
+          ></q-chip>
+          <q-chip
+            v-else
+            dense
+            square
+            size="sm"
+            color="positive"
+            icon="fas fa-award"
+            label="已完成"
+            text-color="white"
+          ></q-chip>
         </q-td>
       </template>
 

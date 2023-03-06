@@ -89,6 +89,7 @@
                   :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @selectChoiceItem="handleSelectChoiceItem"
+                  @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
                 <!-- 解答题 -->
@@ -99,6 +100,7 @@
                   :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @postJieDaAnswer="handlePostJieDaAnswer"
+                  @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
               </div>
@@ -370,7 +372,7 @@ export default {
       const { data } = await apiPostAnswer(payload);
       // 更新作答状态
       if (data.code === 2000) {
-        q.submited = true;
+        q.isSubmit = true;
         q.lastSubmitedTime = formatTimeWithWeekDayAndSecond(new Date());
         this.$q.notify({
           type: "positive",
@@ -407,9 +409,10 @@ export default {
           () => {}
         );
       }
-
-      // 定位到题目
-      this.locateQuestionNoFlash();
+      if (question.type != "解答") {
+        // 定位到题目
+        this.locateQuestionNoFlash();
+      }
     },
 
     // 切换 mode
