@@ -51,7 +51,7 @@
             {{ $q.fullscreen.isActive ? "退出全屏" : "全屏" }}
           </q-tooltip>
         </q-btn>
-        <q-btn
+        <!-- <q-btn
           dense
           flat
           icon="help"
@@ -59,7 +59,7 @@
           @click.stop="handleHelpBtnClick"
         >
           <q-tooltip>帮助</q-tooltip>
-        </q-btn>
+        </q-btn> -->
         <q-btn
           dense
           flat
@@ -136,7 +136,7 @@
       </q-page>
     </q-page-container>
 
-    <q-footer bordered class="bg-white text-primary q-py-sm">
+    <q-footer bordered class="bg-white text-primary">
       <CorrectionToolbar
         :currQuestion="currQuestion"
         :currQuestionIndex="currQuestionIndex"
@@ -235,6 +235,7 @@ export default {
       });
       this.totalScore = totalScore;
     },
+
     //提交作业
     async handleSelectChoiceItem(q, choice) {
       if (this.questiondatas.isEnd) {
@@ -253,6 +254,7 @@ export default {
       choice.selected = !choice.selected;
       await this.handlePostAnswer(q);
     },
+
     async handlePostAnswer(q) {
       //选择提交
       if (q.type === "单选" || q.type === "判断" || q.type === "多选") {
@@ -550,7 +552,7 @@ export default {
 
     // 点击关闭按钮
     handleCloseBtnClick() {
-      this.$router.push({ path: "/homework" });
+      this.$router.go(-1);
     },
   },
 

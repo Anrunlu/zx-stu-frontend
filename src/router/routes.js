@@ -36,7 +36,7 @@ const routes = [
         component: () => import("pages/student/Homework.vue"),
         meta: {
           type: "student",
-          title: "作业管理",
+          title: "我的作业",
         },
       },
       {
@@ -52,7 +52,7 @@ const routes = [
         component: () => import("pages/student/Resources.vue"),
         meta: {
           type: "student",
-          title: "我的资源",
+          title: "学习资源",
         },
       },
       {
@@ -73,7 +73,6 @@ const routes = [
       },
     ],
   },
-
 
   {
     path: "/student_homework/:homeworkId",
