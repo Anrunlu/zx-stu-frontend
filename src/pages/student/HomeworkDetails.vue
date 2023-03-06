@@ -139,7 +139,7 @@
     </q-page-container>
 
     <q-footer bordered class="bg-white text-primary">
-      <CorrectionToolbar
+      <HomeworkToolbar
         :currQuestion="currQuestion"
         :currQuestionIndex="currQuestionIndex"
         :totalQuestionNum="questions.length"
@@ -155,7 +155,7 @@ import { apiGetHomeworkInfo, apiPostAnswer } from "src/api/student/homework";
 import { pretreatmentStudentHomeworkDetails } from "src/utils/homework";
 import { formatTimeWithWeekDayAndSecond } from "src/utils/time";
 export default {
-  name: "StudentHomework",
+  name: "HomeworkDetails",
   props: {
     homeworkId: {
       type: String,
@@ -205,8 +205,8 @@ export default {
       import(
         "src/components/teacher/studentHomework/StudentQAJiedaViewCard.vue"
       ),
-    CorrectionToolbar: () =>
-      import("src/components/teacher/studentHomework/CorrectionToolbar.vue"),
+    HomeworkToolbar: () =>
+      import("src/components/teacher/studentHomework/HomeworkToolbar.vue"),
   },
 
   methods: {

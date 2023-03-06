@@ -73,16 +73,6 @@ const routes = [
       },
     ],
   },
-
-  {
-    path: "/student_homework/:homeworkId",
-    component: () => import(`pages/student/StudentHomework.vue`),
-    props: true,
-    meta: {
-      type: "student",
-      title: "学生作业",
-    },
-  },
   {
     path: "/student/homeworkdetails/:homeworkId",
     component: () => import("pages/student/HomeworkDetails.vue"),

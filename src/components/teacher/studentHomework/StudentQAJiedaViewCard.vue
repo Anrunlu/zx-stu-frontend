@@ -36,7 +36,7 @@
       </q-card-section>
       <q-separator />
       <q-card-section>
-        <div v-html="questionDetails.content"></div>
+        <div v-katex v-viewer v-html="questionDetails.content"></div>
       </q-card-section>
       <q-card-section
         v-if="

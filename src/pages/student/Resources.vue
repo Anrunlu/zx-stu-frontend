@@ -100,6 +100,7 @@ import { apiGetTeaResources } from "src/api/teacher/teaResource";
 import { formatTimeWithWeekDay } from "src/utils/time";
 var FileSaver = require("file-saver");
 export default {
+  name: "Resources",
   data() {
     return {
       tableLoading: true,

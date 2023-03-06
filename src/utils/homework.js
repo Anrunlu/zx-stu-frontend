@@ -157,7 +157,7 @@ export function pretreatmentJiedaQuestions(jiedaQuestions) {
       curr.studentQA.push({
         stuAnswer: [
           {
-            content: `<h2><span></span></h2>`,
+            content: `<p></p>`,
           },
         ],
         score: 0,

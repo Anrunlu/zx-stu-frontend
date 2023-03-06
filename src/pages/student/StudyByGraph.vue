@@ -6,10 +6,8 @@
 
 <script>
 export default {
-
-}
+  name: "StudyByGraph",
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
