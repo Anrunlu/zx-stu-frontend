@@ -157,7 +157,7 @@ export function pretreatmentJiedaQuestions(jiedaQuestions) {
       curr.studentQA.push({
         stuAnswer: [
           {
-            content: `<h2><span style="color:hsl(0, 75%, 60%);">未作答</span></h2>`,
+            content: `<h2><span></span></h2>`,
           },
         ],
         score: 0,
@@ -268,14 +268,12 @@ export function pretreatmentStudentHomeworkDetails(studentHomeworkDetails) {
 
 // 计算作业批改进度
 export async function calcHomeworkCorrectProgress(homeworkDetails) {
-
-  if(!homeworkDetails.studentHomework){
-    return null
+  if (!homeworkDetails.studentHomework) {
+    return null;
   }
   let answerProgress = homeworkDetails.studentHomework.answerProgress;
 
   let correctProgress = homeworkDetails.studentHomework.correctProgress;
-
 
   const homeworkProgress = answerProgress / correctProgress;
 

@@ -225,6 +225,34 @@ export default {
       );
       this.calculateTotalScore();
       this.switchToQuestion(this.questions[0]);
+      // 获取路由 query 参数
+      const query = this.$route.query;
+
+      // 如果路由 query 参数中有 q 参数，则切换到该题目。注意！！因为此时题目数据才加载完毕，所以要在此处切换！！
+      if (query.q) {
+        const question = this.questions.find(
+          (q) => q._id == this.$route.query.q
+        );
+        if (question) {
+          this.switchToQuestion(question);
+        }
+      }
+
+      // 如果有 m 参数，则切换到相应的模式
+      if (query.m) {
+        this.switchMode(query.m);
+      }
+      // 定位到题目
+      this.locateQuestionNoFlash();
+      // 更新路由 query 参数
+      this.$router.replace(
+        {
+          query: {
+            ...this.$route.query,
+          },
+        },
+        () => {}
+      );
     },
 
     //计算作业总成绩
@@ -235,6 +263,7 @@ export default {
       });
       this.totalScore = totalScore;
     },
+
     //提交作业
     async handleSelectChoiceItem(q, choice) {
       if (this.questiondatas.isEnd) {
@@ -275,6 +304,11 @@ export default {
         const { data } = await apiPostAnswer(payload);
         // 更新作答状态
         if (data.code === 2000) {
+          this.$q.notify({
+            type: "positive",
+            message: "提交成功",
+            timeout: 50,
+          });
           q.submited = true;
           q.lastSubmitedTime = formatTimeWithWeekDayAndSecond(new Date());
         }
@@ -291,6 +325,11 @@ export default {
         const { data } = await apiPostAnswer(payload);
         // 更新作答状态
         if (data.code === 2000) {
+          this.$q.notify({
+            type: "positive",
+            message: "提交成功",
+            timeout: 50,
+          });
           q.submited = true;
           q.lastSubmitedTime = formatTimeWithWeekDayAndSecond(new Date());
         }
@@ -335,7 +374,7 @@ export default {
         this.$q.notify({
           type: "positive",
           message: "提交成功",
-          timeout: 1000,
+          timeout: 500,
         });
       } else {
         this.$q.notify({

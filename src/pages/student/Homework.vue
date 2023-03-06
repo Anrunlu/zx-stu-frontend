@@ -337,6 +337,7 @@ export default {
         this.homeworkList = data.data;
       }
     },
+
     //设置当前选择的课程
     handleChangeOptCourse(course) {
       this.$store.commit("student/setCurrSelectedCourse", course);
@@ -345,9 +346,11 @@ export default {
         this.handleGetHomeworks(this.currSelectedCategory.value);
       }
     },
+
     // 处理作业分类选项改变
     handleChangeHomeworkCategory(category) {
       this.currSelectedCategory = category;
+
       this.handleGetHomeworks();
     },
 
@@ -362,18 +365,6 @@ export default {
         row.readyToShowTccHmwProgress = true;
         row.tccHmwProgress = progress;
       });
-      // this.currCourseHmwListWithCategory.find(
-      //   (hmw) => hmw.id === hmwId
-      // ).loadingHmwProgressBadge = true;
-      // getTccHmwProgress(payload).then(({ data }) => {
-      //   const progress = `${data.data.completedNum} / ${data.data.totalNum}`;
-      //   const h = this.currCourseHmwListWithCategory.find(
-      //     (hmw) => hmw.id === hmwId
-      //   );
-      //   h.tccHmwProgress = progress;
-      //   h.readyToShowTccHmwProgress = true;
-      //   h.loadingHmwProgressBadge = false;
-      // });
     },
   },
   watch: {
