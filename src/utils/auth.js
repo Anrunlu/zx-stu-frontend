@@ -3,18 +3,18 @@ import { Cookies } from "quasar";
 const TokenKey = "zx_stu_token";
 
 export function getToken() {
-  return Cookies.get(TokenKey) || "";
-  // return localStorage.getItem(TokenKey) || "";
+  // return Cookies.get(TokenKey) || "";
+  return localStorage.getItem(TokenKey) || "";
 }
 
 export function setToken(token) {
-  Cookies.set(TokenKey, token, { path: "/" });
-  // localStorage.setItem(TokenKey, token);
+  // Cookies.set(TokenKey, token, { path: "/" });
+  localStorage.setItem(TokenKey, token);
 }
 
 export function removeToken() {
-  Cookies.remove(TokenKey, { path: "/" });
-  // localStorage.removeItem(TokenKey);
+  // Cookies.remove(TokenKey, { path: "/" });
+  localStorage.removeItem(TokenKey);
 }
 
 // 计算密码强度

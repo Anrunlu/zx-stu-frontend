@@ -300,6 +300,9 @@ export default {
 
     //获取课程类型作业信息
     async handleGetHomeworks() {
+      if (this.currSelectedCourse === null) {
+        return;
+      }
       this.homeworkList = [];
       const payload = {
         tcc_id: this.currSelectedCourse.id,
