@@ -3,7 +3,7 @@
   <div>
     <q-card
       :id="questionDetails._id"
-      class="q-my-sm shadow-1 cursor-pointer"
+      class="q-my-sm shadow-1"
       :class="{
         'shadow-2': isActive,
       }"

@@ -8,7 +8,7 @@
           icon="chevron_left"
           @click="handlePrevQuestion"
         >
-          <q-tooltip delay="200"> 快捷键：← </q-tooltip>
+          <q-tooltip :delay="200"> 快捷键：← </q-tooltip>
         </q-btn>
         <q-btn
           flat
@@ -23,7 +23,7 @@
           icon-right="chevron_right"
           @click="handleNextQuestion"
         >
-          <q-tooltip delay="200"> 快捷键：→ </q-tooltip>
+          <q-tooltip :delay="200"> 快捷键：→ </q-tooltip>
         </q-btn>
       </q-btn-group>
     </div>
