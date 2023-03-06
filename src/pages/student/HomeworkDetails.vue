@@ -200,13 +200,13 @@ export default {
 
   components: {
     StudentQAViewCard: () =>
-      import("src/components/teacher/studentHomework/StudentQAViewCard.vue"),
+      import("src/components/student/studentHomework/StudentQAViewCard.vue"),
     StudentQAJiedaViewCard: () =>
       import(
-        "src/components/teacher/studentHomework/StudentQAJiedaViewCard.vue"
+        "src/components/student/studentHomework/StudentQAJiedaViewCard.vue"
       ),
     HomeworkToolbar: () =>
-      import("src/components/teacher/studentHomework/HomeworkToolbar.vue"),
+      import("src/components/student/studentHomework/HomeworkToolbar.vue"),
   },
 
   methods: {
