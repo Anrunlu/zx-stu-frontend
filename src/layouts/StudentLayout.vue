@@ -28,49 +28,9 @@
           >
         </q-toolbar-title>
 
-        <!-- <q-btn
-          v-if="$q.screen.gt.xs"
-          flat
-          dense
-          no-wrap
-          color="primary"
-          icon="add"
-          label="快速创建"
-          class="q-ml-sm q-px-md"
-        >
-          <q-menu anchor="bottom right" self="top right">
-            <q-list class="text-grey-8" style="min-width: 100px">
-              <q-item
-                v-for="menu in createMenu"
-                :key="menu.text"
-                :to="menu.to"
-                clickable
-                v-close-popup
-                aria-hidden="true"
-              >
-                <q-item-section avatar>
-                  <q-icon :name="menu.icon" />
-                </q-item-section>
-                <q-item-section>{{ menu.text }}</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn> -->
-
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn
-            v-if="$q.screen.gt.xs"
-            round
-            dense
-            flat
-            color="text-grey-7"
-            icon="color_lens"
-            @click="handleChangeLayout"
-          >
-            <q-tooltip>切换为旧版布局</q-tooltip>
-          </q-btn>
           <q-btn
             round
             dense
@@ -280,9 +240,9 @@ export default {
 
     // 点击切换布局
     handleChangeLayout() {
-      setLayout("TeacherLayoutOld");
-      // 刷新页面
-      window.location.reload();
+      // setLayout();
+      // // 刷新页面
+      // window.location.reload();
     },
 
     // 点击链接

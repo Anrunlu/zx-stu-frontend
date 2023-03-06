@@ -76,7 +76,6 @@ export default {
   sockets: {
     // 接收即时通知
     immediatelyAncmt(data) {
-      console.log(data);
       this.titile = data.title;
       this.content = data.content;
       this.category = data.category;

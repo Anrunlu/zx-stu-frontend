@@ -1,26 +1,30 @@
 <template>
   <div class="row q-ml-sm justify-end q-gutter-lg">
-    <div class="row q-mr-xl">
+    <div class="row q-mr-sm">
       <q-btn-group outline>
         <q-btn
-          outline
+          flat
           label="上题"
           icon="chevron_left"
           @click="handlePrevQuestion"
-        />
+        >
+          <q-tooltip delay="200"> 快捷键：← </q-tooltip>
+        </q-btn>
         <q-btn
-          outline
+          flat
           dense
           :label="`${currQuestionIndex + 1}/${totalQuestionNum}`"
         >
           <!-- <q-tooltip> 开启/关闭题目列表 </q-tooltip> -->
         </q-btn>
         <q-btn
-          outline
+          flat
           label="下题"
           icon-right="chevron_right"
           @click="handleNextQuestion"
-        />
+        >
+          <q-tooltip delay="200"> 快捷键：→ </q-tooltip>
+        </q-btn>
       </q-btn-group>
     </div>
   </div>

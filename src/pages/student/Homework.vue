@@ -51,7 +51,7 @@
                 v-close-popup
                 @click="handleChangeHomeworkCategory(category)"
                 :key="index"
-                v-for="(category, index) in courseTypeList"
+                v-for="(category, index) in homeworkCategoryOptions"
               >
                 <q-item-section avatar>
                   <q-icon :name="category.icon" />
@@ -88,6 +88,22 @@
         </q-btn>
       </template>
 
+      <!-- 班级进度 -->
+      <template v-slot:body-cell-classroom="props">
+        <q-td :props="props">
+          <q-badge
+            v-if="!props.row.readyToShowTccHmwProgress"
+            @click.stop="handleViewOthersInfo(props.row)"
+            >查看班级进度</q-badge
+          >
+          <q-badge
+            v-if="props.row.readyToShowTccHmwProgress"
+            @click.stop="handleViewOthersInfo(props.row)"
+            >班级内进度：{{ props.row.tccHmwProgress }}
+          </q-badge>
+        </q-td>
+      </template>
+
       <!-- 时间状态 -->
       <template v-slot:body-cell-status="props">
         <q-td :props="props">
@@ -121,8 +137,8 @@
                 (props.row.studentHomework.answerProgress === 0 &&
                   props.row.isEnd === true)
               "
-              flat
               dense
+              square
               size="sm"
               color="red"
               icon="work"
@@ -135,8 +151,8 @@
                 (props.row.studentHomework.answerProgress === 0 &&
                   props.row.isEnd === false)
               "
-              flat
               dense
+              square
               size="md"
               color="primary"
               icon="work"
@@ -147,8 +163,8 @@
                 props.row.studentHomework.answerProgress < 1 &&
                 props.row.isEnd === false
               "
-              flat
               dense
+              square
               size="sm"
               color="primary"
               icon="pending"
@@ -164,8 +180,8 @@
                 props.row.studentHomework.answerProgress < 1 &&
                 props.row.isEnd === true
               "
-              flat
               dense
+              square
               size="sm"
               color="primary"
               icon="work"
@@ -178,8 +194,8 @@
             ></q-chip>
             <q-chip
               v-else
-              flat
               dense
+              square
               size="sm"
               color="positive"
               icon="fas fa-award"
@@ -189,21 +205,7 @@
           </div>
         </q-td>
       </template>
-      <!-- 班级进度 -->
-      <template v-slot:body-cell-classroom="props">
-        <q-td :props="props">
-          <q-badge
-            v-if="!props.row.readyToShowTccHmwProgress"
-            @click.stop="handleViewOthersInfo(props.row)"
-            >查看班级进度</q-badge
-          >
-          <q-badge
-            v-if="props.row.readyToShowTccHmwProgress"
-            @click.stop="handleViewOthersInfo(props.row)"
-            >班级内进度：{{ props.row.tccHmwProgress }}
-          </q-badge>
-        </q-td>
-      </template>
+
       <template v-slot:no-data>
         <div class="full-width row flex-center text-grey q-gutter-sm">
           <span class="text-h6"> 暂无数据 </span>
@@ -280,7 +282,7 @@ export default {
     ...mapGetters("settings", {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
-      courseTypeList: "homeworkCategoryOptions",
+      homeworkCategoryOptions: "homeworkCategoryOptions",
     }),
     ...mapGetters("student", {
       courseList: "courseList",
@@ -350,7 +352,13 @@ export default {
     // 处理作业分类选项改变
     handleChangeHomeworkCategory(category) {
       this.currSelectedCategory = category;
-
+      // 写入路由
+      this.$router.push({
+        path: "/homework",
+        query: {
+          category: category.value,
+        },
+      });
       this.handleGetHomeworks();
     },
 
@@ -389,7 +397,7 @@ export default {
       );
     } else {
       // 否则设置为默认值
-      this.currSelectedCategory = this.courseTypeList[2];
+      this.currSelectedCategory = this.homeworkCategoryOptions[2];
     }
     this.handleGetHomeworks();
   },
