@@ -92,6 +92,7 @@
         <div
           id="login-footer"
           class="fixed-bottom text-center text-grey q-pb-lg"
+          v-if="$q.screen.gt.sm"
         >
           <div v-if="$q.screen.gt.sm">
             <a href="https://c605.cn">关于我们</a>
