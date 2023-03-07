@@ -12,7 +12,7 @@
         <div class="q-gutter-sm">
           <!-- 选择课程 -->
           <q-btn-dropdown
-            :label="!currSelectedCourse ? '选择课程' : currSelectedCourse.name"
+            :label="!optCourse ? '选择课程' : optCourse.name"
             color="primary"
           >
             <q-list>
@@ -36,8 +36,13 @@
           <!-- 选择资源类型 -->
           <q-btn-dropdown
             v-if="optCourse"
-            :label="optResourceType ? optResourceType : '请选择资源类型'"
+            :label="optResourceType.label ? optResourceType.label : '请选择资源类型'"
             color="positive"
+            :icon="
+              optResourceType.icon
+                ? optResourceType.icon
+                : 'touch_app'
+            "
           >
             <q-list>
               <q-item
@@ -47,8 +52,12 @@
                 :key="index"
                 v-for="(item, index) in courseTypeList"
               >
+              <q-item-section avatar>
+                  <q-icon :name="item.icon" />
+                </q-item-section>
+
                 <q-item-section>
-                  {{ item }}
+                  <q-item-label>{{ item.value }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -87,7 +96,7 @@
               square
               clickable
               size="sm"
-              label="审阅"
+              label="查看"
               text-color="white"
               color="primary"
               icon="fas fa-eye"
@@ -131,8 +140,8 @@ export default {
       // 资源类型：
       courseTypeList: [
         //资源类型列表
-        "常用工具",
-        "教学课件",
+        { icon: "o_video_library", value: "教学课件", label: "教学课件" },
+        { icon: "o_build", value: "常用工具", label: "常用工具" },
       ],
       filter: "",
       optResourceType: "",
@@ -180,7 +189,7 @@ export default {
     // 处理资源获取
     async handleGetTeacherSource() {
       const { data } = await apiGetTeaResources({
-        filecategory: this.optResourceType,
+        filecategory: this.optResourceType.value,
         course_id: this.optCourse._id,
       });
       if (data.code === 2000) {
