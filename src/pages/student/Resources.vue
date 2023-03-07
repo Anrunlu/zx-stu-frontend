@@ -12,18 +12,14 @@
         <div class="q-gutter-sm">
           <!-- 选择课程 -->
           <q-btn-dropdown
-            :label="!optCourse ? '选择课程' : optCourse.name"
+            :label="!currSelectedCourse ? '选择课程' : currSelectedCourse.name"
             color="primary"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
-                @click="
-                  (optCourse = course),
-                    (optResourceType = ''),
-                    (resourceList = [])
-                "
+                @click="handleChangeOptCourse(course)"
                 :key="index"
                 v-for="(course, index) in courseList"
               >
@@ -35,14 +31,12 @@
           </q-btn-dropdown>
           <!-- 选择资源类型 -->
           <q-btn-dropdown
-            v-if="optCourse"
-            :label="optResourceType.label ? optResourceType.label : '请选择资源类型'"
-            color="positive"
-            :icon="
-              optResourceType.icon
-                ? optResourceType.icon
-                : 'touch_app'
+            v-if="currSelectedCourse"
+            :label="
+              optResourceType.label ? optResourceType.label : '请选择资源类型'
             "
+            color="positive"
+            :icon="optResourceType.icon ? optResourceType.icon : 'touch_app'"
           >
             <q-list>
               <q-item
@@ -52,7 +46,7 @@
                 :key="index"
                 v-for="(item, index) in courseTypeList"
               >
-              <q-item-section avatar>
+                <q-item-section avatar>
                   <q-icon :name="item.icon" />
                 </q-item-section>
 
@@ -185,12 +179,22 @@ export default {
       ],
     };
   },
+
+  computed: {
+    ...mapGetters("student", {
+      courseList: "courseList",
+      currSelectedCourse: "currSelectedCourse",
+    }),
+  },
   methods: {
     // 处理资源获取
     async handleGetTeacherSource() {
+      if (this.currSelectedCourse === null) {
+        return;
+      }
       const { data } = await apiGetTeaResources({
         filecategory: this.optResourceType.value,
-        course_id: this.optCourse._id,
+        course_id: this.currSelectedCourse._id,
       });
       if (data.code === 2000) {
         preProcessTeaResourceList(data.data);
@@ -211,8 +215,11 @@ export default {
       return "blue";
     },
 
+    //设置当前选择的课程
     handleChangeOptCourse(course) {
       this.$store.commit("student/setCurrSelectedCourse", course);
+      this.optResourceType = {};
+      this.resourceList = [];
     },
   },
   computed: {
