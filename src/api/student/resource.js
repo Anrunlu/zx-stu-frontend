@@ -1,14 +1,6 @@
-import { request } from "src/boot/axios";
-import { loadingFn } from "src/utils/loadingTools";
+import { formatTimeWithWeekDay } from "src/utils/time";
+import { getObjectShortId } from "src/utils/common";
 
-//学生查询自己上的所有课程
-export function apiGetCourse() {
-    return loadingFn(request)({
-      url: "/stu/course",
-      method: "GET",
-    });
-  }
-  
 // 判断教学资源类型
 export function getResourceTypeAndIcon(FileType) {
   switch (FileType) {
@@ -106,8 +98,14 @@ export function getResourceTypeAndIcon(FileType) {
 // 预处理教学资源列表
 export function preProcessTeaResourceList(teaResourceList) {
   teaResourceList.forEach((teaResource) => {
+    teaResource.createdAt = formatTimeWithWeekDay(teaResource.createdAt);
+    teaResource.shortId = getObjectShortId(teaResource);
     teaResource.resourceTypeAndIcon = getResourceTypeAndIcon(
       teaResource.filetype
     );
+    teaResource.downloadUrl = teaResource.fileUrl.match(
+      /(cyberdownload.anrunlu.net\/)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*([\?&]\w+=\w*)*$/
+    )[0];
+    teaResource.downloadUrl = "https://" + teaResource.downloadUrl;
   });
 }

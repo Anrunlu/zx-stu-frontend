@@ -1,95 +1,111 @@
 <template>
-  <q-page class="q-pa-sm">
-    <div class="q-pa-sm">
-      <div class="q-gutter-sm row">
-        <!-- 选择课程 -->
-        <q-btn-dropdown
-          color="primary"
-          :label="optCourse ? optCourse.name : '请选择课程'"
-          dropdown-icon="change_history"
-        >
-          <q-list>
-            <q-item
-              clickable
-              v-close-popup
-              v-for="(item, index) in courseList"
-              :key="index"
-              @click="
-                (optCourse = item), (optResourceType = ''), (resourceList = [])
-              "
-            >
-              <q-item-section>
-                <q-item-label>{{ item.name }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list></q-btn-dropdown
-        >
-        <!-- 选择资源类型 -->
-        <q-btn-dropdown
-          v-if="optCourse"
-          color="positive"
-          dropdown-icon="change_history"
-          :label="optResourceType ? optResourceType : '请选择资源类型'"
-        >
-          <!-- dropdown-icon标签是后面的三角符号 -->
-          <q-list>
-            <!-- 调入接口遍历内容并显示 -->
-            <q-item
-              clickable
-              v-close-popup
-              @click="(optResourceType = item), handleGetTeacherSource()"
-              v-for="(item, index) in courseTypeList"
-              :key="index"
-            >
-              <q-item-section>
-                <q-item-label>
+  <q-page>
+    <q-table
+      flat
+      :data="resourceList"
+      :columns="columns"
+      row-key="_id"
+      :pagination="tablePagination"
+      :dense="$q.platform.is.mobile ? false : true"
+    >
+      <template v-slot:top-left>
+        <div class="q-gutter-sm">
+          <!-- 选择课程 -->
+          <q-btn-dropdown
+            :label="!currSelectedCourse ? '选择课程' : currSelectedCourse.name"
+            color="primary"
+          >
+            <q-list>
+              <q-item
+                clickable
+                v-close-popup
+                @click="
+                  (optCourse = course),
+                    (optResourceType = ''),
+                    (resourceList = [])
+                "
+                :key="index"
+                v-for="(course, index) in courseList"
+              >
+                <q-item-section>
+                  <q-item-label>{{ course.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <!-- 选择资源类型 -->
+          <q-btn-dropdown
+            v-if="optCourse"
+            :label="optResourceType ? optResourceType : '请选择资源类型'"
+            color="positive"
+          >
+            <q-list>
+              <q-item
+                clickable
+                v-close-popup
+                @click="(optResourceType = item), handleGetTeacherSource()"
+                :key="index"
+                v-for="(item, index) in courseTypeList"
+              >
+                <q-item-section>
                   {{ item }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-      </div>
-      <div class="row q-gutter-sm q-ma-sm justify-center">
-        <div class="col-11 col-md-4" v-for="(c, i) in resourceList" :key="i">
-          <q-card class="course-card shadow-4">
-            <q-card-section style="color: black">
-              <q-card-section>
-                <q-chip dense square text-color="white" color="primary">{{
-                  c.index
-                }}</q-chip>
-                <q-icon
-                  :name="`fa-regular ${c.resourceTypeAndIcon.icon}`"
-                  size="xs"
-                />
-                <q-chip style="overflow: hidden"> {{ c.filename }}</q-chip>
-              </q-card-section>
-              <q-tooltip> {{ c.filename }} </q-tooltip>
-              <div style="font-size: 8px">上传时间：{{ c.updatedAt }}</div>
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <div class="q-gutter-sm" align="right">
-                <q-btn
-                  icon="remove_red_eye"
-                  color="indigo"
-                  label="审阅资源"
-                  size="0.5rem"
-                  @click="resourcePreview(c)"
-                />
-                <q-btn
-                  icon="cloud_download"
-                  color="indigo"
-                  label="下载资源"
-                  size="0.5rem"
-                  @click="downloadTeacherSource(c)"
-                />
-              </div>
-            </q-card-section>
-          </q-card>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </div>
-      </div>
-    </div>
+      </template>
+      <template v-slot:no-data>
+        <div class="full-width row flex-center text-grey q-gutter-sm">
+          <span class="text-h6"> 暂无数据 </span>
+        </div>
+      </template>
+
+      <template v-slot:body-cell-shortId="props">
+        <q-td :props="props" class="cursor-pointer">
+          <q-icon name="fingerprint" size="xs" color="grey-6" />{{
+            props.row.shortId
+          }}
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-filename="props">
+        <q-td :props="props">
+          <q-icon
+            :name="`fa-regular ${props.row.resourceTypeAndIcon.icon}`"
+            size="xs"
+            color="grey"
+          />{{ props.value }}
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-action="props">
+        <q-td :props="props">
+          <div class="q-gutter-sm">
+            <q-icon
+              flat
+              dense
+              size="sm"
+              color="primary"
+              name="fas fa-eye"
+              @click="resourcePreview(props.row)"
+            >
+              <q-tooltip> 审阅 </q-tooltip>
+            </q-icon>
+            <q-icon
+              flat
+              dense
+              size="sm"
+              color="secondary"
+              name ="cloud_download"
+              @click="downloadTeacherSource(props.row)"
+            >
+              <q-tooltip> 下载 </q-tooltip>
+            </q-icon>
+          </div>
+        </q-td>
+      </template>
+    </q-table>
   </q-page>
 </template>
 
@@ -97,7 +113,6 @@
 import { mapGetters } from "vuex";
 import { preProcessTeaResourceList } from "src/api/student/resource";
 import { apiGetTeaResources } from "src/api/teacher/teaResource";
-import { formatTimeWithWeekDay } from "src/utils/time";
 var FileSaver = require("file-saver");
 export default {
   name: "Resources",
@@ -118,12 +133,46 @@ export default {
       optCourse: "", //当前选择的课程
       resourceList: [],
       iconList: [],
+      columns: [
+        {
+          name: "shortId",
+          label: "资源编号",
+          align: "left",
+          field: "shortId",
+          sortable: true,
+        },
+        {
+          name: "filename",
+          label: "资源名",
+          field: "filename",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "creator",
+          label: "上传者",
+          field: (row) => row.creator.nickname,
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "createdAt",
+          label: "上传时间",
+          field: "createdAt",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "action",
+          align: "center",
+          label: "操作",
+        },
+      ],
     };
   },
   methods: {
     // 处理资源获取
     async handleGetTeacherSource() {
-      this.tableLoading = true;
       const { data } = await apiGetTeaResources({
         filecategory: this.optResourceType,
         course_id: this.optCourse._id,
@@ -131,15 +180,6 @@ export default {
       if (data.code === 2000) {
         preProcessTeaResourceList(data.data);
         this.resourceList = data.data;
-        this.resourceList = data.data.map((item, index) => {
-          item.downloadUrl = item.fileUrl.match(
-            /(cyberdownload.anrunlu.net\/)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*([\?&]\w+=\w*)*$/
-          )[0];
-          item.downloadUrl = "https://" + item.downloadUrl;
-          item.updatedAt = formatTimeWithWeekDay(item.updatedAt);
-          item.index = index + 1;
-          return item;
-        });
       }
     },
     // 处理资源预览
@@ -155,10 +195,19 @@ export default {
     ToDetermineFileType() {
       return "blue";
     },
+
+    handleChangeOptCourse(course) {
+      this.$store.commit("student/setCurrSelectedCourse", course);
+    },
   },
   computed: {
     ...mapGetters("student", {
       courseList: "courseList",
+      currSelectedCourse: "currSelectedCourse",
+    }),
+    ...mapGetters("settings", {
+      tableDense: "tableDense",
+      tablePagination: "tablePagination",
     }),
   },
   created() {
@@ -168,17 +217,17 @@ export default {
 </script>
 
 <style scoped>
-.course-card {
+/* .course-card {
   min-height: 150px;
   color: #fff;
   border: none;
-  /* background-image: linear-gradient(
+  background-image: linear-gradient(
     to bottom right,
     #4facfe 0%,
     #00f2fe 100%
-  ) !important; */
+  ) !important;
 }
 .course-card:hover {
   cursor: pointer;
-}
+} */
 </style>

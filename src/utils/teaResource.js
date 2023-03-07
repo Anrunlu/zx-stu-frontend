@@ -103,5 +103,9 @@ export function preProcessTeaResourceList(teaResourceList) {
     teaResource.resourceTypeAndIcon = getResourceTypeAndIcon(
       teaResource.filetype
     );
+    teaResource.downloadUrl = teaResource.fileUrl.match(
+      /(cyberdownload.anrunlu.net\/)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*([\?&]\w+=\w*)*$/
+    )[0];
+    teaResource.downloadUrl = "https://" + teaResource.downloadUrl;
   });
 }
