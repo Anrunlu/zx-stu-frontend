@@ -82,26 +82,32 @@
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
           <div class="q-gutter-sm">
-            <q-icon
-              flat
+            <q-chip
               dense
+              square
+              clickable
               size="sm"
+              label="审阅"
+              text-color="white"
               color="primary"
-              name="fas fa-eye"
+              icon="fas fa-eye"
               @click="resourcePreview(props.row)"
             >
-              <q-tooltip> 审阅 </q-tooltip>
-            </q-icon>
-            <q-icon
-              flat
+              <q-tooltip> 审阅资源 </q-tooltip>
+            </q-chip>
+            <q-chip
               dense
+              square
+              clickable
               size="sm"
+              label="下载"
+              text-color="white"
               color="secondary"
-              name ="cloud_download"
+              icon="cloud_download"
               @click="downloadTeacherSource(props.row)"
             >
-              <q-tooltip> 下载 </q-tooltip>
-            </q-icon>
+              <q-tooltip> 下载资源 </q-tooltip>
+            </q-chip>
           </div>
         </q-td>
       </template>
