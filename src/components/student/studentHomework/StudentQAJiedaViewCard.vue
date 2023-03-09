@@ -1,7 +1,64 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
   <div>
+    <q-splitter
+      v-if="mode == 'focus'"
+      v-model="splitterModel"
+      style="height: 90vh"
+      :horizontal="!$q.platform.is.desktop"
+    >
+      <template v-slot:before>
+        <q-card class="full-height">
+          <q-card-section>
+            <div class="row q-gutter-sm">
+              <QuestionChip
+                :questionType="questionDetails.type"
+                :colorization="false"
+              />
+              <ObjectShortId
+                :id="questionDetails._id"
+                :color="'grey'"
+                objectName="题目"
+              />
+              <q-space />
+              <!-- 序号 -->
+              <q-chip
+                class="float-right"
+                color="grey"
+                dense
+                outline
+                size="sm"
+                square
+                :label="index"
+              />
+            </div>
+            <q-separator spaced />
+            <div v-katex v-viewer v-html="questionDetails.content"></div>
+          </q-card-section>
+        </q-card>
+      </template>
+
+      <template v-slot:separator>
+        <q-btn
+          round
+          size="lg"
+          :color="questionDetails.isSubmit ? 'positive' : 'primary'"
+          @click="handlePostJieDaAnswer"
+          >{{ !questionDetails.isSubmit ? "提交" : "更新" }}
+        </q-btn>
+      </template>
+
+      <template v-slot:after>
+        <ckeditor
+          :editor="editor"
+          :config="editorConfig"
+          v-model="questionDetails.studentQA[0].stuAnswer[0].content"
+        ></ckeditor>
+      </template>
+    </q-splitter>
+
     <q-card
+      v-else
       :id="questionDetails._id"
       class="q-my-sm shadow-1"
       :class="{
@@ -105,6 +162,11 @@ export default {
       type: Number,
       required: false,
     },
+    mode: {
+      type: String,
+      required: false,
+      default: "waterfall",
+    },
     questionDetails: {
       type: Object,
       default: () => {
@@ -140,6 +202,7 @@ export default {
 
   data() {
     return {
+      splitterModel: 50,
       // 编辑器配置
       editor: Editor,
       studentqaAnnotationDig: false,
@@ -257,5 +320,20 @@ export default {
   max-width: 85% !important;
   display: block;
   margin: 0 auto;
+}
+.ck-math-form {
+  padding: 10px !important;
+}
+
+.ck.ck-content:not(.ck-comment__input *) {
+  height: 87vh;
+  overflow-y: auto;
+}
+@media screen and (max-width: 1920px) {
+  .ck.ck-content:not(.ck-comment__input *) {
+    /* height: 76vh; */
+    height: 87vh;
+    overflow-y: auto;
+  }
 }
 </style>

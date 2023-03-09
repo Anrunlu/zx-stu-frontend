@@ -99,14 +99,17 @@
                   :questionDetails="questionDetails"
                   :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
+                  :mode="mode"
                   @postJieDaAnswer="handlePostJieDaAnswer"
                   @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
               </div>
             </div>
+          </div>
 
-            <!-- 专注模式 -->
+          <!-- 专注模式 -->
+          <div class="col-12">
             <div v-show="mode == 'focus'">
               <!-- 非解答题 -->
               <div v-if="currQuestion.type != '解答'">
@@ -128,6 +131,7 @@
                 :questionDetails="currQuestion"
                 :isShowHomeworkDetails="isShowHomeworkDetails"
                 :isActive="true"
+                :mode="mode"
                 @postJieDaAnswer="handlePostJieDaAnswer"
                 @questionCardClick="handleQuestionCardClick"
                 @questionCardDblClick="handleQuestionCardDblClick"
@@ -164,7 +168,7 @@ export default {
   },
   data() {
     return {
-      mode: "waterfall", // foucs: 专注模式, waterfall: 瀑布模式
+      mode: "waterfall", // focus: 专注模式, waterfall: 瀑布模式
       currQuestion: {
         _id: "",
         id: "",
@@ -532,7 +536,7 @@ export default {
     // 双击题目卡片
     handleQuestionCardDblClick(question) {
       this.switchToQuestion(question);
-      // 视图进入 foucs 模式
+      // 视图进入 focus 模式
       if (this.mode == "waterfall") {
         this.switchMode("focus");
       }
