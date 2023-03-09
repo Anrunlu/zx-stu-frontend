@@ -202,7 +202,7 @@ export default {
 
   data() {
     return {
-      splitterModel: 50,
+      splitterModel: 40,
       // 编辑器配置
       editor: Editor,
       studentqaAnnotationDig: false,

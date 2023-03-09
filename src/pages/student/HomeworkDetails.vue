@@ -348,7 +348,7 @@ export default {
       if (this.questiondatas.isEnd) {
         this.$q.notify({
           type: "negative",
-          message: "作业已截止,无法作答",
+          message: "作业已截止，无法作答",
           timeout: 1000,
         });
         return;
