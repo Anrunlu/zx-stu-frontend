@@ -601,33 +601,33 @@ export default {
     },
   },
 
-  mounted() {
-    // 绑定按键，上一人
-    this.$shortcut.bind("up", this.handlePrevStu);
-    // 下一人
-    this.$shortcut.bind("down", this.handleNextStu);
-    // 上一题
-    this.$shortcut.bind("left", this.handlePrevQuestion);
-    // 下一题
-    this.$shortcut.bind("right", this.handleNextQuestion);
-    // 切换模式
-    this.$shortcut.bind("v", this.handleSwitchModeByShortcut);
-    // 展开学生列表
-    this.$shortcut.bind("tab", this.handleSwitchDisplayStuList);
-  },
+  // mounted() {
+  //   // // 绑定按键，上一人
+  //   // this.$shortcut.bind("up", this.handlePrevStu);
+  //   // // 下一人
+  //   // this.$shortcut.bind("down", this.handleNextStu);
+  //   // // 上一题
+  //   // this.$shortcut.bind("left", this.handlePrevQuestion);
+  //   // // 下一题
+  //   // this.$shortcut.bind("right", this.handleNextQuestion);
+  //   // // 切换模式
+  //   // this.$shortcut.bind("v", this.handleSwitchModeByShortcut);
+  //   // // 展开学生列表
+  //   // this.$shortcut.bind("tab", this.handleSwitchDisplayStuList);
+  // },
 
   created() {
     this.handleGetHomeworkInfo();
   },
 
-  beforeDestroy() {
-    this.$shortcut.unbind("up");
-    this.$shortcut.unbind("down");
-    this.$shortcut.unbind("left");
-    this.$shortcut.unbind("right");
-    this.$shortcut.unbind("v");
-    this.$shortcut.unbind("tab");
-  },
+  // beforeDestroy() {
+  //   this.$shortcut.unbind("up");
+  //   this.$shortcut.unbind("down");
+  //   this.$shortcut.unbind("left");
+  //   this.$shortcut.unbind("right");
+  //   this.$shortcut.unbind("v");
+  //   this.$shortcut.unbind("tab");
+  // },
 };
 </script>
 
