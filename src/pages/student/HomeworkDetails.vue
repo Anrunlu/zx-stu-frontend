@@ -447,12 +447,8 @@ export default {
         // 提示用户
         this.$q.notify({
           message: "已退出专注模式",
-          position: "top",
-          icon: "notifications",
-          color: "warning",
-          textColor: "white",
-          classes: "glossy",
-          timeout: 1000,
+          type: "info",
+          timeout: 500,
         });
       } else if (_mode == "focus") {
         // 如果是专注模式更新路由 query 中的 q 参数, 用于刷新页面后还能定位到该题目
@@ -466,39 +462,6 @@ export default {
           },
           () => {}
         );
-
-        // 如果是桌面端，则提示用户
-        if (!this.$q.platform.is.mobile) {
-          this.$q.notify({
-            message: `当前为专注模式，您可以通过 <kbd>V</kbd> 键快速切换模式。是否进行全屏以获得更好的作答体验？`,
-            position: "top",
-            icon: "notifications",
-            progress: true,
-            color: "accent",
-            textColor: "white",
-            classes: "glossy",
-            timeout: 10000,
-            html: true,
-            actions: [
-              {
-                label: "全屏",
-                color: "white",
-                handler: () => {
-                  this.$q.fullscreen.request().catch(() => {
-                    setTimeout(() => {
-                      this.$q.notify({
-                        message:
-                          "请求浏览器全屏失败，您可以尝试手动进行全屏以获得更好的作答体验。",
-                        position: "top",
-                        type: "warning",
-                      });
-                    }, 7000);
-                  });
-                },
-              },
-            ],
-          });
-        }
       }
       this.mode = _mode;
     },
