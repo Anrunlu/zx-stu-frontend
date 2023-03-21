@@ -113,5 +113,14 @@ export default function () {
     courseMindCategoryOptions: [
       { icon: "o_schema", value: "课程大纲", label: "课程大纲" },
     ],
+
+    // 公告类型选项
+    announcementCategoryOptions: [
+      { icon: "o_forum", value: "系统公告", label: "系统公告" },
+      { icon: "o_notifications", value: "系统通知", label: "系统通知" },
+      { icon: "o_schema", value: "教师通知", label: "教师通知" },
+      { icon: "o_schema", value: "管理员通知", label: "管理员通知" },
+      { icon: "o_link", value: "链接", label: "链接" },
+    ],
   };
 }

@@ -33,3 +33,7 @@ export function teaResourceCategoryOptions(state) {
 export function courseMindCategoryOptions(state) {
   return state.courseMindCategoryOptions;
 }
+
+export function announcementCategoryOptions(state) {
+  return state.announcementCategoryOptions;
+}
