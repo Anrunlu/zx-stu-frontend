@@ -21,6 +21,8 @@ function getDefaultState() {
     studentId: "",
     originClassroomName: "",
     originClassroomId: "",
+    // 未读公告数量
+    unreadAnnouncementCount: 0,
   };
 }
 
@@ -105,4 +107,9 @@ export function setOriginClassroomName(state, originClassroomName) {
 
 export function setOriginClassroomId(state, originClassroomId) {
   state.originClassroomId = originClassroomId;
+}
+
+// 未读公告数量
+export function setUnreadAnnouncementCount(state, unreadAnnouncementCount) {
+  state.unreadAnnouncementCount = unreadAnnouncementCount;
 }

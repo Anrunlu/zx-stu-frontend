@@ -3,9 +3,6 @@ import {
   formatTimeWithWeekDay,
   formatTimeWithWeekDayAndSecond,
 } from "./time";
-import { getObjectShortId, toFixed2 } from "./common";
-import { marked } from "marked";
-import Vue from "vue";
 
 // 预处理公告列表
 export function preProcessAnnouncementList(announcementList) {
@@ -14,4 +11,11 @@ export function preProcessAnnouncementList(announcementList) {
       announcement.createdAt
     );
   });
+}
+
+// 预处理公告详情
+export function preProcessAnnouncementDetails(announcementDetails) {
+  announcementDetails.createdAt = formatTimeWithWeekDayAndSecond(
+    announcementDetails.createdAt
+  );
 }

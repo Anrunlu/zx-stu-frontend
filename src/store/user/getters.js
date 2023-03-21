@@ -76,3 +76,8 @@ export function originClassroomName(state) {
 export function originClassroomId(state) {
   return state.originClassroomId;
 }
+
+// 未读公告数量
+export function unreadAnnouncementCount(state) {
+  return state.unreadAnnouncementCount;
+}

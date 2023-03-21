@@ -290,7 +290,7 @@ export default {
   methods: {
     // 处理点击作业列表中的某一行
     handleHomeworkClick(evt, row) {
-      this.$router.push(`/student/homeworkdetails/${row._id}`);
+      this.$router.push(`/homeworkdetails/${row._id}`);
     },
 
     //获取所有课程

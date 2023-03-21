@@ -4,6 +4,7 @@ import {
   apiLogin,
   apiModifyProfile,
 } from "src/api/auth";
+import { apiGetUnreadAnnouncementCount } from "src/api/student/announcement";
 import { removeToken, setToken } from "src/utils/auth";
 
 // 用户登录
@@ -61,6 +62,21 @@ export function termList({ commit, state }) {
   });
 }
 
+// 获取未读公告数量
+export function unreadAnnouncementCount({ commit, state }) {
+  return new Promise((resolve, reject) => {
+    apiGetUnreadAnnouncementCount()
+      .then((response) => {
+        const { data } = response;
+        commit("setUnreadAnnouncementCount", data.data.count);
+        resolve();
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
 // 获取用户信息
 export function getUserInfo({ commit, dispatch }) {
   return new Promise((resolve, reject) => {
@@ -77,6 +93,7 @@ export function getUserInfo({ commit, dispatch }) {
         commit("setAvatar", data.data.avatar);
         commit("setType", data.data.userType);
         dispatch("termList");
+        dispatch("unreadAnnouncementCount");
         resolve();
       })
       .catch((error) => {

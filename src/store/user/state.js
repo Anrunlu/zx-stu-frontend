@@ -23,5 +23,7 @@ export default function () {
     studentId: "",
     originClassroomName: "",
     originClassroomId: "",
+    // 未读公告数量
+    unreadAnnouncementCount: 0,
   };
 }

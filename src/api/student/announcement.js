@@ -9,3 +9,28 @@ export function apiGetAnnouncementList(data) {
     data,
   });
 }
+
+// 获取公告详情
+export function apiGetAnnouncementDetails(announcementId) {
+  return loadingFn(request)({
+    url: `/common/announcement/${announcementId}`,
+    method: "GET",
+  });
+}
+
+// 获取未读公告数量
+export function apiGetUnreadAnnouncementCount() {
+  return loadingFn(request)({
+    url: `/common/announcement/unreadCount`,
+    method: "POST",
+  });
+}
+
+// 标记公告已读
+export function apiMarkAnnouncementAsRead(data) {
+  return loadingFn(request)({
+    url: `/common/announcement/markAsRead`,
+    method: "POST",
+    data,
+  });
+}

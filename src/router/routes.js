@@ -74,12 +74,21 @@ const routes = [
     ],
   },
   {
-    path: "/student/homeworkdetails/:homeworkId",
+    path: "/homeworkdetails/:homeworkId",
     component: () => import("pages/student/HomeworkDetails.vue"),
     props: true,
     meta: {
       type: "student",
       title: "作业详情",
+    },
+  },
+  {
+    path: "/announcement/:announcementId",
+    component: () => import("pages/NoticeDetails.vue"),
+    props: true,
+    meta: {
+      type: "student",
+      title: "公告详情",
     },
   },
 ];

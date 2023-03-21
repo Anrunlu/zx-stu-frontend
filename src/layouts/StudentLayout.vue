@@ -39,8 +39,19 @@
             icon="notifications"
             to="notice"
           >
-            <q-badge color="red" text-color="white" floating> 5 </q-badge>
-            <q-tooltip>消息通知</q-tooltip>
+            <q-badge
+              v-if="unreadAnnouncementCount > 0"
+              color="red"
+              text-color="white"
+              floating
+            >
+              {{ unreadAnnouncementCount }}
+            </q-badge>
+            <q-tooltip>{{
+              unreadAnnouncementCount > 0
+                ? `${unreadAnnouncementCount}消息未读`
+                : "暂未消息"
+            }}</q-tooltip>
           </q-btn>
 
           <q-btn dense flat no-wrap>
@@ -206,6 +217,7 @@ export default {
       avatar: "avatar",
       officeName: "officeName",
       termName: "termName",
+      unreadAnnouncementCount: "unreadAnnouncementCount",
     }),
 
     ...mapGetters("settings", {

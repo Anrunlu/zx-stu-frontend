@@ -19,6 +19,7 @@
             v-ripple
             v-for="(announcement, index) in announcementList"
             :key="index"
+            @click="handleOpenAnnouncement(announcement)"
           >
             <q-item-section avatar>
               <q-icon
@@ -37,8 +38,29 @@
         </q-list>
       </q-tab-panel>
       <q-tab-panel name="已读">
-        <div class="text-h6">Alarms</div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-list separator>
+          <q-item
+            clickable
+            v-ripple
+            v-for="(announcement, index) in announcementList"
+            :key="index"
+            @click="handleOpenAnnouncement(announcement)"
+          >
+            <q-item-section avatar>
+              <q-icon
+                :color="announcement.urgencyType"
+                :name="announcement.icon"
+              />
+            </q-item-section>
+            <q-item-section>{{ announcement.title }}</q-item-section>
+            <q-item-section side top>
+              <q-item-label caption>{{ announcement.createdAt }}</q-item-label>
+              <div>
+                {{ announcement.creator.nickname }}
+              </div>
+            </q-item-section>
+          </q-item>
+        </q-list>
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -92,6 +114,11 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    handleOpenAnnouncement(announcement) {
+      // 根据公告类型，决定打开的页面
+      this.$router.push("/announcement/" + announcement._id);
     },
   },
 
