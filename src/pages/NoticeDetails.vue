@@ -52,7 +52,7 @@
           <q-card class="col-12 col-md-8">
             <q-card-section>
               <div class="q-gutter-md">
-                <div v-html="announcementDetails.content"></div>
+                <div v-viewer v-html="announcementDetails.content"></div>
               </div>
             </q-card-section>
           </q-card>
