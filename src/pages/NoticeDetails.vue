@@ -111,8 +111,6 @@ export default {
         preProcessAnnouncementDetails(data.data);
 
         this.announcementDetails = data.data;
-
-        console.log(data.data);
       } catch (error) {
         console.log(error);
         this.$q.notify({
@@ -129,8 +127,6 @@ export default {
 
       try {
         const { data } = await apiMarkAnnouncementAsRead(payload);
-
-        console.log(data);
 
         this.announcementDetails.isRead = true;
 
