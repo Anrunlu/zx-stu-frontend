@@ -57,7 +57,15 @@
                   <q-icon :name="category.icon" />
                 </q-item-section>
                 <q-item-section>
-                  {{ category.label }}
+                  <q-item-label
+                    >{{ category.label }}
+                    <q-icon
+                      v-if="unFinishedHwkType.indexOf(category.value) != -1"
+                      name="sentiment_very_dissatisfied"
+                      color="red-5"
+                      size="xs"
+                    />
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -231,6 +239,8 @@ export default {
       homeworkList: [],
       //是否显示班级进度
       readyToShowTccHmwProgress: false,
+      //未完成作业类型
+      unFinishedHwkType: [],
       // 作业列表表头
       homeworkColumns: [
         {
@@ -298,12 +308,40 @@ export default {
       await this.$store.dispatch("student/getCourseList");
     },
 
-    //获取课程类型作业信息
+    //获取该课程所有类型未完成作业
+    async handleGetAllCourseTypeHomeworks() {
+      //获取存在未完成作业类型
+      this.unFinishedHwkType = [];
+      this.homeworkCategoryOptions.forEach(async (element) => {
+        const { data } = await apiGetHomeworks({
+          tcc_id: this.currSelectedCourse.id,
+          category: element.value,
+          student_id: this.$store.getters["user/studentId"][0]._id,
+        });
+
+        if (data.data.length != 0) {
+          data.data.forEach((ele) => {
+            if (!ele.studentHomework) {
+              this.unFinishedHwkType.push(element.value);
+            } else {
+              if (ele.studentHomework.answerProgress != 1) {
+                this.unFinishedHwkType.push(element.value);
+              }
+            }
+          });
+        }
+      });
+      this.unFinishedHwkType = [...new Set(this.unFinishedHwkType)];
+      console.log(this.unFinishedHwkType);
+    },
+
+    //获取课程单一类型作业信息
     async handleGetHomeworks() {
       if (this.currSelectedCourse === null) {
         return;
       }
       this.homeworkList = [];
+
       const payload = {
         tcc_id: this.currSelectedCourse.id,
         category: this.currSelectedCategory.value,
@@ -344,6 +382,7 @@ export default {
     //设置当前选择的课程
     handleChangeOptCourse(course) {
       this.$store.commit("student/setCurrSelectedCourse", course);
+      this.handleGetAllCourseTypeHomeworks();
       // 如果当前选中的作业分类不为空，则重新获取作业列表
       if (this.currSelectedCategory.value) {
         this.handleGetHomeworks(this.currSelectedCategory.value);

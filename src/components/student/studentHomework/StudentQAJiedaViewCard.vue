@@ -52,6 +52,7 @@
         <ckeditor
           :editor="editor"
           :config="editorConfig"
+          @blur="handlePostJieDaAnswer"
           v-model="questionDetails.studentQA[0].stuAnswer[0].content"
         ></ckeditor>
       </template>
@@ -118,6 +119,7 @@
       <q-separator />
       <q-card-section>
         <ckeditor
+          @blur="handlePostJieDaAnswer"
           :editor="editor"
           :config="editorConfig"
           v-model="questionDetails.studentQA[0].stuAnswer[0].content"
