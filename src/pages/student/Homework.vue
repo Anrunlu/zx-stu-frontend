@@ -341,7 +341,7 @@ export default {
         return;
       }
       this.homeworkList = [];
-
+      this.handleGetAllCourseTypeHomeworks()
       const payload = {
         tcc_id: this.currSelectedCourse.id,
         category: this.currSelectedCategory.value,
