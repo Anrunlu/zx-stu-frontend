@@ -2,6 +2,7 @@
   <q-page>
     <q-table
       flat
+      :card-class="isWHH ? 'bg-red-1' : ''"
       :data="resourceList"
       :columns="columns"
       row-key="_id"
@@ -13,12 +14,13 @@
           <!-- 选择课程 -->
           <q-btn-dropdown
             :label="!currSelectedCourse ? '选择课程' : currSelectedCourse.name"
-            color="primary"
+            :color="isWHH ? 'pink-3' : 'primary'"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
+                :class="isWHH ? 'list' : ''"
                 @click="handleChangeOptCourse(course)"
                 :key="index"
                 v-for="(course, index) in courseList"
@@ -35,13 +37,14 @@
             :label="
               optResourceType.label ? optResourceType.label : '请选择资源类型'
             "
-            color="positive"
+            :color="isWHH ? 'pink-5' : 'positive'"
             :icon="optResourceType.icon ? optResourceType.icon : 'touch_app'"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
+                :class="isWHH ? 'list' : ''"
                 @click="(optResourceType = item), handleGetTeacherSource()"
                 :key="index"
                 v-for="(item, index) in courseTypeList"
@@ -231,6 +234,9 @@ export default {
       tableDense: "tableDense",
       tablePagination: "tablePagination",
     }),
+    ...mapGetters("user", {
+      isWHH: "isWHH",
+    }),
   },
   created() {
     this.$store.dispatch("student/getCourseList");
@@ -239,6 +245,9 @@ export default {
 </script>
 
 <style scoped>
+.list {
+  background-color: rgb(255, 255, 179);
+}
 /* .course-card {
   min-height: 150px;
   color: #fff;

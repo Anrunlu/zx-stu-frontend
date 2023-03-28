@@ -2,6 +2,7 @@
   <q-page>
     <q-table
       flat
+      :card-class="isWHH ? 'bg-red-1' : ''"
       :data="homeworkList"
       :columns="homeworkColumns"
       row-key="_id"
@@ -14,12 +15,13 @@
           <!-- 选择课程 -->
           <q-btn-dropdown
             :label="!currSelectedCourse ? '选择课程' : currSelectedCourse.name"
-            color="primary"
+            :color="isWHH ? 'pink-3' : 'primary'"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
+                :class="isWHH ? 'list' : ''"
                 @click="handleChangeOptCourse(course)"
                 :key="index"
                 v-for="(course, index) in courseList"
@@ -43,12 +45,13 @@
                 ? '作业类型'
                 : currSelectedCategory.label
             "
-            color="positive"
+            :color="isWHH ? 'pink-5' : 'positive'"
           >
             <q-list>
               <q-item
                 clickable
                 v-close-popup
+                :class="isWHH ? 'list' : ''"
                 @click="handleChangeHomeworkCategory(category)"
                 :key="index"
                 v-for="(category, index) in homeworkCategoryOptions"
@@ -100,11 +103,13 @@
       <template v-slot:body-cell-classroom="props">
         <q-td :props="props">
           <q-badge
+            :color="isWHH ? 'green-3' : ''"
             v-if="!props.row.readyToShowTccHmwProgress"
             @click.stop="handleViewOthersInfo(props.row)"
             >查看班级进度</q-badge
           >
           <q-badge
+            :color="isWHH ? 'green-3' : ''"
             v-if="props.row.readyToShowTccHmwProgress"
             @click.stop="handleViewOthersInfo(props.row)"
             >班级内进度：{{ props.row.tccHmwProgress }}
@@ -296,6 +301,11 @@ export default {
       courseList: "courseList",
       currSelectedCourse: "currSelectedCourse",
     }),
+    ...mapGetters("user", {
+      isWHH: "isWHH",
+      nickname: "nickname",
+      username: "username",
+    }),
   },
   methods: {
     // 处理点击作业列表中的某一行
@@ -332,7 +342,6 @@ export default {
         }
       });
       this.unFinishedHwkType = [...new Set(this.unFinishedHwkType)];
-      console.log(this.unFinishedHwkType);
     },
 
     //获取课程单一类型作业信息
@@ -341,7 +350,7 @@ export default {
         return;
       }
       this.homeworkList = [];
-      this.handleGetAllCourseTypeHomeworks()
+      this.handleGetAllCourseTypeHomeworks();
       const payload = {
         tcc_id: this.currSelectedCourse.id,
         category: this.currSelectedCategory.value,
@@ -444,4 +453,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.list {
+  background-color: rgb(255, 255, 179);
+}
+</style>

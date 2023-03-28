@@ -25,5 +25,7 @@ export default function () {
     originClassroomId: "",
     // 未读公告数量
     unreadAnnouncementCount: 0,
+    //判断是不是whh
+    isWHH: false,
   };
 }

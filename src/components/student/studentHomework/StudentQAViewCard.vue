@@ -5,6 +5,7 @@
     style="border-radius: 7px"
     :class="{
       'shadow-2 actived': isActive,
+      'bg-yellow-1':isWHH
     }"
     @click="handleQuestionCardClick"
     @dblclick="handleQuestionCardDblClick"
@@ -163,7 +164,7 @@
 
 <script>
 import ObjectShortId from "src/components/common/ObjectShortId.vue";
-
+import { mapGetters } from "vuex";
 export default {
   name: "StudentQAViewCard", // 展示选择和填空题目
   props: {
@@ -192,6 +193,14 @@ export default {
   components: {
     QuestionChip: () => import("src/components/common/QuestionChip.vue"),
     ObjectShortId,
+  },
+
+  computed: {
+    ...mapGetters("user", {
+      isWHH: "isWHH",
+      nickname: "nickname",
+      username: "username",
+    }),
   },
 
   methods: {

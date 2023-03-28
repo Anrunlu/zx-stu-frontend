@@ -1,7 +1,11 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="bg-grey-1">
+  <q-layout view="hHh Lpr lff" :class="isWHH ? 'bg-red-1' : 'bg-grey-1'">
     <!-- 头部 -->
-    <q-header elevated class="bg-white text-grey-8" height-hint="64">
+    <q-header
+      elevated
+      :class="isWHH ? 'bg-red-2 text-grey-8' : 'bg-white text-grey-8'"
+      height-hint="64"
+    >
       <!-- 头部工具栏 -->
       <q-toolbar class="GPL__toolbar" style="height: 50px">
         <q-btn
@@ -96,7 +100,7 @@
       @click.capture="drawerClick"
       side="left"
     >
-      <q-scroll-area class="fit">
+      <q-scroll-area :class="isWHH ? 'bg-red-2 fit' : 'fit'">
         <q-list padding>
           <q-item
             v-for="link in links1"
@@ -104,6 +108,7 @@
             :to="link.to"
             clickable
             exact
+            :active-class="isWHH ? 'bg-pink-3' : 'bg-white text-blue'"
             v-ripple.early
             :href="link.href"
             @click="handleLinkClick(link)"
@@ -125,6 +130,7 @@
             clickable
             exact
             v-ripple.early
+            :active-class="isWHH ? 'bg-pink-3' : 'bg-white text-blue'"
             :href="link.href"
             @click="handleLinkClick(link)"
           >
@@ -145,6 +151,7 @@
             clickable
             exact
             v-ripple.early
+            :active-class="isWHH ? 'bg-pink-3' : 'bg-white text-blue'"
             :href="link.href"
             @click="handleLinkClick(link)"
           >
@@ -162,7 +169,7 @@
           dense
           round
           unelevated
-          color="primary"
+          :color="isWHH ? 'pink-5' : 'primary'"
           icon="chevron_left"
           @click="miniState = true"
         />
@@ -218,6 +225,7 @@ export default {
       officeName: "officeName",
       termName: "termName",
       unreadAnnouncementCount: "unreadAnnouncementCount",
+      isWHH: "isWHH",
     }),
 
     ...mapGetters("settings", {

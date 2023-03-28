@@ -1,7 +1,13 @@
 <template>
-  <q-layout view="hHh Lpr fFf" class="bg-grey-1">
+  <q-layout view="hHh Lpr fFf" :class="isWHH ? 'bg-red-1' : 'bg-grey-1'">
     <q-header elevated>
-      <q-bar class="bg-primary text-white shadow-1">
+      <q-bar
+        :class="
+          isWHH
+            ? 'bg-pink-4 text-white shadow-1'
+            : 'bg-primary text-white shadow-1'
+        "
+      >
         <q-icon name="edit_note" />
         <div v-if="$q.platform.is.mobile" class="text-body2">
           {{ questiondatas.title.slice(0, 6) }}···
@@ -155,6 +161,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { apiGetHomeworkInfo, apiPostAnswer } from "src/api/student/homework";
 import { pretreatmentStudentHomeworkDetails } from "src/utils/homework";
 import { formatTimeWithWeekDayAndSecond } from "src/utils/time";
@@ -211,6 +218,14 @@ export default {
       ),
     HomeworkToolbar: () =>
       import("src/components/student/studentHomework/HomeworkToolbar.vue"),
+  },
+
+  computed: {
+    ...mapGetters("user", {
+      isWHH: "isWHH",
+      nickname: "nickname",
+      username: "username",
+    }),
   },
 
   methods: {

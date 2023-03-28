@@ -23,6 +23,7 @@ function getDefaultState() {
     originClassroomId: "",
     // 未读公告数量
     unreadAnnouncementCount: 0,
+    isWHH:false
   };
 }
 
@@ -112,4 +113,8 @@ export function setOriginClassroomId(state, originClassroomId) {
 // 未读公告数量
 export function setUnreadAnnouncementCount(state, unreadAnnouncementCount) {
   state.unreadAnnouncementCount = unreadAnnouncementCount;
+}
+
+export function setIsWHH(state, isWHH) {
+  state.isWHH = isWHH;
 }

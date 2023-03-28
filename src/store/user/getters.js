@@ -81,3 +81,7 @@ export function originClassroomId(state) {
 export function unreadAnnouncementCount(state) {
   return state.unreadAnnouncementCount;
 }
+
+export function isWHH(state) {
+  return state.isWHH;
+}

@@ -155,6 +155,7 @@
 <script>
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import ObjectShortId from "src/components/common/ObjectShortId.vue";
+import { mapGetters } from "vuex";
 import { MyClipboardAdapterPlugin } from "src/utils/ckeditor/MyClipboardPlugin";
 import { MyCustomUploadAdapterPlugin } from "src/utils/ckeditor/MyUploadPlugin";
 export default {
@@ -230,6 +231,14 @@ export default {
   components: {
     QuestionChip: () => import("src/components/common/QuestionChip.vue"),
     ObjectShortId,
+  },
+
+  computed: {
+    ...mapGetters("user", {
+      isWHH: "isWHH",
+      nickname: "nickname",
+      username: "username",
+    }),
   },
 
   methods: {

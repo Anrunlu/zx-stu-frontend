@@ -1,9 +1,9 @@
 <template>
-  <q-page class="bg-white">
+  <q-page :class="isWHH ? 'bg-red-1' : 'bg-white'">
     <q-tabs
       v-model="tab"
       inline-label
-      class="bg-white"
+      :class="isWHH ? 'bg-red-1' : 'bg-white'"
       active-color="primary"
       align="justify"
     >
@@ -11,7 +11,7 @@
       <q-tab name="已读" icon="mark_email_read" label="已读" />
     </q-tabs>
 
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels v-model="tab" animated :class="isWHH ? 'bg-red-1' : ''">
       <q-tab-panel name="未读">
         <q-list separator>
           <q-item
@@ -88,6 +88,9 @@ export default {
   computed: {
     ...mapGetters("settings", {
       announcementCategoryOptions: "announcementCategoryOptions",
+    }),
+    ...mapGetters("user", {
+      isWHH: "isWHH",
     }),
   },
 

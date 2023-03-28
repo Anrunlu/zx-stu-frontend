@@ -10,7 +10,7 @@
             <q-btn
               class="q-mb-sm"
               flat
-              color="primary"
+              :color="isWHH ? 'red-4' : 'primary'"
               icon="add_a_photo"
               label="头像上传"
               @click="avatarUploadDig = true"
@@ -26,7 +26,7 @@
             <div>
               <q-btn
                 class="q-mb-md fit"
-                color="primary"
+                :color="isWHH ? 'red-4' : 'primary'"
                 icon="event_repeat"
                 label="切换学期"
                 @click="changeTermDig = true"
@@ -147,7 +147,7 @@
                 />
                 <q-btn
                   class="col-3 q-ml-sm"
-                  color="primary"
+                  :color="isWHH ? 'red-4' : 'primary'"
                   icon="send"
                   :label="
                     canSendCode ? '发送验证码' : `重新发送(${countDown}s)`
@@ -162,7 +162,7 @@
                   icon="cloud_upload"
                   label="更新"
                   type="submit"
-                  color="primary"
+                  :color="isWHH ? 'red-4' : 'primary'"
                 />
               </div>
             </q-form>
@@ -225,6 +225,7 @@ export default {
       nickname: "nickname",
       avatar: "avatar",
       officeName: "officeName",
+      isWHH: "isWHH",
     }),
   },
 
