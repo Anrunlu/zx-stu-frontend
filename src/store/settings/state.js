@@ -25,6 +25,11 @@ export default function () {
         to: "studybygraph",
       },
       {
+        icon: "devices_other",
+        label: "我的考试",
+        to: "exam",
+      },
+      {
         icon: "o_cloud",
         label: "学习资源",
         to: "resources",

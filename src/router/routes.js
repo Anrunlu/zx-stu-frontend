@@ -40,6 +40,14 @@ const routes = [
         },
       },
       {
+        path: "exam",
+        component: () => import("pages/student/Exam.vue"),
+        meta: {
+          type: "student",
+          title: "我的考试",
+        },
+      },
+      {
         path: "studybygraph",
         component: () => import("pages/student/StudyByGraph.vue"),
         meta: {
