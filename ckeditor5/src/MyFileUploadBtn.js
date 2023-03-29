@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 
 function getToken() {
   return Cookies.get(process.env.TOKEN_KEY) || "";
+  // return localStorage.getItem(process.env.TOKEN_KEY) || "";
 }
 
 // FIXME:baseURL 需要按需要修改

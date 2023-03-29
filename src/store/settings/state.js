@@ -7,11 +7,11 @@ export default function () {
         label: "我的课程",
         to: "index",
       },
-      {
-        icon: "o_cast_for_education",
-        label: "互动课堂",
-        to: "classwork",
-      },
+      // {
+      //   icon: "o_cast_for_education",
+      //   label: "互动课堂",
+      //   to: "classwork",
+      // },
     ],
     layoutLeftDrawerLinks2: [
       {
