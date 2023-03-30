@@ -1,15 +1,10 @@
 import axios from "axios";
 
 import { getToken, removeToken } from "src/utils/auth";
-import { Notify, Loading } from "quasar";
+import { Notify, Loading, Dialog } from "quasar";
 
 export const request = axios.create({
   baseURL: process.env.API_URL,
-  timeout: 150000,
-});
-
-export const requestGraph = axios.create({
-  baseURL: "https://graph-cyber.darryllin.cn/",
   timeout: 150000,
 });
 
@@ -19,6 +14,8 @@ export default ({ app, router, store }) => {
     (config) => {
       if (store.getters["user/token"]) {
         config.headers.Authorization = "Bearer " + getToken() || "";
+        // 自定义请求头
+        config.headers["X-app-version"] = process.env.APP_VERSION;
       }
       return config;
     },
@@ -50,11 +47,23 @@ export default ({ app, router, store }) => {
           message: err.response.data.error,
           type: "negative",
         });
+      } else if (err.response.data.error.includes("版本已过期")) {
+        const fileUrl = err.response.data.error.split("下载地址：")[1];
+
+        Dialog.create({
+          title: "提示",
+          message: err.response.data.error,
+          ok: {
+            label: "确定",
+            color: "primary",
+          },
+        }).onOk(() => {
+          window.open(fileUrl);
+        });
       } else {
         Notify.create({
           message: err.response.data.error,
           type: "negative",
-          timeout: 3000,
         });
       }
 
