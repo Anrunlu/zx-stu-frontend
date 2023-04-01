@@ -10,6 +10,10 @@ export function homeworkCategoryOptions(state, homeworkCategoryOptions) {
   state.homeworkCategoryOptions = homeworkCategoryOptions;
 }
 
+export function examCategoryOptions(state, examCategoryOptions) {
+  state.examCategoryOptions = examCategoryOptions;
+}
+
 export function layoutLeftDrawerLinks1(state, layoutLeftDrawerLinks1) {
   state.layoutLeftDrawerLinks1 = layoutLeftDrawerLinks1;
 }

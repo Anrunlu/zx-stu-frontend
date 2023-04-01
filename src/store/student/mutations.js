@@ -9,3 +9,5 @@ export function setCurrSelectedCourse(state, currSelectedCourse) {
 export function setCurrSelectedHomeworkType(state, currSelectedHomeworkType) {
   state.currSelectedHomeworkType = currSelectedHomeworkType;
 }
+
+

@@ -1,3 +1,6 @@
+export function homeworkCategoryOptions(state) {
+  return state.homeworkCategoryOptions;
+}
 export function tableDense(state) {
   return state.tableDense;
 }
@@ -6,8 +9,8 @@ export function tablePagination(state) {
   return state.tablePagination;
 }
 
-export function homeworkCategoryOptions(state) {
-  return state.homeworkCategoryOptions;
+export function examCategoryOptions(state) {
+  return state.examCategoryOptions;
 }
 
 export function layoutLeftDrawerLinks1(state) {
