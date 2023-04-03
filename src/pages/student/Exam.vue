@@ -112,10 +112,10 @@
       <div class="row q-gutter-sm q-ma-sm justify-center q-my-xl">
         <div class="col-11 col-md-6">
           <q-card class="course-card shadow-4 biggestBoxBottom">
-              <div class="biggerBox" >
-                <div style="margin-top:100px"></div>
-                暂无考试安排，好好复习。
-              </div>
+            <div class="biggerBox">
+              <div style="margin-top: 100px"></div>
+              暂无考试安排，好好复习。
+            </div>
           </q-card>
         </div>
       </div>
@@ -300,19 +300,19 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
 }
-.biggestBoxBottom{
-  background-image:url(https://cyberdownload.anrunlu.net/FsSKRCDr3w9-3s1hykkoyK15QEka);
+.biggestBoxBottom {
+  background-image: url(https://cyberdownload.anrunlu.net/FsSKRCDr3w9-3s1hykkoyK15QEka);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: .8;
+  opacity: 0.8;
 }
-.biggerBox{
-  height:450px;
-  color:#fff;
+.biggerBox {
+  height: 450px;
+  color: #fff;
   text-align: center;
-  font-size:3rem;
+  font-size: 3rem;
   overflow: hidden;
-  font-family: "LiSu"; 
+  font-family: "LiSu";
 }
 </style>
