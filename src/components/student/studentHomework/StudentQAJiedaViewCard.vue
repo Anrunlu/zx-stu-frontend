@@ -36,6 +36,12 @@
             <div v-katex v-viewer v-html="questionDetails.content"></div>
           </q-card-section>
           <q-separator />
+          <q-card-section v-if="questionDetails.studentQA[0].comment">
+            <q-chip label="教师评语:" color="blue" outline />
+            <span class="text-h5">{{
+              questionDetails.studentQA[0].comment
+            }}</span>
+          </q-card-section>
         </q-card>
       </template>
 
