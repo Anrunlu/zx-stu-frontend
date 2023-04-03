@@ -65,6 +65,61 @@
         </q-btn-dropdown>
       </div>
     </div>
+    <!-- 主体部分 -->
+    <div v-if="examList.length != 0 && currSelectedCourse">
+      <div class="row q-gutter-sm q-ma-sm justify-center q-my-xl">
+        <div class="col-11 col-md-6" v-for="(con, i) in examList" :key="i">
+          <q-card class="course-card shadow-4 biggestBox">
+            <q-card-section style="color: black">
+              <q-card-section class="justify-center row">
+                <q-btn color="indigo-5" no-caps>{{ con.category }}</q-btn>
+              </q-card-section>
+              <q-card-section class="col-11 col-md-5 justify-center">
+                <q-card-section class="justify-center row">
+                  <q-icon name="swap_horiz" size="1.2rem" />
+                  <div class="row justify-center" color="primary" disable>
+                    考生须知
+                  </div>
+                  <q-icon name="swap_horiz" size="1.2rem" />
+                </q-card-section>
+                <div class="row justify-center">
+                  考生在考场内必须严格遵守考场纪律，对于违反考场规定者，取消当次考试成绩。
+                </div>
+              </q-card-section>
+            </q-card-section>
+            <q-card-section class="justify-center row" style="color: #4182fa">
+              <q-icon name="keyboard_arrow_right" size="1.1rem" />
+              开始时间：{{ con.starttime }}
+            </q-card-section>
+            <q-card-section class="justify-center row" style="color: #4182fa">
+              <q-icon name="keyboard_arrow_right" size="1.1rem" />
+              截止时间：{{ con.endtime }}
+            </q-card-section>
+            <q-card-section class="justify-center row">
+              <q-btn
+                style="color: white"
+                color="red-5"
+                label="开始考试"
+                icon-right="send"
+                @click="handleExamClick(con)"
+              />
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
+    </div>
+    <div v-if="examList.length === 0 && currSelectedCourse">
+      <div class="row q-gutter-sm q-ma-sm justify-center q-my-xl">
+        <div class="col-11 col-md-6">
+          <q-card class="course-card shadow-4 biggestBoxBottom">
+              <div class="biggerBox" >
+                <div style="margin-top:100px"></div>
+                暂无考试安排，好好复习。
+              </div>
+          </q-card>
+        </div>
+      </div>
+    </div>
   </q-page>
 </template>
 
@@ -81,7 +136,7 @@ export default {
       // 当前选中的作业分类
       currSelectedExamCategory: { value: "", label: "", icon: "" },
       // 作业列表
-      homeworkList: [],
+      examList: [],
       pagination: {
         rowsPerPage: 0,
       },
@@ -98,13 +153,18 @@ export default {
       courseList: "courseList",
       currSelectedCourse: "currSelectedCourse",
     }),
-    ...mapGetters("user", {                                               
+    ...mapGetters("user", {
       isWHH: "isWHH",
       nickname: "nickname",
       username: "username",
     }),
   },
   methods: {
+    // 处理点击开始考试
+    handleExamClick(con) {
+      this.$router.push(`/examdetails/${con._id}`);
+    },
+
     //获取所有课程
     async handleGetAllCourse() {
       await this.$store.dispatch("student/getCourseList");
@@ -149,7 +209,7 @@ export default {
       if (this.currSelectedCourse === null) {
         return;
       }
-      this.homeworkList = [];
+      this.examList = [];
       this.handleGetAllCourseTypeHomeworks();
       const payload = {
         tcc_id: this.currSelectedCourse.id,
@@ -182,10 +242,10 @@ export default {
               element.isEnd = true;
             }
             element.endtime = formatTimeWithWeekDay(element.endtime);
+            element.starttime = formatTimeWithWeekDay(element.starttime);
           }
         });
-        this.homeworkList = data.data;
-        console.log(this.homeworkList);
+        this.examList = data.data;
       }
     },
 
@@ -206,7 +266,7 @@ export default {
     currSelectedCourse: {
       handler: function (newVal, oldVal) {
         if (!newVal) {
-          this.homeworkList = [];
+          this.examList = [];
         }
       },
       deep: true,
@@ -230,4 +290,29 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.bacolor {
+  background-color: #f5f5f5;
+}
+.biggestBox {
+  background-image: url(https://cyberdownload.anrunlu.net/FtD8JJ5QrfIrC1JTtI6DHd8FdYlF);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.biggestBoxBottom{
+  background-image:url(https://cyberdownload.anrunlu.net/FsSKRCDr3w9-3s1hykkoyK15QEka);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: .8;
+}
+.biggerBox{
+  height:450px;
+  color:#fff;
+  text-align: center;
+  font-size:3rem;
+  overflow: hidden;
+  font-family: "LiSu"; 
+}
+</style>

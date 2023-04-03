@@ -143,7 +143,7 @@ export default {
   ) !important; */
   background-image: url(https://cyberdownload.anrunlu.net/FmMvPHDqJ6iqPpRCJWjZHTHGZbNT);
   background-size: cover;
-  background-repeat: no-repat;
+  background-repeat: no-repeat;
   background-position: 20% 40%;
 }
 .course-card:hover {
