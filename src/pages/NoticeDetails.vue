@@ -51,7 +51,7 @@
         <div class="row justify-center">
           <q-card class="col-12 col-md-8">
             <q-card-section>
-              <div class="q-gutter-md">
+              <div id="announcement-content" class="q-gutter-md">
                 <div v-viewer v-html="announcementDetails.content"></div>
               </div>
             </q-card-section>
@@ -170,7 +170,7 @@ export default {
 </script>
 
 <style>
-.q-gutter-md img {
+#announcement-content img {
   max-width: 100% !important;
   display: block;
   margin: 0 auto;
