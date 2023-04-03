@@ -97,6 +97,9 @@ export default {
         category: "",
         content: "",
         isRead: false,
+        creator: {
+          nickname: "",
+        },
       },
     };
   },
@@ -155,6 +158,13 @@ export default {
 
   created() {
     this.getAnnouncementDetails();
+
+    // 获取路由上的isRead参数
+    const isRead = this.$route.query.isRead;
+    // 如果有isRead参数，且为true，则标记为已读
+    if (isRead === "true") {
+      this.markAnnouncementAsRead();
+    }
   },
 };
 </script>
