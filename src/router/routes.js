@@ -91,6 +91,15 @@ const routes = [
     },
   },
   {
+    path: "/examdetails/:examId",
+    component: () => import("pages/student/ExamDetails.vue"),
+    props: true,
+    meta: {
+      type: "student",
+      title: "考试详情",
+    },
+  },
+  {
     path: "/announcement/:announcementId",
     component: () => import("pages/NoticeDetails.vue"),
     props: true,

@@ -60,6 +60,11 @@ export default function () {
       { value: "课后作业", label: "课后作业", icon: "o_home_work" },
       { value: "课程实验", label: "课程实验", icon: "o_science" },
     ],
+    // 考试类型选项
+    examCategoryOptions: [
+      { value: "期中考试", label: "期中考试", icon: "o_auto_stories" },
+      { value: "期末考试", label: "期末考试", icon: "o_cast_for_education" },
+    ],
 
     // 题目类型选项
     questionTypeOptions: [

@@ -43,9 +43,6 @@
             }}</q-tooltip
           >
         </q-chip>
-        <!-- <q-btn dense flat icon="settings" @click="handleSettingsBtnClick">
-          <q-tooltip>设置</q-tooltip>
-        </q-btn> -->
         <q-btn
           v-if="!$q.platform.is.mobile"
           dense
@@ -57,15 +54,6 @@
             {{ $q.fullscreen.isActive ? "退出全屏" : "全屏" }}
           </q-tooltip>
         </q-btn>
-        <!-- <q-btn
-          dense
-          flat
-          icon="help"
-          v-if="!$q.platform.is.mobile"
-          @click.stop="handleHelpBtnClick"
-        >
-          <q-tooltip>帮助</q-tooltip>
-        </q-btn> -->
         <q-btn
           dense
           flat
@@ -78,7 +66,7 @@
       </q-bar>
     </q-header>
     <q-page-container>
-      <q-page class="q-mx-sm">
+      <q-page class="q-ma-md">
         <div class="row justify-center">
           <div class="col-12 col-md-10">
             <!-- 瀑布模式 -->
@@ -166,9 +154,9 @@ import { apiGetHomeworkInfo, apiPostAnswer } from "src/api/student/homework";
 import { pretreatmentStudentHomeworkDetails } from "src/utils/homework";
 import { formatTimeWithWeekDayAndSecond } from "src/utils/time";
 export default {
-  name: "HomeworkDetails",
+  name: "ExamkDetails",
   props: {
-    homeworkId: {
+    examId: {
       type: String,
       default: "",
     },
@@ -231,7 +219,7 @@ export default {
   methods: {
     //获取作业详情
     async handleGetHomeworkInfo() {
-      const { data } = await apiGetHomeworkInfo(this.homeworkId);
+      const { data } = await apiGetHomeworkInfo(this.examId);
       //预处理作业
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
