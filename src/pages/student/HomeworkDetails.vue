@@ -78,7 +78,7 @@
       </q-bar>
     </q-header>
     <q-page-container>
-      <q-page class="q-ma-md">
+      <q-page class="q-mx-sm">
         <div class="row justify-center">
           <div class="col-12 col-md-10">
             <!-- 瀑布模式 -->

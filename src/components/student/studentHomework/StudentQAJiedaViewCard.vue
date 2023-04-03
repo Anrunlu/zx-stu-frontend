@@ -1,8 +1,7 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
-  <div>
+  <div class="q-my-md shadow-7">
     <q-splitter
-      v-if="mode == 'focus'"
       v-model="splitterModel"
       style="height: 90vh"
       :horizontal="!$q.platform.is.desktop"
@@ -32,9 +31,11 @@
                 :label="index"
               />
             </div>
-            <q-separator spaced />
+          </q-card-section>
+          <q-card-section>
             <div v-katex v-viewer v-html="questionDetails.content"></div>
           </q-card-section>
+          <q-separator />
         </q-card>
       </template>
 
@@ -52,13 +53,12 @@
         <ckeditor
           :editor="editor"
           :config="editorConfig"
-          @blur="handlePostJieDaAnswer"
           v-model="questionDetails.studentQA[0].stuAnswer[0].content"
         ></ckeditor>
       </template>
     </q-splitter>
 
-    <q-card
+    <!-- <q-card
       v-else
       :id="questionDetails._id"
       class="q-my-sm shadow-1"
@@ -80,7 +80,6 @@
             objectName="题目"
           />
           <q-space />
-          <!-- 序号 -->
           <q-chip
             class="float-right"
             color="grey"
@@ -102,7 +101,6 @@
           questionDetails.knowledges.length != 0
         "
       >
-        <!-- 知识点区域 -->
         <div class="q-mt-md">
           <div class="row">
             <q-chip
@@ -132,7 +130,6 @@
           >{{ !questionDetails.isSubmit ? "提交" : "更新" }}
         </q-btn>
       </q-card-section>
-      <!-- 底部信息区域 -->
       <div class="q-mt-sm">
         <q-chip
           dense
@@ -147,7 +144,8 @@
           :label="`${questionDetails.studentQA[0].score}分`"
         />
       </div>
-    </q-card>
+    </q-card> -->
+    <q-separator />
   </div>
 </template>
 
