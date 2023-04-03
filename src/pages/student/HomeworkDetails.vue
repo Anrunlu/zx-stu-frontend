@@ -236,8 +236,6 @@ export default {
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
       this.questions = data.data.questions;
-      console.log(this.questions);
-      console.log(this.questions);
       this.isShowHomeworkDetails = JSON.parse(
         JSON.stringify(this.questiondatas, [
           "isShowAnswerAfterEndtime",
