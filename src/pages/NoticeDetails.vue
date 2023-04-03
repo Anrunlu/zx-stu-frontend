@@ -101,6 +101,7 @@ export default {
           nickname: "",
         },
       },
+      isReadFromQuery: "false",
     };
   },
 
@@ -152,7 +153,11 @@ export default {
     },
 
     handleCloseBtnClick() {
-      window.close();
+      if (this.isReadFromQuery == "true") {
+        window.close();
+      } else {
+        this.$router.go(-1);
+      }
     },
   },
 
@@ -161,6 +166,7 @@ export default {
 
     // 获取路由上的isRead参数
     const isRead = this.$route.query.isRead;
+    this.isReadFromQuery = isRead;
     // 如果有isRead参数，且为true，则标记为已读
     if (isRead === "true") {
       this.markAnnouncementAsRead();
