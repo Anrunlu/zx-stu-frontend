@@ -151,7 +151,7 @@ export default {
     },
 
     handleCloseBtnClick() {
-      this.$router.go(-1);
+      window.close();
     },
   },
 
