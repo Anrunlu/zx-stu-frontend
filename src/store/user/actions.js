@@ -4,7 +4,10 @@ import {
   apiLogin,
   apiModifyProfile,
 } from "src/api/auth";
-import { apiGetUnreadAnnouncementCount } from "src/api/student/announcement";
+import {
+  apiGetUnreadAnnouncementCount,
+  apiGetUnreadAnnouncementList,
+} from "src/api/student/announcement";
 import { removeToken, setToken } from "src/utils/auth";
 
 // 用户登录
@@ -16,6 +19,33 @@ export function login({ commit }, userInfo) {
         const { data } = response;
         commit("setToken", data.data.token);
         setToken(data.data.token);
+        resolve();
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+// 获取未读公告列表
+export function unreadAnnouncementList({ commit, state }) {
+  return new Promise((resolve, reject) => {
+    apiGetUnreadAnnouncementList()
+      .then((response) => {
+        const { data } = response;
+        commit("setUnreadAnnouncementCount", data.data.length);
+
+        const forceAnnouncementList = data.data.filter((item) => item.isforce);
+
+        // 如果有强制公告，就弹出强制公告
+        if (forceAnnouncementList.length > 0) {
+          const forceAnnouncement = forceAnnouncementList[0];
+          // 新标签页打开强制公告
+          const routeData = this.$router.resolve(
+            `/announcement/${forceAnnouncement._id}?isRead=true`
+          );
+          window.open(routeData.href, "_blank");
+        }
         resolve();
       })
       .catch((error) => {
@@ -65,10 +95,22 @@ export function termList({ commit, state }) {
 // 获取未读公告数量
 export function unreadAnnouncementCount({ commit, state }) {
   return new Promise((resolve, reject) => {
-    apiGetUnreadAnnouncementCount()
+    apiGetUnreadAnnouncementList()
       .then((response) => {
         const { data } = response;
-        commit("setUnreadAnnouncementCount", data.data.count);
+        commit("setUnreadAnnouncementCount", data.data.length);
+
+        const forceAnnouncementList = data.data.filter((item) => item.isforce);
+
+        // 如果有强制公告，就弹出强制公告
+        if (forceAnnouncementList.length > 0) {
+          const forceAnnouncement = forceAnnouncementList[0];
+          // 新标签页打开强制公告
+          const routeData = this.$router.resolve(
+            `/announcement/${forceAnnouncement._id}?isRead=true`
+          );
+          window.open(routeData.href, "_blank");
+        }
         resolve();
       })
       .catch((error) => {

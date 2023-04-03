@@ -34,3 +34,11 @@ export function apiMarkAnnouncementAsRead(data) {
     data,
   });
 }
+
+// 获取未读公告列表
+export function apiGetUnreadAnnouncementList() {
+  return loadingFn(request)({
+    url: `/common/announcement/unreadList`,
+    method: "POST",
+  });
+}
