@@ -20,7 +20,7 @@
       </q-bar>
     </q-header>
     <q-page-container>
-      <q-page class="q-my-md">
+      <q-page class="q-mx-md">
         <!-- 标题 -->
         <div class="row justify-center">
           <q-card class="col-12 col-md-8 q-mb-sm">
@@ -114,6 +114,7 @@ export default {
         preProcessAnnouncementDetails(data.data);
 
         this.announcementDetails = data.data;
+        console.log(this.announcementDetails);
       } catch (error) {
         console.log(error);
         this.$q.notify({
@@ -168,4 +169,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.q-gutter-md img {
+  max-width: 100% !important;
+  display: block;
+  margin: 0 auto;
+}
+</style>
