@@ -35,7 +35,7 @@
                 </div>
               </div>
               <q-separator spaced inset />
-              <div id="announcement-content" class="q-gutter-md">
+              <div id="announcement-content" class="q-gutter-md q-mt-lg">
                 <div
                   class="q-px-sm"
                   v-viewer
