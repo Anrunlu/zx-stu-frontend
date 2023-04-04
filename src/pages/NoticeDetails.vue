@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr fFf" class="bg-grey-1">
+  <q-layout view="hHh Lpr fFf" class="bg-white">
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit_note" />
@@ -20,39 +20,27 @@
       </q-bar>
     </q-header>
     <q-page-container>
-      <q-page class="q-mx-md">
-        <!-- 标题 -->
-        <div class="row justify-center">
-          <q-card class="col-12 col-md-8 q-mb-sm">
-            <q-card-section>
-              <div class="q-gutter-md">
-                <q-chip square outline>
-                  <q-avatar icon="title" color="primary" text-color="white" />
-                  {{ announcementDetails.title }}
-                </q-chip>
-                <div class="float-right">
-                  <q-btn
-                    color="grey"
-                    flat
-                    :label="announcementDetails.creator.nickname"
-                  />
-                  <q-btn
-                    color="grey"
-                    flat
-                    :label="announcementDetails.createdAt"
-                  />
-                </div>
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-
+      <q-page class="q-py-lg">
         <!-- 内容 -->
         <div class="row justify-center">
-          <q-card class="col-12 col-md-8">
+          <q-card class="col-12 col-md-9 shadow-1">
             <q-card-section>
+              <div>
+                <div class="text-h4">{{ announcementDetails.title }}</div>
+                <div class="text-grey">
+                  <span
+                    >{{ announcementDetails.creator.nickname }}
+                    {{ announcementDetails.createdAt }}</span
+                  >
+                </div>
+              </div>
+              <q-separator spaced inset />
               <div id="announcement-content" class="q-gutter-md">
-                <div v-viewer v-html="announcementDetails.content"></div>
+                <div
+                  class="q-px-sm"
+                  v-viewer
+                  v-html="announcementDetails.content"
+                ></div>
               </div>
             </q-card-section>
           </q-card>
@@ -180,5 +168,9 @@ export default {
   max-width: 100% !important;
   display: block;
   margin: 0 auto;
+}
+
+#announcement-content {
+  font-size: 1.1rem;
 }
 </style>
