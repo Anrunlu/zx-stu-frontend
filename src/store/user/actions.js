@@ -177,7 +177,10 @@ export function logout({ commit }) {
     removeToken();
     window.localStorage.clear();
     // 刷新页面
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+
     resolve();
   });
 }

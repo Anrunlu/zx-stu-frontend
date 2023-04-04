@@ -242,7 +242,9 @@ export default {
       // 退出登录后，关闭socket连接
       this.$socket.close();
       // 跳转到登录页面
-      this.$router.push(`/login`);
+      setTimeout(() => {
+        this.$router.push("/login");
+      }, 1500);
     },
 
     // 点击抽屉
