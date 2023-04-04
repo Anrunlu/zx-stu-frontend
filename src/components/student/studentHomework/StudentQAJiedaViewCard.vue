@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
-  <div class="q-my-md shadow-7">
+  <div class="q-my-md shadow-7" :id="questionDetails._id">
     <q-splitter
       v-model="splitterModel"
       style="height: 90vh"

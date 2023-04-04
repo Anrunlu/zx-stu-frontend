@@ -111,14 +111,7 @@
             />
           </q-item-section>
         </q-item>
-        <q-item v-if="questionDetails.studentQA[0].comment">
-          <q-item-section>
-            <span class="text-h5">
-              <q-chip label="教师评语" color="blue" outline />
-              {{ questionDetails.studentQA[0].comment }}</span
-            >
-          </q-item-section>
-        </q-item>
+
         <q-item
           v-if="
             isShowHomeworkDetails.isShowKnowledge &&
@@ -139,6 +132,14 @@
                 />
               </div>
             </div>
+          </q-item-section>
+        </q-item>
+        <q-item v-if="questionDetails.studentQA[0]">
+          <q-item-section v-if="questionDetails.studentQA[0].comment">
+            <span class="text-h5">
+              <q-chip label="教师评语" color="blue" outline />
+              {{ questionDetails.studentQA[0].comment }}</span
+            >
           </q-item-section>
         </q-item>
       </q-list>

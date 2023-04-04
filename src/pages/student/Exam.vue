@@ -120,6 +120,12 @@
         </div>
       </div>
     </div>
+    <!-- <CountdownTime v-slot="timeObj" :time="100">
+      <div class="count-down">
+        <div class="icon"></div>
+        {{ timeObj.hh }}:{{ timeObj.mm }}:{{ timeObj.ss }}
+      </div>
+    </CountdownTime> -->
   </q-page>
 </template>
 
@@ -143,6 +149,10 @@ export default {
       optCourse: "", //当前选择的课程
     };
   },
+  // components: {
+  //   CountdownTime: () =>
+  //     import("src/components/student/studentExam/CountdownTime.vue"),
+  // },
   computed: {
     ...mapGetters("settings", {
       tableDense: "tableDense",

@@ -95,7 +95,6 @@
                   :isShowHomeworkDetails="isShowHomeworkDetails"
                   :isActive="questionDetails._id == currQuestion._id"
                   @selectChoiceItem="handleSelectChoiceItem"
-                  @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
                 <!-- 解答题 -->
@@ -107,7 +106,6 @@
                   :isActive="questionDetails._id == currQuestion._id"
                   :mode="mode"
                   @postJieDaAnswer="handlePostJieDaAnswer"
-                  @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
               </div>
@@ -146,6 +144,10 @@
           </div>
         </div>
       </q-page>
+      <AnswerSheetCard
+        :questions="questions"
+        @questionClick="handleQuestionCardClick"
+      ></AnswerSheetCard>
     </q-page-container>
 
     <q-footer bordered class="bg-white text-primary">
@@ -218,6 +220,8 @@ export default {
       ),
     HomeworkToolbar: () =>
       import("src/components/student/studentHomework/HomeworkToolbar.vue"),
+    AnswerSheetCard: () =>
+      import("src/components/student/studentExam/AnswerSheetCard.vue"),
   },
 
   computed: {
@@ -428,10 +432,9 @@ export default {
           () => {}
         );
       }
-      if (question.type != "解答") {
-        // 定位到题目
-        this.locateQuestionNoFlash();
-      }
+
+      // 定位到题目
+      this.locateQuestionNoFlash();
     },
 
     // 切换 mode

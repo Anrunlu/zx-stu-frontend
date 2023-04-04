@@ -114,7 +114,6 @@
                   @selectChoiceItem="handleSelectChoiceItem"
                   :currQuestionIndex="currQuestionIndex"
                   :isActive="true"
-                  @questionCardClick="handleQuestionCardClick"
                   @questionCardDblClick="handleQuestionCardDblClick"
                 />
               </div>
@@ -127,13 +126,16 @@
                 :isActive="true"
                 :mode="mode"
                 @postJieDaAnswer="handlePostJieDaAnswer"
-                @questionCardClick="handleQuestionCardClick"
                 @questionCardDblClick="handleQuestionCardDblClick"
               />
             </div>
           </div>
         </div>
       </q-page>
+      <AnswerSheetCard
+        :questions="questions"
+        @questionClick="handleQuestionCardClick"
+      ></AnswerSheetCard>
     </q-page-container>
 
     <q-footer bordered class="bg-white text-primary">
@@ -206,6 +208,8 @@ export default {
       ),
     HomeworkToolbar: () =>
       import("src/components/student/studentHomework/HomeworkToolbar.vue"),
+    AnswerSheetCard: () =>
+      import("src/components/student/studentExam/AnswerSheetCard.vue"),
   },
 
   computed: {
@@ -297,7 +301,7 @@ export default {
       if (q.type === "单选" || q.type === "判断" || q.type === "多选") {
         const payload = {
           question_id: q.id,
-          homework_id: this.homeworkId,
+          homework_id: this.examId,
           questionSet_id: this.questiondatas.questionSets[0]._id,
           stuAnswer: [],
         };
@@ -327,7 +331,7 @@ export default {
       if (q.type === "填空") {
         const payload = {
           question_id: q.id,
-          homework_id: this.homeworkId,
+          homework_id: this.examId,
           questionSet_id: this.questiondatas.questionSets[0]._id,
           stuAnswer: q.answer,
         };
@@ -368,7 +372,7 @@ export default {
       //构造上传参数
       const payload = {
         question_id: q.id,
-        homework_id: this.homeworkId,
+        homework_id: this.examId,
         questionSet_id: this.questiondatas.questionSets[0]._id,
         stuAnswer: [
           {
@@ -416,10 +420,9 @@ export default {
           () => {}
         );
       }
-      if (question.type != "解答") {
-        // 定位到题目
-        this.locateQuestionNoFlash();
-      }
+
+      // 定位到题目
+      this.locateQuestionNoFlash();
     },
 
     // 切换 mode
@@ -476,9 +479,8 @@ export default {
         if (!item) {
           return;
         }
-
         // 如果是解答题或者第一个题目，使用 offset 定位
-        if (this.currQuestion.type == "解答" || this.currQuestionIndex == 0) {
+        if (this.currQuestion.type === "解答" || this.currQuestionIndex == 0) {
           const offset = item.offsetTop - 8;
           window.scrollTo({
             top: offset,
