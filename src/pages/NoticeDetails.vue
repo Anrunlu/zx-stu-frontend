@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr fFf" class="bg-grey-1">
+  <q-layout view="hHh Lpr fFf" class="bg-white">
     <q-header elevated>
       <q-bar class="bg-primary text-white shadow-1">
         <q-icon name="edit_note" />
@@ -20,39 +20,27 @@
       </q-bar>
     </q-header>
     <q-page-container>
-      <q-page class="q-mx-md">
-        <!-- 标题 -->
-        <div class="row justify-center">
-          <q-card class="col-12 col-md-8 q-mb-sm">
-            <q-card-section>
-              <div class="q-gutter-md">
-                <q-chip square outline>
-                  <q-avatar icon="title" color="primary" text-color="white" />
-                  {{ announcementDetails.title }}
-                </q-chip>
-                <div class="float-right">
-                  <q-btn
-                    color="grey"
-                    flat
-                    :label="announcementDetails.creator.nickname"
-                  />
-                  <q-btn
-                    color="grey"
-                    flat
-                    :label="announcementDetails.createdAt"
-                  />
-                </div>
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-
+      <q-page class="q-py-lg">
         <!-- 内容 -->
         <div class="row justify-center">
-          <q-card class="col-12 col-md-8">
+          <q-card class="col-12 col-md-9 shadow-1">
             <q-card-section>
-              <div id="announcement-content" class="q-gutter-md">
-                <div v-viewer v-html="announcementDetails.content"></div>
+              <div>
+                <div class="text-h4">{{ announcementDetails.title }}</div>
+                <div class="text-grey">
+                  <span
+                    >{{ announcementDetails.creator.nickname }}
+                    {{ announcementDetails.createdAt }}</span
+                  >
+                </div>
+              </div>
+              <q-separator spaced inset />
+              <div id="announcement-content" class="q-gutter-md q-mt-lg">
+                <div
+                  class="q-px-sm"
+                  v-viewer
+                  v-html="announcementDetails.content"
+                ></div>
               </div>
             </q-card-section>
           </q-card>
@@ -115,7 +103,6 @@ export default {
         preProcessAnnouncementDetails(data.data);
 
         this.announcementDetails = data.data;
-        console.log(this.announcementDetails);
       } catch (error) {
         console.log(error);
         this.$q.notify({
@@ -126,6 +113,10 @@ export default {
     },
 
     async markAnnouncementAsRead() {
+      if (this.announcementDetails.isRead) {
+        return;
+      }
+
       const payload = {
         ancmt_id: this.announcementId,
       };
@@ -161,16 +152,9 @@ export default {
     },
   },
 
-  created() {
-    this.getAnnouncementDetails();
-
-    // 获取路由上的isRead参数
-    const isRead = this.$route.query.isRead;
-    this.isReadFromQuery = isRead;
-    // 如果有isRead参数，且为true，则标记为已读
-    if (isRead === "true") {
-      this.markAnnouncementAsRead();
-    }
+  async created() {
+    await this.getAnnouncementDetails();
+    this.markAnnouncementAsRead();
   },
 };
 </script>
@@ -180,5 +164,9 @@ export default {
   max-width: 100% !important;
   display: block;
   margin: 0 auto;
+}
+
+#announcement-content {
+  font-size: 1.1rem;
 }
 </style>
