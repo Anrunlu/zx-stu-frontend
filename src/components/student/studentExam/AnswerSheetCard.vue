@@ -9,9 +9,10 @@
     <q-dialog v-model="answerSheetCardDg" persistent position="right">
       <q-card>
         <q-card-section>
-          <div class="row items-center q-gutter-sm">
-            <div v-for="(q, i) in questions" :key="i">
+          <div class="row justify-center q-gutter-sm">
+            <div class="col-1" v-for="(q, i) in questions" :key="i">
               <q-btn
+                class="fit"
                 :color="q.submited ? 'positive' : 'primary'"
                 :label="i + 1"
                 outline
@@ -26,7 +27,7 @@
             color="primary"
             icon="close"
             label="关闭答题卡"
-            outline
+            flat
             @click="handleShowAnswerSheet"
           />
         </q-card-actions>
