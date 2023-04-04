@@ -7,10 +7,10 @@
       @click="handleShowAnswerSheet"
     />
     <q-dialog v-model="answerSheetCardDg" persistent position="right">
-      <q-card>
+      <q-card style="min-width: 20rem">
         <q-card-section>
           <div class="row justify-center q-gutter-sm">
-            <div class="col-2 col-md-1" v-for="(q, i) in questions" :key="i">
+            <div class="col-2" v-for="(q, i) in questions" :key="i">
               <q-btn
                 class="fit"
                 :color="q.submited ? 'positive' : 'primary'"
