@@ -103,7 +103,6 @@ export default {
         preProcessAnnouncementDetails(data.data);
 
         this.announcementDetails = data.data;
-        console.log(this.announcementDetails);
       } catch (error) {
         console.log(error);
         this.$q.notify({
@@ -114,6 +113,10 @@ export default {
     },
 
     async markAnnouncementAsRead() {
+      if (this.announcementDetails.isRead) {
+        return;
+      }
+
       const payload = {
         ancmt_id: this.announcementId,
       };
@@ -149,8 +152,8 @@ export default {
     },
   },
 
-  created() {
-    this.getAnnouncementDetails();
+  async created() {
+    await this.getAnnouncementDetails();
     this.markAnnouncementAsRead();
   },
 };
