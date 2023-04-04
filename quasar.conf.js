@@ -66,7 +66,7 @@ module.exports = function (ctx) {
           : "https://v2.api.z-xin.net/",
         QINIUCDN: "https://cyberdownload.anrunlu.net/",
         TOKEN_KEY: "zx_stu_token",
-        APP_VERSION: "2.1.1",
+        APP_VERSION: "2.1.3",
       },
 
       // env: {
