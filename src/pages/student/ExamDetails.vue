@@ -147,6 +147,9 @@
         @prevQuestion="handlePrevQuestion"
       />
     </q-footer>
+
+    <!-- 实时通知组件 -->
+    <ImmediatelyAncmt />
   </q-layout>
 </template>
 
@@ -210,6 +213,8 @@ export default {
       import("src/components/student/studentHomework/HomeworkToolbar.vue"),
     AnswerSheetCard: () =>
       import("src/components/student/studentExam/AnswerSheetCard.vue"),
+    ImmediatelyAncmt: () =>
+      import("src/components/common/ImmediatelyAncmt.vue"),
   },
 
   computed: {
