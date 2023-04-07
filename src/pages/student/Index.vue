@@ -154,4 +154,7 @@ export default {
   ) !important;
   cursor: pointer;
 }
+.course-card-whh:hover {
+  cursor: pointer;
+}
 </style>
