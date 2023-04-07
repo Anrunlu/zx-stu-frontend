@@ -39,6 +39,16 @@
             round
             dense
             flat
+            color="pink-4"
+            icon="color_lens"
+            @click="hanldeChangeThemeClick"
+          >
+            <q-tooltip>主题测试</q-tooltip>
+          </q-btn>
+          <q-btn
+            round
+            dense
+            flat
             color="grey-8"
             icon="notifications"
             to="notice"
@@ -194,7 +204,6 @@
 <script>
 import { openAuthedSocket } from "src/utils/socketio";
 import { mapGetters } from "vuex";
-import { setLayout } from "src/utils/layout";
 import Tucao from "src/utils/tucao";
 export default {
   data() {
@@ -280,6 +289,12 @@ export default {
         Tucao.request(productId, payload);
       }
     },
+
+    //切换主题
+    hanldeChangeThemeClick() {
+      this.$store.commit("user/setIsWHH", !this.isWHH);
+    },
+    
   },
 
   sockets: {
