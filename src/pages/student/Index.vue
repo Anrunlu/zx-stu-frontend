@@ -53,17 +53,65 @@
     <q-dialog v-model="changeTermDig" persistent>
       <ChangeTermCard />
     </q-dialog>
+
+    <q-dialog v-model="isBindEmail" persistent>
+      <q-card style="width: 500px; max-width: 80vw">
+        <q-item>
+          <q-item-section>
+            <q-bar class="bg-white">
+              <span>检测到您未绑定邮箱,请绑定邮箱</span>
+              <q-space />
+              <q-btn
+                dense
+                flat
+                icon="close"
+                color="black"
+                @click="isBindEmail = false"
+              >
+                <q-tooltip>关闭</q-tooltip>
+              </q-btn>
+            </q-bar>
+          </q-item-section>
+        </q-item>
+        <q-card-section>
+          <q-card-section>
+            <q-form class="q-gutter-sm">
+              <q-input v-model="username" type="text" label="账号" outlined>
+                <template v-slot:prepend>
+                  <q-icon name="fingerprint" />
+                </template>
+              </q-input>
+              <q-input v-model="email" type="text" label="邮箱" outlined>
+                <template v-slot:prepend> <q-icon name="email" /> </template
+              ></q-input>
+            </q-form>
+          </q-card-section>
+          <q-card-actions vertical align="right">
+            <q-btn
+              color="primary"
+              icon="check"
+              label="绑定"
+              @click="handleBindEmailClick"
+            />
+          </q-card-actions>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import { apiGetProfile } from "src/api/auth";
 import { mapGetters } from "vuex";
+import { apiBindEmail } from "src/api/common";
 export default {
   name: "Index",
   data() {
     return {
       changeTermDig: false,
       dataLodingFinished: false,
+      isBindEmail: false,
+      email: "",
     };
   },
 
@@ -98,9 +146,49 @@ export default {
         this.dataLodingFinished = true;
       }, 1000);
     },
+
+    // 获取个人信息
+    async getUserProfile() {
+      const { data } = await apiGetProfile();
+      if (data.data.email === "") {
+        this.isBindEmail = true;
+      }
+    },
+
+    //绑定邮箱
+    async BindEmail() {
+      const payload = {
+        username: this.username,
+        email: this.email,
+      };
+      const { data } = await apiBindEmail(payload);
+      if (data.code == 2000) {
+        this.$q.notify({
+          message: `邮箱绑定成功`,
+          color: "positive",
+          icon: "sentiment_satisfied_alt",
+          position: "bottom",
+          timeout: 500,
+        });
+        this.isBindEmail = false;
+      }
+    },
+
+    //点击绑定邮箱
+    handleBindEmailClick() {
+      if (this.username === "" || this.email === "") {
+        this.$q.notify({
+          message: "账号或邮箱不可为空",
+          type: "warning",
+        });
+        return;
+      }
+      this.BindEmail();
+    },
   },
   created() {
     this.handleGetCourse();
+    this.getUserProfile();
     if (this.username === "2021412984" && this.nickname === "王寒寒") {
       this.$store.commit("user/setIsWHH", true);
     }

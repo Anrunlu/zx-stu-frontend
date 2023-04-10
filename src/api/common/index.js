@@ -33,3 +33,20 @@ export function apiUpdatePassword(data) {
     data
   });
 }
+
+// 验证是否绑定邮箱
+export function apiCheckIsBindEmail(data) {
+  return loadingFn(request)({
+    url: "/auth/cache/checkIsBindEmail",
+    method: "post",
+    data
+  });
+}
+// 绑定邮箱
+export function apiBindEmail(data) {
+  return loadingFn(request)({
+    url: "/auth/cache/bindEmail",
+    method: "post",
+    data
+  });
+}

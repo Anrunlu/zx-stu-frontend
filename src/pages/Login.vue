@@ -367,6 +367,16 @@ export default {
         });
         return;
       }
+      if (this.code === "") {
+        this.$q.notify({
+          message: `验证码不可为空`,
+          timeout: 300,
+          color: "negative",
+          icon: "error",
+          position: "bottom",
+        });
+        return;
+      }
       this.updatePassword();
     },
     //发送验证码
@@ -399,6 +409,7 @@ export default {
       return true;
     },
 
+    //修改密码
     async updatePassword() {
       const res = await this.verifyCode();
       if (!res) {
