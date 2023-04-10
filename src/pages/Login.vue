@@ -68,13 +68,18 @@
                     />
                   </template>
                 </q-input>
-                <!-- <div class="row justify-between items-center">
-                  <q-checkbox left-label label="记住我" v-model="isRemeberMe" />
+                <div class="row justify-between items-center">
+                  <!-- <q-checkbox left-label label="记住我" v-model="isRemeberMe" /> -->
 
                   <div class="col">
-                    <a class="float-right">忘记密码</a>
+                    <a
+                      class="float-right"
+                      style="cursor: pointer"
+                      @click="handleForgetPwdClick"
+                      >忘记密码</a
+                    >
                   </div>
-                </div> -->
+                </div>
                 <!-- 登录按钮 -->
                 <q-btn
                   class="full-width q-mt-sm"
@@ -107,24 +112,166 @@
           </div>
         </div>
       </q-page>
+      <q-dialog v-model="emailDig" persistent>
+        <q-card style="width: 500px; max-width: 80vw">
+          <q-item>
+            <q-item-section>
+              <q-bar class="bg-white">
+                <span>修改密码</span>
+                <q-space />
+                <!-- 关闭按钮 -->
+                <q-btn
+                  dense
+                  flat
+                  icon="close"
+                  color="black"
+                  @click="emailDig = false"
+                >
+                  <q-tooltip>关闭</q-tooltip>
+                </q-btn>
+              </q-bar>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-form class="q-gutter-md">
+              <q-input
+                class="col q-pl-sm"
+                v-model="user.username"
+                type="text"
+                label="用户名"
+                square
+                outlined
+                dense
+                hide-bottom-space
+              >
+                <template v-slot:prepend>
+                  <q-icon name="fingerprint" /> </template
+              ></q-input>
+              <q-input
+                class="col q-pl-sm"
+                v-model="user.email"
+                type="text"
+                label="邮箱"
+                square
+                outlined
+                dense
+                hide-bottom-space
+              >
+                <template v-slot:prepend> <q-icon name="email" /> </template
+              ></q-input>
+              <!-- 密码修改 -->
+              <q-input
+                class="col q-pl-sm"
+                dense
+                outlined
+                square
+                :type="isShowPwd ? 'password' : 'text'"
+                label="新密码"
+                v-model="user.password"
+                hint="密码必须同时包含数字字母和特殊字符且长度大于6位"
+                hide-bottom-space
+              >
+                <template v-slot:prepend>
+                  <q-icon name="vpn_key" />
+                </template>
+                <template v-slot:append>
+                  <q-icon
+                    :name="isShowPwd ? 'visibility_off' : 'visibility'"
+                    @click="isShowPwd = !isShowPwd"
+                  />
+                </template>
+              </q-input>
+              <q-input
+                class="col q-pl-sm"
+                dense
+                outlined
+                square
+                :type="isShowPwd ? 'password' : 'text'"
+                label="确认密码"
+                v-model="user.confirmPassword"
+                hide-bottom-space
+              >
+                <template v-slot:prepend>
+                  <q-icon name="vpn_key" />
+                </template>
+                <template v-slot:append>
+                  <q-icon
+                    :name="isShowPwd ? 'visibility_off' : 'visibility'"
+                    @click="isShowPwd = !isShowPwd"
+                  />
+                </template>
+              </q-input>
+              <div class="row">
+                <q-input
+                  v-model="code"
+                  type="text"
+                  label="请输入验证码"
+                  square
+                  outlined
+                  dense
+                  class="col-6 q-ml-sm"
+                />
+                <q-btn
+                  class="col-5 q-ml-sm"
+                  color="primary"
+                  icon="send"
+                  :label="
+                    canSendCode ? '发送验证码' : `重新发送(${countDown}s)`
+                  "
+                  :disable="!canSendCode"
+                  @click="handleSendCodeBtnClick"
+                />
+              </div>
+              <div>
+                <q-btn
+                  class="q-ml-sm"
+                  icon="cloud_upload"
+                  label="修改密码"
+                  color="primary"
+                  @click="handleUpdatePasswordClick"
+                />
+              </div>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import { Base64 } from "js-base64";
+import {
+  apiSendUserEmail,
+  apiUpdatePassword,
+  apiVerifyCode,
+} from "src/api/common";
+import { getPwdLevel } from "src/utils/auth";
 export default {
   name: "Login",
   data() {
     return {
-      isShowPwd: true,
+      isShowPwd: false,
       feedBackDig: false,
+      emailDig: false,
       isRemeberMe: false,
       // 登录信息
       userLoginDto: {
         username: "",
         password: "",
       },
+      //修改密码
+      user: {
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+      },
+      code: "",
+      //验证码or倒计时
+      canSendCode: true,
+      //验证码倒计时
+      countDown: 60,
     };
   },
 
@@ -157,6 +304,126 @@ export default {
       this.$router
         .push(this.$route.query.redirect || "/index")
         .catch((e) => {});
+    },
+
+    //点击忘记密码
+    handleForgetPwdClick() {
+      this.emailDig = true;
+    },
+
+    //点击发送验证码
+    handleSendCodeBtnClick() {
+      if (this.user.username === "" || this.user.email === "") {
+        this.$q.notify({
+          message: "账号或邮箱不可为空",
+          type: "warning",
+        });
+        return;
+      } else {
+        if (this.canSendCode) {
+          this.code = "";
+          this.sendCodeByemail();
+        }
+      }
+      this.canSendCode = false;
+      this.countDown = 60;
+      const timer = setInterval(() => {
+        if (this.countDown <= 0) {
+          clearInterval(timer);
+          this.canSendCode = true;
+        } else {
+          this.countDown--;
+        }
+      }, 1000);
+    },
+
+    //点击修改密码
+    handleUpdatePasswordClick() {
+      if (this.user.password === "" || this.user.confirmPassword === "") {
+        this.$q.notify({
+          message: `密码不可为空`,
+          timeout: 300,
+          color: "negative",
+          icon: "error",
+          position: "bottom",
+        });
+        return;
+      }
+      // 判断密码强度
+      if (getPwdLevel(this.user.password) < 3) {
+        this.$q.notify({
+          message: "密码必须同时包含数字字母和特殊字符且长度大于6位",
+          type: "negative",
+        });
+        return;
+      }
+      if (this.user.password != this.user.confirmPassword) {
+        this.$q.notify({
+          message: `两次密码不一致`,
+          timeout: 300,
+          color: "negative",
+          icon: "error",
+          position: "bottom",
+        });
+        return;
+      }
+      this.updatePassword();
+    },
+    //发送验证码
+    async sendCodeByemail() {
+      const payload = {
+        email: this.user.email,
+        username: this.user.username,
+      };
+      await apiSendUserEmail(payload);
+      // 提示发送成功
+      this.$q.notify({
+        message: "验证码发送成功",
+        type: "positive",
+      });
+    },
+
+    // 校验验证码
+    async verifyCode() {
+      // 构造参数
+      const payload = {
+        username: this.user.username,
+        code: this.code,
+      };
+
+      const { data } = await apiVerifyCode(payload);
+
+      if (!data.data.code) {
+        return false;
+      }
+      return true;
+    },
+
+    async updatePassword() {
+      const res = await this.verifyCode();
+      if (!res) {
+        // 提示验证码错误
+        this.$q.notify({
+          message: "验证码错误",
+          type: "negative",
+        });
+        return;
+      }
+      const payload = {
+        username: this.user.username,
+        password: this.user.confirmPassword,
+      };
+      const { data } = await apiUpdatePassword(payload);
+      if (data.code === 2000) {
+        this.$q.notify({
+          message: `密码修改成功，请登录`,
+          color: "positive",
+          icon: "sentiment_satisfied_alt",
+          position: "bottom",
+          timeout: 2000,
+        });
+        this.emailDig = false;
+      }
     },
   },
 };
