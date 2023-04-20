@@ -150,7 +150,7 @@ export default {
     // 获取个人信息
     async getUserProfile() {
       const { data } = await apiGetProfile();
-      if (data.data.email === "") {
+      if (!data.data.email) {
         this.isBindEmail = true;
       }
     },
