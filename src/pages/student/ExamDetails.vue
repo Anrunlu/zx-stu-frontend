@@ -388,7 +388,7 @@ export default {
       const { data } = await apiPostAnswer(payload);
       // 更新作答状态
       if (data.code === 2000) {
-        q.isSubmit = true;
+        q.submited = true;
         q.lastSubmitedTime = formatTimeWithWeekDayAndSecond(new Date());
         this.$q.notify({
           type: "positive",
