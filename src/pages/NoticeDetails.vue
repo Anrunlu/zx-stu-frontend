@@ -103,6 +103,8 @@ export default {
         preProcessAnnouncementDetails(data.data);
 
         this.announcementDetails = data.data;
+
+        this.isLink();
       } catch (error) {
         console.log(error);
         this.$q.notify({
@@ -136,6 +138,14 @@ export default {
           message: "标记已读失败",
           type: "negative",
         });
+      }
+    },
+
+    // 判断是否链接类型的公告
+    isLink() {
+      // 如果是链接类型，直接跳转
+      if (this.announcementDetails.category === "链接") {
+        window.open(this.announcementDetails.content);
       }
     },
 
