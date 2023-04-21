@@ -12,8 +12,17 @@
           <div class="row justify-center q-gutter-sm">
             <div class="col-2" v-for="(q, i) in questions" :key="i">
               <q-btn
+                v-if="q.type != '解答'"
                 class="fit"
                 :color="q.submited ? 'positive' : 'primary'"
+                :label="i + 1"
+                outline
+                @click="handleClickAnswerSheetItem(q)"
+              />
+              <q-btn
+                v-else
+                class="fit"
+                :color="q.isSubmit ? 'positive' : 'primary'"
                 :label="i + 1"
                 outline
                 @click="handleClickAnswerSheetItem(q)"
