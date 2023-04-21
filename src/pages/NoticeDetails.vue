@@ -104,6 +104,8 @@ export default {
 
         this.announcementDetails = data.data;
 
+        this.isHtmlIncludeScriptTag();
+
         this.isLink();
       } catch (error) {
         console.log(error);
@@ -141,11 +143,34 @@ export default {
       }
     },
 
+    async loadScriptTag(src) {
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      document.body.appendChild(script);
+    },
+
     // 判断是否链接类型的公告
     isLink() {
       // 如果是链接类型，直接跳转
       if (this.announcementDetails.category === "链接") {
         window.open(this.announcementDetails.content);
+      }
+    },
+
+    isHtmlIncludeScriptTag() {
+      if (this.announcementDetails.category === "HTML") {
+        // 判断 htmlContent 是否包含 script 标签
+        const reg0 = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+        const isScript = reg0.test(this.announcementDetails.content);
+
+        if (isScript) {
+          // 解析标签中的 src 属性
+          const htmlContent = this.announcementDetails.content;
+          const reg1 = /src="([^"]*)"/g;
+          const src = reg1.exec(htmlContent)[1];
+          this.loadScriptTag(src);
+        }
       }
     },
 

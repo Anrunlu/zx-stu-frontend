@@ -131,6 +131,7 @@ export default function () {
       { icon: "o_schema", value: "教师通知", label: "教师通知" },
       { icon: "o_schema", value: "管理员通知", label: "管理员通知" },
       { icon: "o_link", value: "链接", label: "链接" },
+      { value: "HTML", label: "HTML", icon: "o_science" },
     ],
   };
 }
