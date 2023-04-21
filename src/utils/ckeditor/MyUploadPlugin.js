@@ -1,4 +1,5 @@
 import qiniuUpload from "src/utils/qiniu";
+import { Loading, QSpinnerGears } from "quasar";
 
 // 图片上传适配器，用于将图片上传到七牛云
 export class MyUploadAdapter {
@@ -13,12 +14,19 @@ export class MyUploadAdapter {
     this.uploader = await qiniuUpload(file);
     return new Promise((resolve, reject) => {
       this.uploader.subscribe(
-        () => {},
+        (res) => {
+          // 用于显示上传进度
+          Loading.show({
+            spinner: QSpinnerGears,
+            message: `上传中...${Math.floor(res.total.percent)}%`,
+          });
+        },
         (error) => {
           console.error(error);
           return reject(error);
         },
         (data) => {
+          Loading.hide();
           return resolve({
             default: process.env.QINIUCDN + data.key,
           });
