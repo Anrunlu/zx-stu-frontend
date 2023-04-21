@@ -10,6 +10,10 @@ export class MyUploadAdapter {
 
   // 通过这个方法，会把上传到服务器的文件地址展示到编辑器中
   async upload() {
+    Loading.show({
+      spinner: QSpinnerGears,
+      message: `上传中...%`,
+    });
     const file = await this.loader.file;
     this.uploader = await qiniuUpload(file);
     return new Promise((resolve, reject) => {
