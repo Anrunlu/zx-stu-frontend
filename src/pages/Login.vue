@@ -299,8 +299,8 @@ export default {
           timeout: 1500,
         });
       }, 500);
+
       //记住密码
-      console.log(this.isRemeberMe);
       if (this.isRemeberMe) {
         let localInfo = JSON.stringify(userInfo);
         localStorage.setItem("zx_info", localInfo);
