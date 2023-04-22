@@ -62,7 +62,7 @@
                   </template>
                   <template v-slot:append>
                     <q-icon
-                      :name="isShowPwd ? 'visibility_off' : 'visibility'"
+                      :name="isShowPwd ? 'visibility' : 'visibility_off'"
                       class="cursor-pointer"
                       @click="isShowPwd = !isShowPwd"
                     />
