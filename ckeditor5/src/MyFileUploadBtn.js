@@ -7,8 +7,8 @@ import { v4 as uuidv4 } from "uuid";
 import Cookies from "js-cookie";
 
 function getToken() {
-  return Cookies.get(process.env.TOKEN_KEY) || "";
-  // return localStorage.getItem(process.env.TOKEN_KEY) || "";
+  // return Cookies.get(process.env.TOKEN_KEY) || "";
+  return localStorage.getItem(process.env.TOKEN_KEY) || "";
 }
 
 // FIXME:baseURL 需要按需要修改
