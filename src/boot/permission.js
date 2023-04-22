@@ -27,6 +27,8 @@ export default ({ router, store, Vue }) => {
 
     const hasToken = getToken();
 
+    console.log(hasToken);
+
     if (hasToken) {
       // 如果本地有 token
 

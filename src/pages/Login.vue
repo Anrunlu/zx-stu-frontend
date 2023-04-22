@@ -53,7 +53,7 @@
                   class="logon-input"
                   bottom-slots
                   label="密码"
-                  :type="isShowPwd ? 'password' : 'text'"
+                  :type="isShowPwd ? 'text' : 'password'"
                   v-model="userLoginDto.password"
                   @keyup.enter.native="handleLogin"
                 >
