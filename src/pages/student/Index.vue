@@ -74,6 +74,7 @@
           </q-item-section>
         </q-item>
         <q-card-section>
+         <CardBar title="检测到您未绑定邮箱，请绑定" icon="transfer_within_a_station"/>
           <q-card-section>
             <q-form class="q-gutter-sm">
               <q-input v-model="username" type="text" label="账号" outlined>
@@ -117,6 +118,9 @@ export default {
 
   components: {
     ChangeTermCard: () => import("src/components/common/ChangeTermCard.vue"),
+    CardBar: () =>
+      import("src/components/common/CardBar.vue"),
+
   },
 
   computed: {

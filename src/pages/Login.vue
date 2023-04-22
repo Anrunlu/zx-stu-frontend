@@ -114,24 +114,7 @@
       </q-page>
       <q-dialog v-model="emailDig" persistent>
         <q-card style="width: 500px; max-width: 80vw">
-          <q-item>
-            <q-item-section>
-              <q-bar class="bg-white">
-                <span>修改密码</span>
-                <q-space />
-                <!-- 关闭按钮 -->
-                <q-btn
-                  dense
-                  flat
-                  icon="close"
-                  color="black"
-                  @click="emailDig = false"
-                >
-                  <q-tooltip>关闭</q-tooltip>
-                </q-btn>
-              </q-bar>
-            </q-item-section>
-          </q-item>
+          <CardBar title="忘记密码" icon="transfer_within_a_station"/>
           <q-card-section>
             <q-form class="q-gutter-md">
               <q-input
@@ -274,7 +257,10 @@ export default {
       countDown: 60,
     };
   },
-
+  components: {
+    CardBar: () =>
+      import("src/components/common/CardBar.vue"),
+  },
   methods: {
     // 处理用户登录
     async handleLogin() {
