@@ -53,7 +53,7 @@
                   class="logon-input"
                   bottom-slots
                   label="密码"
-                  :type="isShowPwd ? 'password' : 'text'"
+                  :type="isShowPwd ? 'text' : 'password'"
                   v-model="userLoginDto.password"
                   @keyup.enter.native="handleLogin"
                 >
@@ -62,7 +62,7 @@
                   </template>
                   <template v-slot:append>
                     <q-icon
-                      :name="isShowPwd ? 'visibility_off' : 'visibility'"
+                      :name="isShowPwd ? 'visibility' : 'visibility_off'"
                       class="cursor-pointer"
                       @click="isShowPwd = !isShowPwd"
                     />
