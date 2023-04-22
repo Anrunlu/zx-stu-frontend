@@ -69,7 +69,7 @@
                   </template>
                 </q-input>
                 <div class="row justify-between items-center">
-                  <!-- <q-checkbox left-label label="记住我" v-model="isRemeberMe" /> -->
+                  <q-checkbox left-label label="记住我" v-model="isRemeberMe" />
 
                   <div class="col">
                     <a
@@ -283,7 +283,6 @@ export default {
         username: Base64.encode(this.userLoginDto.username),
         password: Base64.encode(this.userLoginDto.password),
       };
-
       // // 执行用户登录动作
       await this.$store.dispatch("user/login", userInfo);
 
@@ -300,7 +299,12 @@ export default {
           timeout: 1500,
         });
       }, 500);
-
+      //记住密码
+      console.log(this.isRemeberMe);
+      if (this.isRemeberMe) {
+        let localInfo = JSON.stringify(userInfo);
+        localStorage.setItem("zx_info", localInfo);
+      }
       this.$router
         .push(this.$route.query.redirect || "/index")
         .catch((e) => {});
@@ -436,6 +440,18 @@ export default {
         this.emailDig = false;
       }
     },
+
+    //获取本地存储信息
+    getLocalInfo() {
+      if (localStorage.getItem("zx_info") != null) {
+        const getLocalInfo = JSON.parse(localStorage.getItem("zx_info"));
+        this.userLoginDto.username = Base64.decode(getLocalInfo.username);
+        this.userLoginDto.password = Base64.decode(getLocalInfo.password);
+      }
+    },
+  },
+  created() {
+    this.getLocalInfo();
   },
 };
 </script>
