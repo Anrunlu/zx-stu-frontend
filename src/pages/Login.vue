@@ -31,9 +31,9 @@
             <q-card>
               <q-card-section class="row justify-between items-end">
                 <div class="text-h5 col">登录</div>
-                <div class="col desktop-only">
+                <!-- <div class="col desktop-only">
                   <a class="float-right">扫码登录</a>
-                </div>
+                </div> -->
               </q-card-section>
               <q-card-section>
                 <!-- 用户名 -->
@@ -114,7 +114,7 @@
       </q-page>
       <q-dialog v-model="emailDig" persistent>
         <q-card style="width: 500px; max-width: 80vw">
-          <CardBar title="忘记密码" icon="transfer_within_a_station"/>
+          <CardBar title="忘记密码" icon="transfer_within_a_station" />
           <q-card-section>
             <q-form class="q-gutter-md">
               <q-input
@@ -258,8 +258,7 @@ export default {
     };
   },
   components: {
-    CardBar: () =>
-      import("src/components/common/CardBar.vue"),
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
   methods: {
     // 处理用户登录
