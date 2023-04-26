@@ -39,6 +39,11 @@ export default function () {
       { icon: "o_notifications", label: "消息中心", to: "notice" },
       { icon: "o_settings", label: "个人设置", to: "profile" },
       {
+        icon: "o_forum",
+        label: "知新社区",
+        href: "https://bbs.anrunlu.net",
+      },
+      {
         icon: "o_quiz",
         label: "问题反馈",
         href: "https://support.qq.com/products/450375",
