@@ -41,7 +41,7 @@ export default function () {
       {
         icon: "o_forum",
         label: "知新社区",
-        href: "https://bbs.anrunlu.net",
+        href: "https://bbs.z-xin.net",
       },
       {
         icon: "o_quiz",
