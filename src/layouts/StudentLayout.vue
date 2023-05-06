@@ -189,6 +189,15 @@
     <!-- 主体 -->
     <q-page-container class="GPL__page-container">
       <router-view />
+      <q-page-sticky
+        v-if="$q.screen.gt.sm"
+        position="bottom-right"
+        :offset="[10, 88]"
+      >
+        <q-btn round color="accent" icon="o_forum" href="https://bbs.z-xin.net">
+          <q-tooltip> 知新社区 </q-tooltip>
+        </q-btn>
+      </q-page-sticky>
     </q-page-container>
 
     <!-- 切换学期对话框 -->
@@ -294,7 +303,6 @@ export default {
     hanldeChangeThemeClick() {
       this.$store.commit("user/setIsWHH", !this.isWHH);
     },
-    
   },
 
   sockets: {
