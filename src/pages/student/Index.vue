@@ -56,37 +56,22 @@
 
     <q-dialog v-model="isBindEmail" persistent>
       <q-card style="width: 500px; max-width: 80vw">
-        <q-item>
-          <q-item-section>
-            <q-bar class="bg-white">
-              <span>检测到您未绑定邮箱,请绑定邮箱</span>
-              <q-space />
-              <q-btn
-                dense
-                flat
-                icon="close"
-                color="black"
-                @click="isBindEmail = false"
-              >
-                <q-tooltip>关闭</q-tooltip>
-              </q-btn>
-            </q-bar>
-          </q-item-section>
-        </q-item>
+        <CardBar
+          title="检测到您未绑定邮箱，请绑定"
+          icon="transfer_within_a_station"
+        />
         <q-card-section>
-         <CardBar title="检测到您未绑定邮箱，请绑定" icon="transfer_within_a_station"/>
-          <q-card-section>
-            <q-form class="q-gutter-sm">
-              <q-input v-model="username" type="text" label="账号" outlined>
-                <template v-slot:prepend>
-                  <q-icon name="fingerprint" />
-                </template>
-              </q-input>
-              <q-input v-model="email" type="text" label="邮箱" outlined>
-                <template v-slot:prepend> <q-icon name="email" /> </template
-              ></q-input>
-            </q-form>
-          </q-card-section>
+          <q-form class="q-gutter-sm">
+            <q-input v-model="username" type="text" label="账号" outlined>
+              <template v-slot:prepend>
+                <q-icon name="fingerprint" />
+              </template>
+            </q-input>
+            <q-input v-model="email" type="text" label="邮箱" outlined>
+              <template v-slot:prepend> <q-icon name="email" /> </template
+            ></q-input>
+          </q-form>
+
           <q-card-actions vertical align="right">
             <q-btn
               color="primary"
@@ -118,9 +103,7 @@ export default {
 
   components: {
     ChangeTermCard: () => import("src/components/common/ChangeTermCard.vue"),
-    CardBar: () =>
-      import("src/components/common/CardBar.vue"),
-
+    CardBar: () => import("src/components/common/CardBar.vue"),
   },
 
   computed: {
