@@ -15,7 +15,7 @@
     "@ckeditor/ckeditor5-vue2": "^3.0.1",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
-    "ckeditor5": "^36.0.1",
+    "ckeditor5": "^37.1.0",
     "ckeditor5-custom-build": "./ckeditor5",
     "core-js": "^3.6.5",
     "driver.js": "^0.9.8",
