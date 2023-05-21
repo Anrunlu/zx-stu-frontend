@@ -274,6 +274,7 @@ export default {
             "alignment",
             "|",
             "math",
+            "link",
             "codeBlock",
             "imageUpload",
             "uploadFile",
