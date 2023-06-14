@@ -62,7 +62,7 @@ module.exports = function (ctx) {
 
       env: {
         API_URL: ctx.dev
-          ? "http://anrunlu-test.com/"
+          ? "https://v2.api.z-xin.net/"
           : "https://v2.api.z-xin.net/",
         QINIUCDN: "https://cyberdownload.anrunlu.net/",
         TOKEN_KEY: "zx_stu_token",
@@ -143,7 +143,10 @@ module.exports = function (ctx) {
     // https://v1.quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
       workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
-      workboxOptions: {}, // only for GenerateSW
+      workboxOptions: {
+        skipWaiting: true,
+        clientsClaim: true,
+      }, // only for GenerateSW
       manifest: {
         name: `知新2`,
         short_name: `知新2`,
@@ -154,28 +157,23 @@ module.exports = function (ctx) {
         theme_color: "#027be3",
         icons: [
           {
-            src: "icons/icon-128x128.png",
+            src: "icons/favicon-16x16.png",
+            sizes: "16x16",
+            type: "image/png",
+          },
+          {
+            src: "icons/favicon-32x32.png",
+            sizes: "32x32",
+            type: "image/png",
+          },
+          {
+            src: "icons/favicon-64x64.png",
+            sizes: "64x64",
+            type: "image/png",
+          },
+          {
+            src: "icons/favicon-128x128.png",
             sizes: "128x128",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-256x256.png",
-            sizes: "256x256",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-384x384.png",
-            sizes: "384x384",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-512x512.png",
-            sizes: "512x512",
             type: "image/png",
           },
         ],
