@@ -148,32 +148,37 @@ module.exports = function (ctx) {
         clientsClaim: true,
       }, // only for GenerateSW
       manifest: {
-        name: `知新2`,
-        short_name: `知新2`,
-        description: `知新2`,
+        name: `知新学生端`,
+        short_name: `知新学生端`,
+        description: `知新学生端`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
         theme_color: "#027be3",
         icons: [
           {
-            src: "icons/favicon-16x16.png",
-            sizes: "16x16",
+            src: "icons/favicon-512x512.png",
+            sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "icons/favicon-32x32.png",
-            sizes: "32x32",
+            src: "icons/favicon-384x384.png",
+            sizes: "384x384",
             type: "image/png",
           },
           {
-            src: "icons/favicon-64x64.png",
-            sizes: "64x64",
+            src: "icons/favicon-256x256.png",
+            sizes: "256x256",
             type: "image/png",
           },
           {
-            src: "icons/favicon-128x128.png",
-            sizes: "128x128",
+            src: "icons/favicon-144x144.png",
+            sizes: "144x144",
+            type: "image/png",
+          },
+          {
+            src: "icons/apple-icon-180x180.png",
+            sizes: "180x180",
             type: "image/png",
           },
         ],
