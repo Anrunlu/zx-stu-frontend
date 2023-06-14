@@ -118,6 +118,7 @@ Editor.defaultConfig = {
       "uploadFile",
       "blockQuote",
       "insertTable",
+      "link",
       "|",
       "findAndReplace",
       "undo",

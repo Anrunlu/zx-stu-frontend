@@ -1,5 +1,6 @@
 import uploadWrapper from "src/utils/qiniu";
 import { v4 as uuidv4 } from "uuid";
+import { Loading, QSpinnerGears } from "quasar";
 
 // 剪切板适配器
 export function MyClipboardAdapterPlugin(editor) {
@@ -44,12 +45,16 @@ export function MyClipboardAdapterPlugin(editor) {
           uploader.subscribe(
             (res) => {
               // 用于显示上传进度
-              // console.log(res);
+              Loading.show({
+                spinner: QSpinnerGears,
+                message: `上传中...${Math.floor(res.total.percent)}%`,
+              });
             },
             (error) => {
               console.error(error);
             },
             (data) => {
+              Loading.hide();
               // console.log("上传成功");
             }
           );
