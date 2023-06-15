@@ -110,7 +110,12 @@
               @blur="handleSelectChoiceItem(questionDetails, option)"
             />
           </q-item-section>
-          <q-item-section v-if="questionDetails.type == '填空'">
+          <q-item-section
+            v-if="
+              questionDetails.type == '填空' &&
+              isShowHomeworkDetails.isShowAnswerAfterEndtime
+            "
+          >
             <div
               class="text-body2 option text-green-5"
               v-katex
