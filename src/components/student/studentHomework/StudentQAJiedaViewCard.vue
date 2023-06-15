@@ -255,8 +255,10 @@ export default {
       this.$emit("postJieDaAnswer", this.questionDetails);
     },
   },
+
   computed: {
     editorConfig() {
+      const that = this;
       return {
         toolbar: {
           items: [
@@ -287,6 +289,10 @@ export default {
           ],
         },
         extraPlugins: [MyClipboardAdapterPlugin, MyCustomUploadAdapterPlugin],
+        // autosave: {
+        //   waitingTime: 1000,
+        //   save(editor) {},
+        // },
       };
     },
     questionOptionEditorConfig() {
