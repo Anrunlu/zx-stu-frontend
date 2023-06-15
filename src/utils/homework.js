@@ -114,6 +114,7 @@ export function pretreatmentChoiceQuestions(choiceQuestions) {
 export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
   const res = fillBlankQuestions.map((q) => {
     q.answer = q.answer.map((a) => {
+      a.RightContent = a.content;
       // 判断是否已作答
       if (q.studentQA.length > 0) {
         // 添加作答标记
@@ -132,7 +133,9 @@ export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
           }
         });
       } else {
+        a.content = "";
         Vue.set(q, "submited", false);
+        Vue.set(q, "getScore", 0);
       }
       return a;
     });

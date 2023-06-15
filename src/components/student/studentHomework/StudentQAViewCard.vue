@@ -110,6 +110,14 @@
               @blur="handleSelectChoiceItem(questionDetails, option)"
             />
           </q-item-section>
+          <q-item-section v-if="questionDetails.type == '填空'">
+            <div
+              class="text-body2 option text-green-5"
+              v-katex
+              v-html="option.RightContent"
+              v-viewer
+            ></div>
+          </q-item-section>
         </q-item>
 
         <q-item

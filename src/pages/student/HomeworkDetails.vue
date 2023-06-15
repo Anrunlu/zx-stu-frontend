@@ -289,7 +289,7 @@ export default {
     async calculateTotalScore() {
       let totalScore = 0;
       this.questions.forEach((q) => {
-        totalScore = totalScore + q.studentQA[0].score;
+        totalScore = totalScore + q.getScore;
       });
       this.totalScore = totalScore;
     },
