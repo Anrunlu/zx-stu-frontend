@@ -448,6 +448,11 @@ export default {
       );
       geolocation.getLocation((res) => {
         console.log(res);
+        this.$q.notify({
+          message: "定位成功，为确保位置准确性，请在手机端进行定位服务",
+          type: "positive",
+          timeout: 3000,
+        });
         this.userLocation.latitude = res.lat;
         this.userLocation.longitude = res.lng;
       }, null);
