@@ -442,54 +442,23 @@ export default {
 
     //js获取地理位置
     async handleGetLocation() {
-      // //获取经纬度和地理位置信息
-      // if (navigator.geolocation != null) {
-      //   navigator.geolocation.getCurrentPosition(
-      //     (position) => {
-      //       this.userLocation.latitude = position.coords.latitude
-      //       this.userLocation.longitude = position.coords.longitude
-      //       console.log(this.userLocation);
-      //     },
-      //     (error) => {
-      //       this.location = null;
-      //       console.log(error);
-      //     }
-      //   );
-      // }
+      const geolocation = new qq.maps.Geolocation(
+        "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
+        "zx"
+      );
+      geolocation.getLocation((res) => {
+        console.log(res);
+        this.userLocation.latitude = res.lat;
+        this.userLocation.longitude = res.lng;
+      }, null);
 
-
-      // //转换腾讯地图经纬度格式
-      // await this.$jsonp("https://apis.map.qq.com/ws/coord/v1/translate", {
-      //   locations: `${this.userLocation.latitude},${this.userLocation.longitude}`,
+      // await this.$jsonp("https://apis.map.qq.com/ws/geocoder/v1/", {
+      //   location: `${this.userLocation.latitude},${this.userLocation.longitude}`,
       //   key: "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
       //   output: "jsonp",
-      //   type: 1,
       // }).then((res) => {
       //   console.log(res);
-      //   this.userLocation.latitude = res.locations[0].lat
-      //   this.userLocation.longitude = res.locations[0].lng
-      //   console.log(this.userLocation);
       // });
-
-      // 腾讯地图获取经纬度和地理位置信息
-      await this.$jsonp("https://apis.map.qq.com/ws/location/v1/ip", {
-        // location: `${this.userLocation.latitude},${this.userLocation.longitude}`,
-        key: "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
-        output: "jsonp",
-        // type: 1,
-      }).then((res) => {
-        this.userLocation.latitude = res.result.location.lat;
-        this.userLocation.longitude = res.result.location.lng;
-        console.log(this.userLocation);
-      });
-
-      await this.$jsonp("https://apis.map.qq.com/ws/geocoder/v1/", {
-        location: `${this.userLocation.latitude},${this.userLocation.longitude}`,
-        key: "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
-        output: "jsonp",
-      }).then((res) => {
-        console.log(res, 111);
-      });
     },
   },
 
