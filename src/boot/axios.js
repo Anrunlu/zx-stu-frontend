@@ -8,6 +8,12 @@ export const request = axios.create({
   timeout: 150000,
 });
 
+export const mapRequest = axios.create({
+  baseURL: "https://apis.map.qq.com/ws/geocoder/v1/",
+  timeout: 150000,
+  jsonp: true,
+});
+
 export default ({ app, router, store }) => {
   // 请求拦截器
   request.interceptors.request.use(

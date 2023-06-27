@@ -10914,6 +10914,11 @@ vue-jsmind@^1.5.0:
   dependencies:
     vue "^2.5.11"
 
+vue-jsonp@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/vue-jsonp/-/vue-jsonp-2.0.0.tgz#3bfac56bb72941a2511c11e1a123b876f03427f7"
+  integrity sha512-Mzd9GNeuKP5hHFDWZNMWOsCuMILSkA6jo2l4A02wheFz3qqBzH7aSEFTey1BRCZCLizlaf1EqJ5YUtF392KspA==
+
 vue-katex-auto-render@^0.1.3:
   version "0.1.3"
   resolved "https://registry.npmmirror.com/vue-katex-auto-render/-/vue-katex-auto-render-0.1.3.tgz"

@@ -1,4 +1,4 @@
-import { request } from "src/boot/axios";
+import { mapRequest, request } from "src/boot/axios";
 import { loadingFn } from "src/utils/loadingTools";
 
 export function apiGetTime() {
@@ -49,4 +49,11 @@ export function apiBindEmail(data) {
     method: "post",
     data
   });
+}
+
+export function apiGetAddress() {
+  return loadingFn(mapRequest)({
+    url:"?address=北京市海淀区彩和坊路海淀西大街74号&key=XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
+    method: "get",
+  })
 }
