@@ -224,9 +224,11 @@ export default {
       // 头像上传对话框
       avatarUploadDig: false,
       changeTermDig: false,
+      //用户地理信息
       userLocation: {
-        latitude: "",
-        longitude: "",
+        latitude: "", //经度
+        longitude: "", //纬度
+        addr: "", //详细地址
       },
     };
   },
@@ -440,30 +442,58 @@ export default {
       this.getUserProfile();
     },
 
-    //js获取地理位置
+    //获取地理位置
     async handleGetLocation() {
       const geolocation = new qq.maps.Geolocation(
         "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
         "zx"
       );
-      geolocation.getLocation((res) => {
-        console.log(res);
+      await geolocation.getLocation(
+        (res) => {
+          console.log(res);
+          this.userLocation.latitude = res.lat;
+          this.userLocation.longitude = res.lng;
+          this.userLocation.addr = res.addr;
+        },
+        (err) => {
+          console.log(err);
+          this.$q.notify({
+            message: "定位失败，请稍后重试",
+            type: "negative",
+            timeout: 3000,
+          });
+        }
+      );
+      this.modifyUserAddress();
+    },
+
+    //更新位置信息
+    async modifyUserAddress() {
+      if (this.userLocation.addr === "") {
         this.$q.notify({
-          message: "定位成功，为确保位置准确性，请在手机端进行定位服务",
-          type: "positive",
+          message: "定位失败，请稍后重试",
+          type: "negative",
           timeout: 3000,
         });
-        this.userLocation.latitude = res.lat;
-        this.userLocation.longitude = res.lng;
-      }, null);
+        return;
+      }
+      const payload = {
+        address: this.userLocation.addr,
+      };
 
-      // await this.$jsonp("https://apis.map.qq.com/ws/geocoder/v1/", {
-      //   location: `${this.userLocation.latitude},${this.userLocation.longitude}`,
-      //   key: "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
-      //   output: "jsonp",
-      // }).then((res) => {
-      //   console.log(res);
-      // });
+      try {
+        await apiModifyProfile(payload);
+        this.$q.notify({
+          message: "定位成功，为确保定位准确性，请在移动端进行定位操作",
+          type: "positive",
+          timeout: 4000,
+        });
+      } catch (error) {
+        this.$q.notify({
+          message: "个人信息修改失败",
+          type: "negative",
+        });
+      }
     },
   },
 
