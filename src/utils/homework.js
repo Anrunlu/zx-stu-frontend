@@ -172,6 +172,7 @@ export function pretreatmentJiedaQuestions(jiedaQuestions) {
       curr.studentQA[0].stuAnswer[0].content = markdownToHtml(
         curr.studentQA[0].stuAnswer[0].content
       );
+      Vue.set(curr, "getScore", curr.studentQA[0].score);
     }
   });
 }
