@@ -448,23 +448,27 @@ export default {
         "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
         "zx"
       );
-      await geolocation.getLocation(
-        (res) => {
-          console.log(res);
-          this.userLocation.latitude = res.lat;
-          this.userLocation.longitude = res.lng;
-          this.userLocation.addr = res.addr;
-        },
-        (err) => {
-          console.log(err);
-          this.$q.notify({
-            message: "定位失败，请稍后重试",
-            type: "negative",
-            timeout: 3000,
-          });
-        }
-      );
-      this.modifyUserAddress();
+      await new Promise((resolve, reject) => {
+        geolocation.getLocation(
+          (res) => {
+            console.log(res);
+            this.userLocation.latitude = res.lat;
+            this.userLocation.longitude = res.lng;
+            this.userLocation.addr = res.addr;
+            this.modifyUserAddress(); // 在获取位置信息成功后调用modifyUserAddress函数
+            resolve();
+          },
+          (err) => {
+            console.log(err);
+            this.$q.notify({
+              message: "定位失败，请稍后重试",
+              type: "negative",
+              timeout: 3000,
+            });
+            reject(err);
+          }
+        );
+      });
     },
 
     //更新位置信息
