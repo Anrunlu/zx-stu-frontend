@@ -12,7 +12,7 @@ export function apiGetTermList() {
 // 用户登录
 export function apiLogin(userLoginDto) {
   return request({
-    url: "/auth/login",
+    url: "/login",
     method: "post",
     data: userLoginDto,
   });
@@ -37,7 +37,7 @@ export function apiGetAppInfo() {
 // 获取用户信息
 export function apiGetProfile() {
   return request({
-    url: "/auth/user",
+    url: "/user",
     method: "get",
   });
 }
@@ -54,11 +54,21 @@ export function apiVerifyCode(data) {
 // 修改个人信息
 export function apiModifyProfile(data) {
   return loadingFn(request)({
-    url: "/auth/user",
+    url: "/user",
     method: "put",
     data,
   });
 }
+
+// 修改个人位置信息
+export function apiModifyUserLocation(data) {
+  return loadingFn(request)({
+    url: "/userLocation",
+    method: "post",
+    data,
+  });
+}
+
 
 // 发送邮件
 export function apiSendCodeByEmail(data) {

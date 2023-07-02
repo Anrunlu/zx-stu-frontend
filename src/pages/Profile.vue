@@ -196,6 +196,7 @@ import {
   apiGetProfile,
   apiModifyProfile,
   apiModifyPwd,
+  apiModifyUserLocation,
   apiSendCodeByEmail,
   apiVerifyCode,
 } from "src/api/auth";
@@ -226,9 +227,17 @@ export default {
       changeTermDig: false,
       //用户地理信息
       userLocation: {
-        latitude: "", //经度
-        longitude: "", //纬度
-        addr: "", //详细地址
+        accuracy: 0,
+        adcode: "",
+        addr: "",
+        city: "",
+        district: "",
+        location: {
+          type: "",
+          coordinates: [],
+        },
+        nation: "",
+        province: "",
       },
     };
   },
@@ -452,9 +461,17 @@ export default {
         geolocation.getLocation(
           (res) => {
             console.log(res);
-            this.userLocation.latitude = res.lat;
-            this.userLocation.longitude = res.lng;
+            this.userLocation.location.coordinates[0] = res.lng;
+            this.userLocation.location.coordinates[1] = res.lat;
+            this.userLocation.location.type = "Point";
             this.userLocation.addr = res.addr;
+            this.userLocation.adcode = res.adcode;
+            this.userLocation.accuracy = res.accuracy;
+            this.userLocation.district = res.district;
+            this.userLocation.province = res.province;
+            this.userLocation.city = res.city;
+            this.userLocation.nation = res.nation;
+            console.log(this.userLocation);
             this.modifyUserAddress(); // 在获取位置信息成功后调用modifyUserAddress函数
             resolve();
           },
@@ -481,12 +498,10 @@ export default {
         });
         return;
       }
-      const payload = {
-        address: this.userLocation.addr,
-      };
+      const payload = this.userLocation;
 
       try {
-        await apiModifyProfile(payload);
+        await apiModifyUserLocation(payload);
         this.$q.notify({
           message: "定位成功，为确保定位准确性，请在移动端进行定位操作",
           type: "positive",
