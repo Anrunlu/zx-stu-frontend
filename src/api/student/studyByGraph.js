@@ -17,3 +17,12 @@ export function apiGetCourse() {
     method: "GET",
   });
 }
+
+// 学生查询自己上的所有课程
+export function apiGetClassmatesInfo(id) {
+  return loadingFn(request)({
+    // url: "/teateachinfo/combinedClassroomStudents/",
+    url: `/tea/teachinfo/combinedClassroomStudents/${id}`,
+    method: "GET",
+  });
+}
