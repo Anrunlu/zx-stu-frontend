@@ -35,8 +35,8 @@
             <div>
               <q-btn
                 class="q-mb-md fit"
-                :color="isWHH ? 'red-4' : 'primary'"
-                icon="location_on"
+                :color="isWHH ? 'red-4' : 'red-6'"
+                icon="add_location"
                 label="获取定位"
                 @click="handleGetLocation"
               />
@@ -102,6 +102,21 @@
               >
                 <template v-slot:prepend>
                   <q-icon name="chat" />
+                </template>
+              </q-input>
+
+              <q-input
+                dense
+                outlined
+                square
+                type="text"
+                label="地址"
+                disable
+                v-model="userLocation.addr"
+                hide-bottom-space
+              >
+                <template v-slot:prepend>
+                  <q-icon name="place" />
                 </template>
               </q-input>
 
@@ -188,6 +203,14 @@
     <q-dialog v-model="avatarUploadDig" persistent>
       <AvatarUploadCard @avatarUploaded="modifyUserAvatar" />
     </q-dialog>
+    <q-dialog v-model="confirm" persistent>
+      <q-card style="width: 500px; max-width: 80vw">
+        <q-card-section> 21312423 </q-card-section>
+        <q-card-section>
+          {{ errMsg }}
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -201,6 +224,7 @@ import {
   apiVerifyCode,
 } from "src/api/auth";
 import { getPwdLevel } from "src/utils/auth";
+import { wgs_gcj_encrypts } from "src/utils/location";
 import { mapGetters } from "vuex";
 export default {
   name: "Profile",
@@ -238,6 +262,7 @@ export default {
         },
         nation: "",
         province: "",
+        confirm: false,
       },
     };
   },
@@ -264,6 +289,7 @@ export default {
       const { data } = await apiGetProfile();
       this.qq = data.data.qq;
       this.email = data.data.email;
+      this.userLocation = data.data.location;
     },
 
     // 修改个人信息
@@ -453,46 +479,65 @@ export default {
 
     //获取地理位置
     async handleGetLocation() {
-      const geolocation = new qq.maps.Geolocation(
-        "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
-        "zx"
-      );
-      await new Promise((resolve, reject) => {
-        geolocation.getLocation(
-          (res) => {
-            console.log(res);
-            this.userLocation.location.coordinates[0] = res.lng;
-            this.userLocation.location.coordinates[1] = res.lat;
-            this.userLocation.location.type = "Point";
-            this.userLocation.addr = res.addr;
-            this.userLocation.adcode = res.adcode;
-            this.userLocation.accuracy = res.accuracy;
-            this.userLocation.district = res.district;
-            this.userLocation.province = res.province;
-            this.userLocation.city = res.city;
-            this.userLocation.nation = res.nation;
-            console.log(this.userLocation);
-            this.modifyUserAddress(); // 在获取位置信息成功后调用modifyUserAddress函数
-            resolve();
+      if (navigator.geolocation) {
+        let options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 10,
+        };
+
+        await navigator.geolocation.getCurrentPosition(
+          //获取位置成功回调
+          (position) => {
+            //经纬度标准转换
+            let point = wgs_gcj_encrypts(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+            this.userLocation.location.coordinates[1] = point.lat;
+            this.userLocation.location.coordinates[0] = point.lon;
+            this.$jsonp("https://apis.map.qq.com/ws/geocoder/v1/", {
+              location: `${this.userLocation.location.coordinates[1]},${this.userLocation.location.coordinates[0]}`,
+              key: "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
+              output: "jsonp",
+            }).then((res) => {
+              this.userLocation.location.type = "Point";
+              this.userLocation.addr = `${res.result.formatted_addresses.recommend},(${res.result.formatted_addresses.standard_address})`;
+              this.userLocation.adcode = res.result.ad_info.adcode;
+              this.userLocation.district = res.result.ad_info.district;
+              this.userLocation.province = res.result.ad_info.province;
+              this.userLocation.city = res.result.ad_info.city;
+              this.userLocation.nation = res.result.ad_info.nation;
+              console.log(this.userLocation);
+              this.modifyUserAddress(); // 在获取位置信息成功后调用modifyUserAddress函数
+            });
           },
+
+          //获取位置失败回调
           (err) => {
-            console.log(err);
             this.$q.notify({
-              message: "定位失败，请稍后重试",
+              message: `无法获取定位`,
               type: "negative",
               timeout: 3000,
             });
-            reject(err);
-          }
+          },
+          //参数
+          options
         );
-      });
+      } else {
+        this.$q.notify({
+          message: `无法获取定位`,
+          type: "negative",
+          timeout: 3000,
+        });
+      }
     },
 
     //更新位置信息
     async modifyUserAddress() {
       if (this.userLocation.addr === "") {
         this.$q.notify({
-          message: "定位失败，请稍后重试",
+          message: "更新定位失败，请稍后重试",
           type: "negative",
           timeout: 3000,
         });
@@ -503,13 +548,14 @@ export default {
       try {
         await apiModifyUserLocation(payload);
         this.$q.notify({
-          message: "定位成功，为确保定位准确性，请在移动端进行定位操作",
+          message: "更新定位成功，为确保位置准确性，请在移动端进行操作",
           type: "positive",
-          timeout: 4000,
+          timeout: 3000,
         });
+        this.getUserProfile();
       } catch (error) {
         this.$q.notify({
-          message: "个人信息修改失败",
+          message: error,
           type: "negative",
         });
       }

@@ -59,15 +59,15 @@ module.exports = function (ctx) {
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      vueRouterMode: "history", // available values: 'hash', 'history'
+      vueRouterMode: "hash", // available values: 'hash', 'history'
 
       env: {
         API_URL: ctx.dev
-          ? "http://localhost:23001/"
+          ? "https://v2.api.z-xin.net/"
           : "https://v2.api.z-xin.net/",
         QINIUCDN: "https://cyberdownload.anrunlu.net/",
         TOKEN_KEY: "zx_stu_token",
-        APP_VERSION: "2.1.3",
+        APP_VERSION: "2.1.4",
       },
 
       // env: {
