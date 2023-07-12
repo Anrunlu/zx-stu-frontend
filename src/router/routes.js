@@ -116,6 +116,24 @@ const routes = [
       title: "公告详情",
     },
   },
+  {
+    path: "/course_mind/:courseId",
+    component: () => import(`pages/student/CourseMindDetail.vue`),
+    props: true,
+    meta: {
+      type: "student",
+      title: "导图详情",
+    },
+  },
+  {
+    path: "/course_graph/:courseId",
+    component: () => import(`pages/student/CourseGraphDetail.vue`),
+    props: true,
+    meta: {
+      type: "student",
+      title: "课程图谱",
+    },
+  },
 ];
 
 // Always leave this as last one

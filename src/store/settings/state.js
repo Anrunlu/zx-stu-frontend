@@ -127,6 +127,7 @@ export default function () {
 
     // 课程导图类型选项
     courseMindCategoryOptions: [
+      { icon: "o_blur_on", value: "知识图谱", label: "知识图谱" },
       { icon: "o_schema", value: "课程大纲", label: "课程大纲" },
     ],
 

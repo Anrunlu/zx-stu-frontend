@@ -26,3 +26,11 @@ export function apiGetClassmatesInfo(id) {
     method: "GET",
   });
 }
+
+// 获取课程知识点
+export function apiGetCourseKnowledges(courseId) {
+  return request({
+    url: `/tea/knowledge/${courseId}`,
+    method: "GET",
+  });
+}

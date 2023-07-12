@@ -9,3 +9,11 @@ export function apiGetTeaResources(data) {
     data,
   });
 }
+
+// 获取课程详细信息
+export function apiGetCourseDetails(courseId) {
+  return loadingFn(request)({
+    url: `/tea/teachinfo/courseDetails/${courseId}`,
+    method: "GET",
+  });
+}
