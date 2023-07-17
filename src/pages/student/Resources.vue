@@ -123,7 +123,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { preProcessTeaResourceList } from "src/api/student/resource";
+import { preProcessTeaResourceList } from "src/utils/teaResource";
 import { apiGetTeaResources } from "src/api/student/teaResource";
 var FileSaver = require("file-saver");
 export default {

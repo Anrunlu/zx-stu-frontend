@@ -64,6 +64,14 @@ const routes = [
         },
       },
       {
+        path: "knowledgeportrait",
+        component: () => import("pages/student/KnowledgePortrait.vue"),
+        meta: {
+          type: "student",
+          title: "知识画像",
+        },
+      },
+      {
         path: "orientation",
         component: () => import("pages/student/Orientation.vue"),
         meta: {

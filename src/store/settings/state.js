@@ -34,6 +34,11 @@ export default function () {
         label: "学习资源",
         to: "resources",
       },
+      {
+        icon: "o_lightbulb",
+        label: "知识画像",
+        to: "knowledgeportrait",
+      },
     ],
     layoutLeftDrawerLinks3: [
       { icon: "star_outline", label: "迎新板块", to: "orientation" },
