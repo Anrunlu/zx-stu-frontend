@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page >
     <q-table
       flat
       :data="classmatesList"
@@ -7,6 +7,7 @@
       :pagination="tablePagination"
       row-key="_id"
       :dense="$q.platform.is.mobile ? false : true"
+      style="height:42rem;;"
     >
       <template v-slot:top-left>
         <div class="q-gutter-sm">
@@ -26,10 +27,10 @@
         </div>
       </template>
     </q-table>
-    <q-dialog v-model="mapDG" persistent full-width>
+    <q-dialog v-model="mapDG"  full-width>
       <q-card >
         <CardBar></CardBar>
-        <div id="map" style=" height: 70vh"></div>
+        <div id="map" style=" height: 70vh;overflow: hidden;"></div>
       </q-card>
     </q-dialog>
   </q-page>

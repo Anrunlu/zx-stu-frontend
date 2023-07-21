@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="row q-gutter-md q-my-sm justify-center">
+    <div class="row q-gutter-md q-pt-md justify-center">
       <div
         class="col-11 col-md-3"
         v-for="(c, i) in courseList"
