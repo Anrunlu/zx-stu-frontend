@@ -352,8 +352,8 @@ export default {
 }
 @media screen and (max-width: 1920px) {
   .ck.ck-content:not(.ck-comment__input *) {
-    /* height: 76vh; */
-    height: 87vh;
+    height: 76vh;
+    /* height: 87vh; */
     overflow-y: auto;
   }
 }
