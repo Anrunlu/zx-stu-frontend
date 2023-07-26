@@ -73,11 +73,11 @@ export default {
           align: "center",
           sortable: true,
         },
-        {
-          name: "action",
-          align: "center",
-          label: "操作",
-        },
+        // {
+        //   name: "action",
+        //   align: "center",
+        //   label: "操作",
+        // },
       ],
     };
   },
