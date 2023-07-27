@@ -14,9 +14,9 @@
     <q-tab-panels v-model="tab" animated :class="isWHH ? 'bg-red-1' : ''">
       <q-tab-panel name="未读">
         <q-list separator>
+        <q-list separator v-if="announcementList.length">
           <q-item
             clickable
-            v-ripple
             v-for="(announcement, index) in announcementList"
             :key="index"
             @click="handleOpenAnnouncement(announcement)"
@@ -36,12 +36,18 @@
             </q-item-section>
           </q-item>
         </q-list>
+        <q-item clickable v-ripple v-else>
+          <div class="full-width row flex-center text-grey q-gutter-sm">
+            <span class="text-h6"> 暂无未读的通知，请后期注意查收 </span>
+          </div>
+        </q-item>
+        </q-list>
       </q-tab-panel>
       <q-tab-panel name="已读">
         <q-list separator>
+        <q-list separator v-if="announcementList.length">
           <q-item
             clickable
-            v-ripple
             v-for="(announcement, index) in announcementList"
             :key="index"
             @click="handleOpenAnnouncement(announcement)"
@@ -60,6 +66,12 @@
               </div>
             </q-item-section>
           </q-item>
+        </q-list>
+        <q-item clickable v-ripple v-else>
+          <div class="full-width row flex-center text-grey q-gutter-sm">
+            <span class="text-h6"> 暂无已读的通知 </span>
+          </div>
+        </q-item>
         </q-list>
       </q-tab-panel>
     </q-tab-panels>
