@@ -46,7 +46,7 @@ export default function () {
       { icon: "o_settings", label: "个人设置", to: "profile" },
       {
         icon: "o_forum",
-        label: "知新社区",
+        label: "知新校园",
         href: "https://bbs.z-xin.net",
       },
       {
