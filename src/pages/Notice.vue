@@ -38,7 +38,7 @@
         </q-list>
         <q-item clickable v-ripple v-else>
           <div class="full-width row flex-center text-grey q-gutter-sm">
-            <span class="text-h6"> 暂无未读的通知，请后期注意查收 </span>
+            <span class="text-h6"> 暂无未读通知，请后期注意查收 </span>
           </div>
         </q-item>
         </q-list>
