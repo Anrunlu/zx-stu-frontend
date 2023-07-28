@@ -214,32 +214,19 @@ export default {
 
           //获取位置失败回调
           (err) => {
-            this.$q.notify({
-              message: `无法获取定位`,
-              type: "negative",
-              timeout: 3000,
-            });
+            console.log(err);
           },
           //参数
           options
         );
       } else {
-        this.$q.notify({
-          message: `无法获取定位`,
-          type: "negative",
-          timeout: 3000,
-        });
+        console.log(err);
       }
     },
 
     //更新位置信息
     async modifyUserAddress() {
       if (this.userLocation.addr === "") {
-        this.$q.notify({
-          message: "更新定位失败，请稍后重试",
-          type: "negative",
-          timeout: 3000,
-        });
         return;
       }
       const payload = this.userLocation;
