@@ -69,7 +69,7 @@
         </q-list>
         <q-item clickable v-ripple v-else>
           <div class="full-width row flex-center text-grey q-gutter-sm">
-            <span class="text-h6"> 暂无已读的通知 </span>
+            <span class="text-h6"> 暂无已读通知 </span>
           </div>
         </q-item>
         </q-list>

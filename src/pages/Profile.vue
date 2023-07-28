@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="row justify-center q-gutter-lg q-mt-sm">
+    <div class="row justify-center q-gutter-lg q-pt-lg">
       <!-- 头像 -->
       <div class="col-10 col-sm-2">
         <q-card bordered>
@@ -203,14 +203,6 @@
     <q-dialog v-model="avatarUploadDig" persistent>
       <AvatarUploadCard @avatarUploaded="modifyUserAvatar" />
     </q-dialog>
-    <q-dialog v-model="confirm" persistent>
-      <q-card style="width: 500px; max-width: 80vw">
-        <q-card-section> 21312423 </q-card-section>
-        <q-card-section>
-          {{ errMsg }}
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -262,7 +254,6 @@ export default {
         },
         nation: "",
         province: "",
-        confirm: false,
       },
     };
   },
