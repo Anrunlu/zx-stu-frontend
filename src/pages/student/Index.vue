@@ -256,7 +256,7 @@ export default {
   created() {
     this.handleGetCourse();
     this.getUserProfile();
-    this.handleGetLocation();
+    // this.handleGetLocation();
     if (this.username === "2021412984" && this.nickname === "王寒寒") {
       this.$store.commit("user/setIsWHH", true);
     }

@@ -506,6 +506,7 @@ export default {
 
           //获取位置失败回调
           (err) => {
+            console.log(err);
             this.$q.notify({
               message: `无法获取定位`,
               type: "negative",

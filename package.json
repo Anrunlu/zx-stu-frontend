@@ -16,7 +16,7 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "caniuse-lite": "^1.0.30001516",
-    "ckeditor5": "^38.1.0",
+    "ckeditor5": "^39.0.1",
     "ckeditor5-custom-build": "./ckeditor5",
     "core-js": "^3.6.5",
     "driver.js": "^0.9.8",
