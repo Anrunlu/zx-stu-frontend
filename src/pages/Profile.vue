@@ -7,14 +7,8 @@
           <q-img class="rounded-borders" :src="avatar" />
 
           <q-card-actions align="center" class="q-pa-none q-mt-lg">
-            <q-btn
-              class="q-mb-sm"
-              flat
-              :color="isWHH ? 'red-4' : 'primary'"
-              icon="add_a_photo"
-              label="头像上传"
-              @click="avatarUploadDig = true"
-            />
+            <q-btn class="q-mb-sm" flat :color="isWHH ? 'red-4' : 'primary'" icon="add_a_photo" label="头像上传"
+              @click="avatarUploadDig = true" />
           </q-card-actions>
         </q-card>
       </div>
@@ -24,97 +18,43 @@
         <q-card>
           <q-card-section>
             <div>
-              <q-btn
-                class="q-mb-md fit"
-                :color="isWHH ? 'red-4' : 'primary'"
-                icon="event_repeat"
-                label="切换学期"
-                @click="changeTermDig = true"
-              />
+              <q-btn class="q-mb-md fit" :color="isWHH ? 'red-4' : 'primary'" icon="event_repeat" label="切换学期"
+                @click="changeTermDig = true" />
             </div>
             <div>
-              <q-btn
-                class="q-mb-md fit"
-                :color="isWHH ? 'red-4' : 'red-6'"
-                icon="add_location"
-                label="获取定位"
-                @click="handleEnableLocation"
-              />
+              <q-btn class="q-mb-md fit" :color="isWHH ? 'red-4' : 'red-6'" icon="add_location" label="获取定位"
+                @click="handleEnableLocation" />
             </div>
             <q-form @submit="handleUpdateProfileSubmit" class="q-gutter-md">
               <!-- 基本信息 -->
               <div class="row">
-                <q-input
-                  class="col"
-                  dense
-                  outlined
-                  square
-                  disable
-                  type="text"
-                  label="用户名"
-                  v-model="username"
-                  hide-bottom-space
-                >
+                <q-input class="col" dense outlined square disable type="text" label="用户名" v-model="username"
+                  hide-bottom-space>
                   <template v-slot:prepend>
                     <q-icon name="fingerprint" />
                   </template>
                 </q-input>
-                <q-input
-                  class="col q-pl-sm"
-                  dense
-                  outlined
-                  square
-                  disable
-                  type="text"
-                  label="昵称"
-                  v-model="nickname"
-                  hide-bottom-space
-                >
+                <q-input class="col q-pl-sm" dense outlined square disable type="text" label="昵称" v-model="nickname"
+                  hide-bottom-space>
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
                 </q-input>
               </div>
 
-              <q-input
-                dense
-                outlined
-                square
-                type="email"
-                label="邮箱"
-                disable
-                v-model="email"
-                hide-bottom-space
-              >
+              <q-input dense outlined square type="email" label="邮箱" disable v-model="email" hide-bottom-space>
                 <template v-slot:prepend>
                   <q-icon name="email" />
                 </template>
               </q-input>
-              <q-input
-                dense
-                outlined
-                square
-                type="text"
-                label="QQ号"
-                v-model="qq"
-                :rules="[(val) => !!val || 'QQ号不能为空']"
-                hide-bottom-space
-              >
+              <q-input dense outlined square type="text" label="QQ号" v-model="qq" :rules="[(val) => !!val || 'QQ号不能为空']"
+                hide-bottom-space>
                 <template v-slot:prepend>
                   <q-icon name="chat" />
                 </template>
               </q-input>
 
-              <q-input
-                dense
-                outlined
-                square
-                type="text"
-                label="地址"
-                disable
-                v-model="userLocation.addr"
-                hide-bottom-space
-              >
+              <q-input dense outlined square type="text" label="地址" disable v-model="userLocation.addr" hide-bottom-space>
                 <template v-slot:prepend>
                   <q-icon name="place" />
                 </template>
@@ -123,79 +63,35 @@
               <q-separator inset />
 
               <!-- 密码修改 -->
-              <q-input
-                dense
-                outlined
-                square
-                type="text"
-                label="原密码"
-                v-model="oldPwd"
-                hide-bottom-space
-              >
+              <q-input dense outlined square type="text" label="原密码" v-model="oldPwd" hide-bottom-space>
                 <template v-slot:prepend>
                   <q-icon name="vpn_key" />
                 </template>
               </q-input>
-              <q-input
-                dense
-                outlined
-                square
-                :type="isShowPwd ? 'password' : 'text'"
-                label="新密码"
-                v-model="newPwd"
-                hint="密码必须同时包含数字字母和特殊字符且长度大于6位"
-                hide-bottom-space
-              >
+              <q-input dense outlined square :type="isShowPwd ? 'password' : 'text'" label="新密码" v-model="newPwd"
+                hint="密码必须同时包含数字字母和特殊字符且长度大于6位" hide-bottom-space>
                 <template v-slot:prepend>
                   <q-icon name="vpn_key" />
                 </template>
                 <template v-slot:append>
-                  <q-icon
-                    :name="isShowPwd ? 'visibility_off' : 'visibility'"
-                    class="cursor-pointer"
-                    @click="isShowPwd = !isShowPwd"
-                  />
+                  <q-icon :name="isShowPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                    @click="isShowPwd = !isShowPwd" />
                 </template>
               </q-input>
 
               <div class="row">
-                <q-input
-                  dense
-                  outlined
-                  square
-                  class="col-8"
-                  type="text"
-                  label="输入验证码"
-                  v-model="code"
-                />
-                <q-btn
-                  class="col-3 q-ml-sm"
-                  :color="isWHH ? 'red-4' : 'primary'"
-                  icon="send"
-                  :label="
-                    canSendCode ? '发送验证码' : `重新发送(${countDown}s)`
-                  "
-                  :disable="!canSendCode"
-                  @click="handleSendCodeBtnClick"
-                />
+                <q-input dense outlined square class="col-8" type="text" label="输入验证码" v-model="code" />
+                <q-btn class="col-3 q-ml-sm" :color="isWHH ? 'red-4' : 'primary'" icon="send" :label="canSendCode ? '发送验证码' : `重新发送(${countDown}s)`
+                  " :disable="!canSendCode" @click="handleSendCodeBtnClick" />
               </div>
 
               <div class="row q-gutter-md">
                 <div>
-                  <q-btn
-                    icon="cloud_upload"
-                    label="更新"
-                    type="submit"
-                    :color="isWHH ? 'red-4' : 'primary'"
-                  />
+                  <q-btn icon="cloud_upload" label="更新" type="submit" :color="isWHH ? 'red-4' : 'primary'" />
                 </div>
                 <div>
-                  <q-btn
-                    icon="add_location"
-                    label="关闭定位"
-                    :color="isWHH ? 'red-4' : 'red-6'"
-                    @click="handleDisableLocation"
-                  />
+                  <q-btn icon="add_location" label="关闭定位" :color="isWHH ? 'red-4' : 'red-6'"
+                    @click="handleDisableLocation" />
                 </div>
               </div>
             </q-form>
@@ -255,7 +151,7 @@ export default {
       userLocation: {
         accuracy: 0,
         adcode: "",
-        addr: "",
+        addr: "暂无定位",
         city: "",
         district: "",
         location: {
@@ -265,7 +161,7 @@ export default {
         nation: "",
         province: "",
       },
-      isLocationEnabled:true,
+      isLocationEnabled: true,
     };
   },
 
@@ -291,7 +187,7 @@ export default {
       const { data } = await apiGetProfile();
       this.qq = data.data.qq;
       this.email = data.data.email;
-      this.userLocation = data.data.location;
+      this.userLocation = data.data.location ? data.data.location : this.userLocation;
     },
 
     // 修改个人信息
@@ -479,10 +375,10 @@ export default {
       this.getUserProfile();
     },
 
-    handleDisableLocation(){
+    handleDisableLocation() {
       this.isLocationEnabled = false;
     },
-    handleEnableLocation(){
+    handleEnableLocation() {
       this.isLocationEnabled = true;
       this.handleGetLocation();
     },
@@ -581,9 +477,11 @@ export default {
 .bg-normal-gradient {
   background-image: linear-gradient(-20deg, #b721ff 0%, #21d4fd 100%);
 }
+
 .bg-dark-gradient {
   background: linear-gradient(145deg, rgb(11, 26, 61) 15%, #4c1014 70%);
 }
+
 .login-form-card a {
   cursor: pointer;
 }
