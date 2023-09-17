@@ -72,14 +72,6 @@ const routes = [
         },
       },
       {
-        path: "orientation",
-        component: () => import("pages/student/Orientation.vue"),
-        meta: {
-          type: "student",
-          title: "迎新板块",
-        },
-      },
-      {
         path: "notice",
         component: () => import("pages/Notice.vue"),
         meta: {

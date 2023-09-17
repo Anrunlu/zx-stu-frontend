@@ -41,7 +41,6 @@ export default function () {
       },
     ],
     layoutLeftDrawerLinks3: [
-      { icon: "star_outline", label: "迎新板块", to: "orientation" },
       { icon: "o_notifications", label: "消息中心", to: "notice" },
       { icon: "o_settings", label: "个人设置", to: "profile" },
       {
