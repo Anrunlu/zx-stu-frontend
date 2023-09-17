@@ -1,8 +1,8 @@
 {
   "name": "zx-frontend",
-  "version": "0.0.1",
-  "description": "知新2",
-  "productName": "知新2",
+  "version": "2.1.1",
+  "description": "知新2.1学生端",
+  "productName": "知新学生端",
   "author": "安润鲁 <anrunlu@163.com>",
   "private": true,
   "scripts": {
