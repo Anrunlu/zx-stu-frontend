@@ -1,11 +1,61 @@
+## 项目概述
 
-# 知新 2 (zx-student_frontend)
+本项目是知新教学平台的学生端。
 
-知新 2 学生端
+知新教学平台由 曲阜师范大学网络空间安全学院 C605 实验室(https://c605.cn)开发。
 
-## APP 发布流程
+知新学生端是一个教学平台，旨在提供学生和教育工作者所需的各种功能，包括作业管理、成绩跟踪等。该仓库包含了与前端用户界面相关的所有代码和资源。
 
-1. 修改路由模式为 hash
-2. 修改 Cookies 为 localStorage，涉及到 /src/utils/auth.js
-3. 修改 quasar.conf.js里的APP_Version
-4. 修改 /ckeditor5/src/MyFileUploadBtn.js 中的 Cookies 为 localStorage，进入 ckedito5 目录，npm install 后执行 npm run build，之后退回到项目文件夹 zx_student_frontend，执行 yarn add ./ckeditor5
+![知新学生端](https://cyberdownload.anrunlu.net/FjZ8vlu1TbYA-ikNj8UlrJBk7uVR)
+
+## 仓库内容
+
+此仓库包含以下主要内容：
+
+- 前端代码：包括 HTML、CSS、JavaScript 等文件，用于构建知新学生端的用户界面。
+
+- 静态资源：包括图像、字体文件和其他与用户界面相关的静态资源。
+
+## 如何贡献
+
+我们欢迎您的贡献！如果您想为知新学生端的前端开发做出贡献，请按照以下步骤进行：
+
+1. Fork 此仓库到您的 GitHub 账号下。
+
+2. 克隆您的 Fork 到本地开发环境。
+
+   ```shell
+   git clone https://github.com/您的用户名/zx-stu-frontend.git
+   ```
+
+3. 创建一个新的分支以进行您的工作。
+
+   ```shell
+   git checkout -b 您的分支名称
+   ```
+
+4. 在您的分支上进行修改和开发。
+
+5. 提交您的更改并创建一个详细的描述。
+
+   ```shell
+   git commit -m "描述您的更改"
+   ```
+
+6. 将您的更改推送到您的 Fork。
+
+   ```shell
+   git push origin 您的分支名称
+   ```
+
+7. 提交 Pull Request 到此仓库的主分支。我们将审核您的更改并合并它们。
+
+## 联系我们
+
+如果您有任何问题、建议或反馈，请随时联系我们。您可以通过 GitHub Issues 与我们取得联系。
+
+感谢您的兴趣和贡献！
+
+---
+
+_注意：请确保在贡献之前阅读我们的贡献指南以了解更多详细信息。_
