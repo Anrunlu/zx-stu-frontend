@@ -89,10 +89,6 @@
                 <div>
                   <q-btn icon="cloud_upload" label="更新" type="submit" :color="isWHH ? 'red-4' : 'primary'" />
                 </div>
-                <div>
-                  <q-btn icon="add_location" label="关闭定位" :color="isWHH ? 'red-4' : 'red-6'"
-                    @click="handleDisableLocation" />
-                </div>
               </div>
             </q-form>
           </q-card-section>
@@ -161,7 +157,6 @@ export default {
         nation: "",
         province: "",
       },
-      isLocationEnabled: true,
     };
   },
 
@@ -375,16 +370,12 @@ export default {
       this.getUserProfile();
     },
 
-    handleDisableLocation() {
-      this.isLocationEnabled = false;
-    },
     handleEnableLocation() {
-      this.isLocationEnabled = true;
       this.handleGetLocation();
     },
     //获取地理位置
     async handleGetLocation() {
-      if (navigator.geolocation && this.isLocationEnabled) {
+      if (navigator.geolocation) {
         let options = {
           enableHighAccuracy: true,
           timeout: 5000,

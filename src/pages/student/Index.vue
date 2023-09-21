@@ -69,21 +69,6 @@ export default {
       dataLodingFinished: false,
       isBindEmail: false,
       email: "",
-      //用户地理信息
-      userLocation: {
-        accuracy: 0,
-        adcode: "",
-        addr: "",
-        city: "",
-        district: "",
-        location: {
-          type: "",
-          coordinates: [],
-        },
-        nation: "",
-        province: "",
-        confirm: false,
-      },
     };
   },
 
@@ -146,70 +131,6 @@ export default {
         this.isBindEmail = false;
       }
     },
-
-    //获取地理位置
-    // async handleGetLocation() {
-    //   if (navigator.geolocation) {
-    //     let options = {
-    //       enableHighAccuracy: true,
-    //       timeout: 5000,
-    //       maximumAge: 60000,
-    //     };
-    //     await navigator.geolocation.watchPosition(
-    //       //获取位置成功回调
-    //       (position) => {
-    //         //经纬度标准转换
-    //         let point = wgs_gcj_encrypts(
-    //           position.coords.latitude,
-    //           position.coords.longitude
-    //         );
-    //         this.userLocation.location.coordinates[1] = point.lat;
-    //         this.userLocation.location.coordinates[0] = point.lon;
-    //         this.$jsonp("https://apis.map.qq.com/ws/geocoder/v1/", {
-    //           location: `${this.userLocation.location.coordinates[1]},${this.userLocation.location.coordinates[0]}`,
-    //           key: "XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5",
-    //           output: "jsonp",
-    //         }).then((res) => {
-    //           this.userLocation.location.type = "Point";
-    //           this.userLocation.addr = `${res.result.formatted_addresses.recommend},(${res.result.formatted_addresses.standard_address})`;
-    //           this.userLocation.adcode = res.result.ad_info.adcode;
-    //           this.userLocation.district = res.result.ad_info.district;
-    //           this.userLocation.province = res.result.ad_info.province;
-    //           this.userLocation.city = res.result.ad_info.city;
-    //           this.userLocation.nation = res.result.ad_info.nation;
-    //           console.log(this.userLocation);
-    //           this.modifyUserAddress(); // 在获取位置信息成功后调用modifyUserAddress函数
-    //         });
-    //       },
-
-    //       //获取位置失败回调
-    //       (err) => {
-    //         console.log(err);
-    //       },
-    //       //参数
-    //       options
-    //     );
-    //   } else {
-    //     console.log(err);
-    //   }
-    // },
-
-    //更新位置信息
-    // async modifyUserAddress() {
-    //   if (this.userLocation.addr === "") {
-    //     return;
-    //   }
-    //   const payload = this.userLocation;
-
-    //   try {
-    //     await apiModifyUserLocation(payload);
-    //   } catch (error) {
-    //     this.$q.notify({
-    //       message: "个人位置信息修改失败",
-    //       type: "negative",
-    //     });
-    //   }
-    // },
 
     //点击绑定邮箱
     handleBindEmailClick() {
