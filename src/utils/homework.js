@@ -139,6 +139,7 @@ export function pretreatmentFillBlankQuestions(fillBlankQuestions) {
       }
       return a;
     });
+    q.content = marked(q.content);
     return q;
   });
   return res;
