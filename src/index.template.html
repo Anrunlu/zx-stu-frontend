@@ -13,38 +13,38 @@
   <meta name="viewport"
     content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover <% } %>" />
 
-  <!-- 设置所有的 a 标签在新窗口打开 -->
-  <base target="_blank" />
+ <!-- 设置所有的 a 标签在新窗口打开 -->
+ <base target="_blank" />
 
-  <link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-128x128.png" />
-  <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png" />
-  <link rel="icon" type="image/ico" href="favicon.ico" />
-  <!-- katex 公式样式 -->
-  <link rel="stylesheet" href="/public/katex/katex.min.css" />
+ <link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-128x128.png" />
+ <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png" />
+ <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
+ <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png" />
+ <link rel="icon" type="image/ico" href="favicon.ico" />
+ <!-- katex 公式样式 -->
+ <link rel="stylesheet" href="/katex/katex.min.css" />
 
 </head>
 
 <body>
-  <!-- DO NOT touch the following DIV -->
-  <div id="q-app"></div>
+ <!-- DO NOT touch the following DIV -->
+ <div id="q-app"></div>
 </body>
 <script type="text/javascript" src="https://mapapi.qq.com/web/mapComponents/geoLocation/v/geolocation.min.js"></script>
-<script src="public/katex/katex.min.js"></script>
-<script src="public/katex/contrib/auto-render.min.js"></script>
-<script src="public/katex/contrib/mhchem.min.js"></script>
-<script src="https://map.qq.com/api/gljs?v=1.exp&key=XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5"></script>
+<script defer src="/katex/katex.min.js"></script>
+<script defer src="/katex/contrib/auto-render.min.js"></script>
+<script defer src="/katex/contrib/mhchem.min.js"></script>
+<script async src="https://map.qq.com/api/gljs?v=1.exp&key=XHSBZ-NHJLG-Y6FQT-QQ3AK-N7YB5-GDBK5"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HT3DXHT6MN"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    dataLayer.push(arguments);
-  }
-  gtag("js", new Date());
+ window.dataLayer = window.dataLayer || [];
+ function gtag() {
+   dataLayer.push(arguments);
+ }
+ gtag("js", new Date());
 
-  gtag("config", "G-HT3DXHT6MN");
+ gtag("config", "G-HT3DXHT6MN");
 </script>
 
 </html>
