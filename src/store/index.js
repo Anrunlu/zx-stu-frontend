@@ -4,6 +4,7 @@ import user from "./user";
 import socketio from "./socketio";
 import settings from "./settings";
 import student from "./student";
+import persistPlugin from '../utils/persistPlugin'
 Vue.use(Vuex);
 
 /*
@@ -23,7 +24,7 @@ export default function (/* { ssrContext } */) {
       settings,
       student,
     },
-
+    plugins:[persistPlugin],
     // enable strict mode (adds overhead!)
     // for dev mode only
     strict: process.env.DEBUGGING,
