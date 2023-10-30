@@ -2,6 +2,11 @@
 
 const KEY = 'VUEX_STORE'
 export default function (store) {
+  
+  window.addEventListener("beforeunload", () => {
+    localStorage.setItem(KEY, JSON.stringify(store.state.student))
+  })
+
   try {
     const localStore = localStorage.getItem(KEY)
     if (localStore) {
@@ -10,7 +15,5 @@ export default function (store) {
   } catch (err) {
     console.log("本地数据异常");
   }
-  window.addEventListener("beforeunload", () => {
-    localStorage.setItem(KEY, JSON.stringify(store.state.student))
-  })
+
 }
