@@ -158,6 +158,7 @@ import { mapGetters } from "vuex";
 import { apiGetHomeworkInfo, apiPostAnswer } from "src/api/student/homework";
 import { pretreatmentStudentHomeworkDetails } from "src/utils/homework";
 import { formatTimeWithWeekDayAndSecond } from "src/utils/time";
+import { shuffleArray } from "src/utils/shuffleArray";
 export default {
   name: "ExamkDetails",
   props: {
@@ -233,6 +234,10 @@ export default {
       pretreatmentStudentHomeworkDetails(data.data);
       this.questiondatas = data.data;
       this.questions = data.data.questions;
+      //未截止打乱题目
+      if (!this.questiondatas.isEnd) {
+        this.questions = shuffleArray(this.questions);
+      }
       this.isShowHomeworkDetails = JSON.parse(
         JSON.stringify(this.questiondatas, [
           "isShowAnswerAfterEndtime",
