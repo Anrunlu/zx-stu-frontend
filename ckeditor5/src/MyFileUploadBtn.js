@@ -70,36 +70,36 @@ export class FileUploadBtn extends Plugin {
         // 允许上传标志
         let allowToUpload = true;
 
-        //限制上传文件类型
-        let allowedTypes = [
-          "text/plain",
-          "application/x-rar-compressed",
-          "application/x-rar",
-          "application/x-compressed",
-          "application/x-zip-compressed",
-          "application/pdf",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "application/msword",
-          "application/vnd.ms-powerpoint",
-          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-          "application/vnd.ms-excel",
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        ];
+        // //限制上传文件类型
+        // let allowedTypes = [
+        //   "text/plain",
+        //   "application/x-rar-compressed",
+        //   "application/x-rar",
+        //   "application/x-compressed",
+        //   "application/x-zip-compressed",
+        //   "application/pdf",
+        //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        //   "application/msword",
+        //   "application/vnd.ms-powerpoint",
+        //   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        //   "application/vnd.ms-excel",
+        //   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        // ];
 
-        if (filesToUpload.length) {
-          filesToUpload.forEach((file) => {
-            if (!allowedTypes.includes(file.type)) {
-              Swal.fire({
-                icon: "warning",
-                title: "错误，不支持的文件类型 ",
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              allowToUpload = false;
-              return;
-            }
-          });
-        }
+        // if (filesToUpload.length) {
+        //   filesToUpload.forEach((file) => {
+        //     if (!allowedTypes.includes(file.type)) {
+        //       Swal.fire({
+        //         icon: "warning",
+        //         title: "错误，不支持的文件类型 ",
+        //         showConfirmButton: false,
+        //         timer: 1500,
+        //       });
+        //       allowToUpload = false;
+        //       return;
+        //     }
+        //   });
+        // }
 
         if (filesToUpload.length) {
           // 过滤图片
