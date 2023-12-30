@@ -9,7 +9,7 @@
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 
 const ESLintPlugin = require("eslint-webpack-plugin");
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require("path");
 
 function resolve(dir) {
@@ -99,6 +99,7 @@ module.exports = function (ctx) {
           .plugin("eslint-webpack-plugin")
           .use(ESLintPlugin, [{ extensions: ["js", "vue"] }]);
         chain.resolve.alias.set("@", resolve("src"));
+        chain.plugin("webpack-bundle-analyzer").use(BundleAnalyzerPlugin)
       },
     },
 
