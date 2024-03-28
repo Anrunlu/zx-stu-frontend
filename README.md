@@ -59,6 +59,10 @@ npm run dev # or yarn run dev
 
 7. 提交 Pull Request 到此仓库的主分支。我们将审核您的更改并合并它们。
 
+## 项目历史
+
+您可以[点击此处](https://c605.cn/projects?id=0)来了解我们的项目历史。
+
 ## 联系我们
 
 如果您有任何问题、建议或反馈，请随时联系我们。您可以通过 GitHub Issues 与我们取得联系。
